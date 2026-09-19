@@ -1,5 +1,5 @@
-import { InMemoryChallengeApi } from "./challenge-api";
 import { Challenge } from "./challenge";
+import { ChallengeApi } from "./challenge-api";
 import { RoundState } from "./domain";
 
 export interface MiniAppChallengeModel {
@@ -8,10 +8,10 @@ export interface MiniAppChallengeModel {
   availableStates: RoundState[];
 }
 
-export function getChallengeModel(api: InMemoryChallengeApi, challengeId: string): MiniAppChallengeModel {
+export async function getChallengeModel(api: ChallengeApi, challengeId: string): Promise<MiniAppChallengeModel> {
   return {
-    challenge: api.getChallenge(challengeId),
-    leaderboard: api.leaderboard(challengeId),
+    challenge: await api.getChallenge(challengeId),
+    leaderboard: await api.leaderboard(challengeId),
     availableStates: ["LOW","MID","BASE","HIGH","EXTREME"],
   };
 }
