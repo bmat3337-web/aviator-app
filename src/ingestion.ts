@@ -6,6 +6,7 @@ export function createRound(input: {
   multiplier: number;
   timestamp: string;
   source?: Round["source"];
+  metadata?: Record<string, unknown>;
 }): Round {
   if (!input.roundId.trim()) throw new Error("roundId is required");
   if (!Number.isInteger(input.sequence) || input.sequence < 0) {
