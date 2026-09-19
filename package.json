@@ -1,0 +1,21 @@
+{
+  "name":"aviator-analysis-engine",
+  "private":true,
+  "version":"0.1.0",
+  "type":"module",
+  "scripts":{
+    "start":"node --import tsx src/main.ts",
+    "test":"vitest run",
+    "typecheck":"tsc --noEmit"
+  },
+  "dependencies":{
+    "pg":"^8.16.3",
+    "tsx":"^4.20.5"
+  },
+  "devDependencies":{
+    "@types/node":"^22.15.0",
+    "@types/pg":"^8.15.5",
+    "typescript":"^5.4.0",
+    "vitest":"^2.1.0"
+  }
+}
