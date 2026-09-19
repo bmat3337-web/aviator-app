@@ -23,3 +23,15 @@ jobs:
         run: npm run typecheck
       - name: Unit tests
         run: npm test
+
+      - name: PostgreSQL integration tests
+        env:
+          DATABASE_URL: postgresql://postgres:postgres@localhost:5432/aviator_test
+        run: |
+          docker run -d --name aviator-postgres             -e POSTGRES_PASSWORD=postgres             -e POSTGRES_DB=aviator_test             -p 5432:5432             postgres:16
+          for i in {1..30}; do
+            if docker exec aviator-postgres pg_isready -U postgres -d aviator_test; then break; fi
+            sleep 1
+          done
+          npm exec vitest run tests/postgres-settlement.integration.test.ts
+          docker rm -f aviator-postgres
