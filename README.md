@@ -1,23 +1,31 @@
 # Aviator Analysis Engine
 
-Production foundation for deterministic Aviator round, streak, volatility, analytics and challenge analysis.
+Production-oriented foundation for Aviator analytics, Telegram Mini App challenges, provider ingestion, and deterministic PostgreSQL-backed settlement.
 
-## Scope
-- Canonical round ingestion
-- Threshold/state classification
-- Current and historical streak analysis
-- Rolling distribution analytics
-- Explicit separation of historical statistics from predictions
-- Versioned analysis contracts
-- Foundation for backtesting, signals, Telegram Bot and Mini App
+## Verification
 
-## Baseline
-The original prototype used a 100-round in-memory history and thresholds of >=2.0x, >=5.0x and <=1.5x. This foundation preserves those concepts while removing the runtime-only storage constraint.
+`npm run typecheck` and `npm test` run on every push/PR.
 
-## Safety
-Historical frequencies are descriptive statistics. They are not guarantees of future game outcomes.
+CI also provisions PostgreSQL 16 and runs the settlement integration suite against the real PL/pgSQL migration.
+
+## Production secrets
+
+- `DATABASE_URL`
+- `TELEGRAM_BOT_TOKEN`
+- `INGESTION_TOKEN`
+
+## Integrity model
+
+Provider rounds are normalized and validated before persistence. Participant predictions are authenticated with Telegram WebApp init data. Challenge settlement is server-side only and uses an idempotent PostgreSQL settlement function.
+
+This project provides historical/statistical analytics and challenge infrastructure; it does not guarantee future Aviator outcomes.
 
 ## Structure
-- src/domain.ts — domain contracts
-- src/analysis.ts — deterministic analysis engine
-- tests/analysis.test.ts — executable baseline tests
+
+- `src/domain.ts` — domain contracts
+- `src/analysis.ts` — deterministic analysis engine
+- `src/provider.ts` — provider-neutral ingestion contract
+- `src/challenge-service.ts` — challenge lifecycle and scoring
+- `src/settlement-worker.ts` — server-side settlement boundary
+- `database/migrations/` — PostgreSQL schema and settlement function
+- `tests/` — unit and PostgreSQL integration coverage
