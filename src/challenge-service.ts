@@ -43,9 +43,12 @@ export async function submitPrediction(store:ChallengeStore,prediction:Challenge
 export async function settleRound(store:ChallengeStore,challengeId:string,roundNumber:number,actualState:RoundState):Promise<ChallengeScore[]>{
   const challenge=await store.get(challengeId);
   if(!challenge) throw new Error("CHALLENGE_NOT_FOUND");
+
+  // Repeated settlement of an already-settled round is a successful no-op.
+  if(await store.isSettled(challengeId,roundNumber)) return store.scores(challengeId);
+
   if(challenge.state!=="LIVE"&&challenge.state!=="SETTLEMENT") throw new Error("CHALLENGE_NOT_SETTLEABLE");
   if(roundNumber!==challenge.currentRound+1) throw new Error("ROUND_NOT_OPEN");
-  if(await store.isSettled(challengeId,roundNumber)) return store.scores(challengeId);
 
   for(const prediction of (await store.predictions(challengeId)).filter(p=>p.roundNumber===roundNumber)){
     const existing=(await store.scores(challengeId)).find(s=>s.participantId===prediction.participantId);
