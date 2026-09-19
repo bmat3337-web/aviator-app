@@ -1,0 +1,25 @@
+<!doctype html><html lang="en"><head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Aviator Analysis</title><script src="https://telegram.org/js/telegram-web-app.js"></script>
+<style>:root{color-scheme:dark;--bg:#101114;--card:#1a1c21;--text:#f5f7fa;--muted:#9ba3af;--accent:#39a9ff;--border:#292d35}*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--text);font:15px system-ui,sans-serif}main{max-width:720px;margin:auto;padding:16px}.top{padding:8px 0 18px}.muted{color:var(--muted);font-size:12px}.grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}.card{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:16px}.wide{grid-column:1/-1}.value{font-size:25px;font-weight:700;margin-top:5px}.nav{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-top:12px}button{background:var(--card);color:var(--text);border:1px solid var(--border);border-radius:10px;padding:11px 6px}button.active{border-color:var(--accent)}.notice{margin-top:12px;padding:12px;border-radius:10px;background:#17191e;color:var(--muted);font-size:12px}</style>
+</head><body><main><section class="top"><h2>📊 Aviator Analysis</h2><div class="muted">Deterministic historical analytics</div></section>
+<section class="grid"><div class="card"><div class="muted">Rounds</div><div id="rounds" class="value">—</div></div>
+<div class="card"><div class="muted">Latest</div><div id="latest" class="value">—</div></div>
+<div class="card"><div class="muted">Regime</div><div id="regime" class="value">—</div></div>
+<div class="card"><div class="muted">Streak</div><div id="streak" class="value">—</div></div>
+<div class="card wide"><div class="muted">Signal</div><div id="signal" class="value">—</div><div id="evidence" class="muted"></div></div></section>
+<nav class="nav"><button data-view="analytics" class="active">Analytics</button><button data-view="signal">Signal</button><button data-view="challenge">Challenge</button><button id="refresh">Refresh</button></nav>
+<div id="panel" class="notice">Loading analysis…</div><div class="notice">Historical statistics describe observed rounds; they do not guarantee the next game outcome.</div></main>
+<script>
+const tg=window.Telegram?.WebApp; tg?.expand(); let model=null;
+async function refresh(){const res=await fetch("/api/v1/analytics");if(!res.ok)throw new Error("API unavailable");model=(await res.json()).data;
+document.querySelector("#rounds").textContent=model.analytics.sampleSize;
+document.querySelector("#latest").textContent=model.analytics.latestMultiplier==null?"—":model.analytics.latestMultiplier.toFixed(2)+"x";
+document.querySelector("#regime").textContent=model.analytics.regime;
+document.querySelector("#streak").textContent=model.analytics.currentStreak?model.analytics.currentStreak.length+" "+model.analytics.currentStreak.state:"—";
+document.querySelector("#signal").textContent=model.signal.direction+" / "+(model.signal.targetState??"NONE");
+document.querySelector("#evidence").textContent="Observed rate "+(model.signal.observedRate*100).toFixed(2)+"% · n="+model.signal.sampleSize+" · "+model.signal.confidence;show("analytics");}
+function show(view){const p=document.querySelector("#panel");if(view==="signal")p.textContent=model?"Signal: "+model.signal.direction+". Target state: "+(model.signal.targetState??"none")+". Evidence n="+model.signal.sampleSize+".":"Load analytics first.";else if(view==="challenge")p.textContent="Challenge interface is prepared for the next challenge API layer.";else p.textContent="Live analytical snapshot from the versioned API."}
+document.querySelectorAll("[data-view]").forEach(b=>b.onclick=()=>{document.querySelectorAll("[data-view]").forEach(x=>x.classList.remove("active"));b.classList.add("active");show(b.dataset.view)});
+document.querySelector("#refresh").onclick=()=>refresh().catch(e=>document.querySelector("#panel").textContent=e.message);refresh().catch(e=>document.querySelector("#panel").textContent=e.message);
+</script></body></html>
