@@ -11,21 +11,30 @@ function json(res: ServerResponse, status: number, body: unknown): void {
   res.setHeader("content-type", "application/json");
   res.end(JSON.stringify(body));
 }
+
 async function readBody(req: IncomingMessage): Promise<unknown> {
   const chunks: Buffer[] = [];
   for await (const chunk of req) chunks.push(Buffer.from(chunk));
   return chunks.length ? JSON.parse(Buffer.concat(chunks).toString("utf8")) : {};
 }
 
-export function createApiServer(service: AviatorAnalysisService, challengeApi?: ChallengeApi) {
+export function createApiServer(
+  service: AviatorAnalysisService,
+  challengeApi?: ChallengeApi,
+  botToken?: string,
+) {
   return createServer(async (req, res) => {
     const requestId = randomUUID();
     try {
       if (req.url?.startsWith("/api/v1/challenges/")) {
         if (!challengeApi) return json(res, 503, { error: { code: "CHALLENGE_SERVICE_UNAVAILABLE", requestId } });
+        if (!botToken) return json(res, 503, { error: { code: "TELEGRAM_AUTH_NOT_CONFIGURED", requestId } });
         const body = await readBody(req);
         const method = req.method === "POST" ? "POST" : "GET";
-        const result = handleChallengeHttp(challengeApi, { method, path: req.url, body });
+        const headers: Record<string, string | undefined> = {
+          "x-telegram-init-data": req.headers["x-telegram-init-data"] as string | undefined,
+        };
+        const result = await handleChallengeHttp(challengeApi, { method, path: req.url, body, headers }, botToken);
         return json(res, result.status, result.body);
       }
       if (req.method === "GET" && req.url === "/api/v1/analytics") {
