@@ -1,31 +1,18 @@
+import { Challenge, ChallengePrediction, ChallengeScore } from "./challenge";
 import { ChallengeStore, submitPrediction, settleRound } from "./challenge-service";
-import { Challenge, ChallengePrediction } from "./challenge";
 import { RoundState } from "./domain";
 
 export interface ChallengeApi {
-  getChallenge(challengeId: string): Challenge | null;
-  submit(challengeId: string, prediction: ChallengePrediction): void;
-  settle(challengeId: string, roundNumber: number, actualState: RoundState): void;
-  leaderboard(challengeId: string): ReturnType<ChallengeStore["scores"]>;
+  getChallenge(challengeId:string):Promise<Challenge|null>;
+  submit(challengeId:string,prediction:ChallengePrediction):Promise<void>;
+  settle(challengeId:string,roundNumber:number,actualState:RoundState):Promise<void>;
+  leaderboard(challengeId:string):Promise<ChallengeScore[]>;
 }
 
 export class InMemoryChallengeApi implements ChallengeApi {
-  constructor(private readonly store: ChallengeStore) {}
-
-  getChallenge(challengeId: string) { return this.store.get(challengeId); }
-
-  submit(challengeId: string, prediction: ChallengePrediction) {
-    if (prediction.challengeId !== challengeId) throw new Error("CHALLENGE_ID_MISMATCH");
-    submitPrediction(this.store, prediction);
-  }
-
-  settle(challengeId: string, roundNumber: number, actualState: RoundState) {
-    settleRound(this.store, challengeId, roundNumber, actualState);
-  }
-
-  leaderboard(challengeId: string) {
-    return this.store.scores(challengeId).sort(
-      (a,b) => b.points-a.points || b.correct-a.correct || a.participantId.localeCompare(b.participantId),
-    );
-  }
+  constructor(private readonly store:ChallengeStore){}
+  getChallenge(id:string){return this.store.get(id);}
+  async submit(id:string,p:ChallengePrediction){if(p.challengeId!==id)throw new Error("CHALLENGE_ID_MISMATCH");await submitPrediction(this.store,p);}
+  async settle(id:string,r:number,s:RoundState){await settleRound(this.store,id,r,s);}
+  async leaderboard(id:string){return (await this.store.scores(id)).sort((a,b)=>b.points-a.points||b.correct-a.correct||a.participantId.localeCompare(b.participantId));}
 }
