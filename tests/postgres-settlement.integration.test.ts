@@ -1,22 +1,28 @@
-import { describe, expect, it } from "vitest";
+import { describe, expect, it, beforeAll, afterAll } from "vitest";
 import { Pool } from "pg";
 import { readFile } from "node:fs/promises";
 
 const databaseUrl = process.env.DATABASE_URL;
 const describeIntegration = databaseUrl ? describe : describe.skip;
+const pool = databaseUrl ? new Pool({ connectionString: databaseUrl }) : null;
 
 describeIntegration("PostgreSQL challenge settlement", () => {
-  const pool = new Pool({ connectionString: databaseUrl });
-
-  it("settles once, scores predictions, and completes the final round", async () => {
+  beforeAll(async () => {
+    if (!pool) return;
     const migration1 = await readFile(new URL("../database/migrations/001_initial.sql", import.meta.url), "utf8");
     const migration2 = await readFile(new URL("../database/migrations/002_challenge_settlement.sql", import.meta.url), "utf8");
-    const client = await pool.connect();
+    await pool.query(migration1);
+    await pool.query(migration2);
+  });
 
+  afterAll(async () => {
+    await pool?.end();
+  });
+
+  it("settles once, scores predictions, and completes the final round", async () => {
+    const client = await pool!.connect();
     try {
       await client.query("BEGIN");
-      await client.query(migration1);
-      await client.query(migration2);
       await client.query(
         `insert into aviator_challenges
           (challenge_id,title,state,total_rounds,current_round,starts_at,ends_at)
@@ -54,12 +60,11 @@ describeIntegration("PostgreSQL challenge settlement", () => {
       throw error;
     } finally {
       client.release();
-      await pool.end();
     }
   });
 
   it("rejects an out-of-sequence settlement without mutating state", async () => {
-    const client = await pool.connect();
+    const client = await pool!.connect();
     try {
       await client.query("BEGIN");
       await client.query(
@@ -81,7 +86,6 @@ describeIntegration("PostgreSQL challenge settlement", () => {
       throw error;
     } finally {
       client.release();
-      await pool.end();
     }
   });
 });
