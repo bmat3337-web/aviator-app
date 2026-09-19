@@ -25,5 +25,8 @@ export class ChallengeServiceApi implements ChallengeApi {
     if(typeof store.settleRound==="function"){await store.settleRound(id,r,s);return;}
     throw new Error("DATABASE_SETTLEMENT_REQUIRED");
   }
-  async leaderboard(id:string){return (await this.store.scores(id)).sort((a,b)=>b.points-a.points||b.correct-a.correct||a.participantId.localeCompare(b.participantId));}
+  async leaderboard(id:string){
+    const scores=await this.store.scores(id);
+    return [...scores].sort((a,b)=>b.points-a.points||b.correct-a.correct||a.participantId.localeCompare(b.participantId));
+  }
 }
