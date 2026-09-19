@@ -8,6 +8,7 @@ export interface Round {
   multiplier: number;
   timestamp: string;
   source: RoundSource;
+  metadata?: Record<string, unknown>;
 }
 
 export type RoundState = "LOW" | "MID" | "BASE" | "HIGH" | "EXTREME";
