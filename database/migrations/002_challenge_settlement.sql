@@ -24,7 +24,36 @@ language plpgsql
 as $$
 declare
   inserted_count integer;
+  challenge_current_round integer;
+  challenge_total_rounds integer;
+  challenge_state text;
 begin
+  select current_round, total_rounds, state
+    into challenge_current_round, challenge_total_rounds, challenge_state
+  from aviator_challenges
+  where challenge_id = p_challenge_id
+  for update;
+
+  if not found then
+    raise exception 'CHALLENGE_NOT_FOUND';
+  end if;
+
+  if challenge_state <> 'LIVE' then
+    raise exception 'CHALLENGE_NOT_LIVE';
+  end if;
+
+  if p_round_number <> challenge_current_round + 1 then
+    raise exception 'ROUND_NOT_OPEN';
+  end if;
+
+  if p_round_number > challenge_total_rounds then
+    raise exception 'ROUND_OUT_OF_RANGE';
+  end if;
+
+  if p_actual_state not in ('LOW','MID','BASE','HIGH','EXTREME') then
+    raise exception 'INVALID_ACTUAL_STATE';
+  end if;
+
   insert into aviator_challenge_round_settlements(challenge_id, round_number, actual_state)
   values (p_challenge_id, p_round_number, p_actual_state)
   on conflict (challenge_id, round_number) do nothing;
