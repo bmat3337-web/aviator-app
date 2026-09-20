@@ -25,5 +25,19 @@ jobs:
           GITHUB_SHA: ${{ github.sha }}
           GITHUB_REF_NAME: ${{ github.ref_name }}
       - run: npm run build
+      - name: Generate release evidence snapshot
+        run: |
+          mkdir -p release-artifacts
+          printf '%s\n' '{' > release-artifacts/aviator-foundation-release.json
+          printf '  "commit": "%s",\n' "$GITHUB_SHA" >> release-artifacts/aviator-foundation-release.json
+          printf '  "branch": "%s",\n' "$GITHUB_REF_NAME" >> release-artifacts/aviator-foundation-release.json
+          printf '  "status": "PRODUCTION_BLOCKED",\n' >> release-artifacts/aviator-foundation-release.json
+          printf '  "manifest": "AVIATOR_FOUNDATION_RELEASE_MANIFEST.json"\n' >> release-artifacts/aviator-foundation-release.json
+          printf '%s\n' '}' >> release-artifacts/aviator-foundation-release.json
+      - name: Upload release evidence snapshot
+        uses: actions/upload-artifact@v4
+        with:
+          name: aviator-foundation-release-${{ github.sha }}
+          path: release-artifacts/aviator-foundation-release.json
       - name: Foundation acceptance gate
         run: npx tsx src/application/foundationAcceptance.test.ts
