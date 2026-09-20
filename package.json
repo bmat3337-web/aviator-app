@@ -7,7 +7,7 @@
     "dev": "vite",
     "build": "tsc -b && vite build",
     "preview": "vite preview",
-    "verify": "npm run verify:domain && npm run verify:integration && npm run verify:provider && npm run verify:financial-controls && npm run verify:flight-presentation && npm run verify:realtime && npm run verify:release && npm run verify:release-policy && npm run verify:evidence && npm run verify:evidence-policy && npm run verify:evidence-lifecycle && npm run verify:evidence-record && npm run verify:evidence-scope && npm run verify:evidence-provenance && npm run verify:evidence-audit && npm run verify:evidence-approval && npm run verify:release-report && npm run verify:release-schema && npm run verify:release-snapshot && npm run verify:release-commit && npm run verify:sprint && npm run verify:spribe-readiness && npm run verify:spribe-intake && npm run verify:regulatory-readiness && npm run verify:production-readiness && npm run verify:production-exit",
+    "verify": "npm run verify:domain && npm run verify:integration && npm run verify:provider && npm run verify:financial-controls && npm run verify:flight-presentation && npm run verify:realtime && npm run verify:realtime-projection && npm run verify:release && npm run verify:release-policy && npm run verify:evidence && npm run verify:evidence-policy && npm run verify:evidence-lifecycle && npm run verify:evidence-record && npm run verify:evidence-scope && npm run verify:evidence-provenance && npm run verify:evidence-audit && npm run verify:evidence-approval && npm run verify:release-report && npm run verify:release-schema && npm run verify:release-snapshot && npm run verify:release-commit && npm run verify:sprint && npm run verify:spribe-readiness && npm run verify:spribe-intake && npm run verify:regulatory-readiness && npm run verify:production-readiness && npm run verify:production-exit",
     "verify:domain": "tsx src/domain/simulator.test.ts",
     "verify:integration": "tsx src/application/integration.test.ts",
     "verify:provider": "tsx src/application/providerValidator.test.ts && tsx src/application/releaseGates.test.ts && tsx src/infrastructure/transactionalProviderEvents.test.ts && tsx src/infrastructure/transactionalProviderSettlement.test.ts",
@@ -33,7 +33,8 @@
     "verify:regulatory-readiness": "tsx src/application/regulatoryReadiness.test.ts",
     "verify:production-readiness": "tsx src/application/productionReadiness.test.ts",
     "verify:production-exit": "tsx src/application/productionReadinessExit.test.ts",
-    "verify:realtime": "tsx src/application/realtimeFlightSession.test.ts"
+    "verify:realtime": "tsx src/application/realtimeFlightSession.test.ts",
+    "verify:realtime-projection": "tsx src/application/realtimeFlightProjection.test.ts"
   },
   "dependencies": {
     "vite": "^7.0.0",
