@@ -1,0 +1,4 @@
+import { TransactionalProviderSettlement } from "./transactionalProviderSettlement";
+class Tx{queries:string[]=[]; async query<T extends Record<string,unknown>>(sql:string){this.queries.push(sql); if(sql.includes("FROM aviator_bets"))return {rows:[{bet_id:"B1",player_id:"A1",settled_at:null}]} as T[]; return {rows:[]} as T[]} async commit(){} async rollback(){}}
+class Pool{tx=new Tx();async connect(){return this.tx}}
+const p=new Pool();const s=new TransactionalProviderSettlement(p as any);const r=await s.settle({providerBetId:"B1",providerRoundId:"R1",outcome:"CASHED_OUT",multiplier:2.5,payoutMinorUnits:250n,settledAt:new Date().toISOString()});if(r!=="SETTLED")throw new Error("Settlement failed");if(!p.tx.queries.some(q=>q.includes("FOR UPDATE")))throw new Error("Bet row lock missing");if(!p.tx.queries.some(q=>q.includes("ON CONFLICT")))throw new Error("Ledger idempotency guard missing");console.log("AVIATOR SETTLEMENT TRANSACTION VERIFIED");
