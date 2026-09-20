@@ -9,6 +9,7 @@ type SlotId = "BET1" | "BET2";
 export function FlightScreen(provider: IGameProvider): HTMLElement {
   const root=document.createElement("main"); root.className="aviator-shell";
   let environment: EnvironmentState={mode:"AUTO",environment:"DAY",intensity:.2};
+  const autoBet: Record<SlotId, boolean>={BET1:false,BET2:false};
   const autoCashOut: Record<SlotId, number | null>={BET1:null,BET2:null};
   const render=()=>{
     const vm=createFlightViewModel(provider,[1.24,2.06,3.53,5.98,2.64]);
@@ -18,13 +19,13 @@ export function FlightScreen(provider: IGameProvider): HTMLElement {
     const slot=(id:SlotId)=>vm.bets[id];
     root.innerHTML='<aside class="panel nav"><div class="brand">AVIATOR</div><div class="nav-item active">Flight</div><div class="nav-item">Challenge</div><div class="nav-item">Social</div><div class="nav-item">History</div><div class="nav-item">Profile</div></aside>'+
     '<section class="panel flight"><div class="flight-top"><div><strong>LIVE FLIGHT</strong><div class="round">'+vm.roundId+' · '+vm.roundState+'</div></div><div>Players '+vm.playerCount+'</div></div><div class="multiplier" aria-live="polite">'+vm.multiplier.toFixed(2)+'x</div><div class="sky '+environment.environment+'"></div><div class="trajectory"></div><div class="plane" style="--plane-x:'+String(18+motion.progress*64)+'%;--plane-y:'+String(64-motion.progress*30)+'%;--plane-angle:'+String(motion.angle)+'deg">✈</div><div class="history">'+vm.history.map(x=>'<span class="chip">'+x.toFixed(2)+'x</span>').join("")+'</div></section>'+
-    '<aside class="panel bets">'+( ["BET1","BET2"] as SlotId[]).map(id=>'<div class="bet"><div class="bet-head"><span class="bet-name">'+(id==="BET1"?"BET 1":"BET 2")+'</span><span>'+slot(id).state+'</span></div><div class="bet-actions"><input class="stake" data-stake="'+id+'" value="'+(slot(id).stake||1)+'" inputmode="decimal" aria-label="'+id+' stake"><button data-slot="'+id+'">'+actionLabel(snapshot,id)+'</button></div><label class="auto-control"><input type="checkbox" data-auto="'+id+'" '+(slot(id).autoBet?"checked":"")+'> Auto Bet</label><label class="auto-control">Auto Cash Out <input class="auto-input" data-auto-cash="'+id+'" value="'+(autoCashOut[id]??"")+'" placeholder="e.g. 2.00" inputmode="decimal"></label></div>').join("")+
+    '<aside class="panel bets">'+(["BET1","BET2"] as SlotId[]).map(id=>'<div class="bet"><div class="bet-head"><span class="bet-name">'+(id==="BET1"?"BET 1":"BET 2")+'</span><span>'+slot(id).state+'</span></div><div class="bet-actions"><input class="stake" data-stake="'+id+'" value="'+(slot(id).stake||1)+'" inputmode="decimal" aria-label="'+id+' stake"><button data-slot="'+id+'">'+actionLabel(snapshot,id)+'</button></div><label class="auto-control"><input type="checkbox" data-auto="'+id+'" '+(autoBet[id]?"checked":"")+'> Auto Bet</label><label class="auto-control">Auto Cash Out <input class="auto-input" data-auto-cash="'+id+'" value="'+(autoCashOut[id]??"")+'" placeholder="e.g. 2.00" inputmode="decimal"></label></div>').join("")+
     '<div class="support"><div class="support-row"><span>Environment</span><strong>'+environment.environment+'</strong></div><div class="support-row"><span>Round</span><strong>'+vm.roundState.replaceAll("_"," ")+'</strong></div><div class="support-row"><span>Balance</span><strong>SIMULATION</strong></div></div></aside>';
     root.querySelectorAll<HTMLInputElement>("input[data-auto-cash]").forEach(input=>input.onchange=()=>{const id=input.dataset.autoCash as SlotId;const n=Number(input.value);autoCashOut[id]=Number.isFinite(n)&&n>=1?n:null;});
-    root.querySelectorAll<HTMLInputElement>("input[data-auto]").forEach(input=>input.onchange=()=>{const id=input.dataset.auto as SlotId;provider.setAutoBet?.(id,input.checked);});
+    root.querySelectorAll<HTMLInputElement>("input[data-auto]").forEach(input=>input.onchange=()=>{const id=input.dataset.auto as SlotId;autoBet[id]=input.checked;});
     root.querySelectorAll<HTMLButtonElement>("button[data-slot]").forEach(btn=>btn.onclick=()=>{
       const id=btn.dataset.slot as SlotId,b=snapshot.bets[id],input=root.querySelector<HTMLInputElement>('input[data-stake="'+id+'"]');
-      if(snapshot.round.state==="BETTING_OPEN"&&b.state==="IDLE") provider.placeBet({slot:id,stake:Number(input?.value||1)});
+      if(snapshot.round.state==="BETTING_OPEN"&&b.state==="IDLE") provider.placeBet({slot:id,stake:Number(input?.value||1),autoBet:autoBet[id],autoCashOut:autoCashOut[id]});
       else if(snapshot.round.state==="FLYING"&&(b.state==="BET_PLACED"||b.state==="ACTIVE")) provider.cashOut(id);
       render();
     });
