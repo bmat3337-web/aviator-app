@@ -7,7 +7,7 @@
     "dev": "vite",
     "build": "tsc -b && vite build",
     "preview": "vite preview",
-    "verify": "npm run verify:domain && npm run verify:integration && npm run verify:provider && npm run verify:financial-controls && npm run verify:release && npm run verify:release-policy && npm run verify:evidence && npm run verify:evidence-policy && npm run verify:evidence-lifecycle && npm run verify:evidence-record",
+    "verify": "npm run verify:domain && npm run verify:integration && npm run verify:provider && npm run verify:financial-controls && npm run verify:release && npm run verify:release-policy && npm run verify:evidence && npm run verify:evidence-policy && npm run verify:evidence-lifecycle && npm run verify:evidence-record && npm run verify:evidence-scope",
     "verify:domain": "tsx src/domain/simulator.test.ts",
     "verify:integration": "tsx src/application/integration.test.ts",
     "verify:provider": "tsx src/application/providerValidator.test.ts && tsx src/application/releaseGates.test.ts && tsx src/infrastructure/transactionalProviderEvents.test.ts && tsx src/infrastructure/transactionalProviderSettlement.test.ts",
@@ -17,7 +17,8 @@
     "verify:evidence": "tsx src/application/releaseEvidence.test.ts",
     "verify:evidence-policy": "tsx src/application/releaseEvidencePolicy.test.ts",
     "verify:evidence-lifecycle": "tsx src/application/releaseEvidenceLifecycle.test.ts",
-    "verify:evidence-record": "tsx src/application/releaseEvidenceRecord.test.ts"
+    "verify:evidence-record": "tsx src/application/releaseEvidenceRecord.test.ts",
+    "verify:evidence-scope": "tsx src/application/releaseEvidenceScope.test.ts"
   },
   "dependencies": {
     "vite": "^7.0.0",
