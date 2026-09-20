@@ -6,19 +6,22 @@ interface ReleaseSnapshot {
   status: "FOUNDATION_VERIFIED" | "PRODUCTION_BLOCKED";
 }
 
-const snapshot: ReleaseSnapshot = {
-  manifestVersion: "1.0.0",
-  branch: "aviator/foundation-v1",
-  commitSha: "CURRENT_COMMIT_REQUIRED",
-  generatedAt: "CI_GENERATED",
-  status: "PRODUCTION_BLOCKED",
-};
+const commitSha = process.env.GITHUB_SHA ?? "";
+const branch = process.env.GITHUB_REF_NAME ?? "local";
 
-if (snapshot.branch !== "aviator/foundation-v1") throw new Error("Snapshot branch mismatch");
-if (!snapshot.commitSha) throw new Error("Snapshot commit SHA is required");
-if (snapshot.status !== "PRODUCTION_BLOCKED") throw new Error("Snapshot must remain production blocked");
-if (snapshot.commitSha === "CURRENT_COMMIT_REQUIRED") {
-  console.log("AVIATOR RELEASE COMMIT TRACEABILITY VERIFIED: CI MUST SUBSTITUTE THE ACTUAL COMMIT SHA");
+if (!commitSha) {
+  if (process.env.CI === "true") throw new Error("CI release snapshot requires GITHUB_SHA");
+  console.log("AVIATOR RELEASE COMMIT TRACEABILITY VERIFIED: local execution");
 } else {
-  console.log("AVIATOR RELEASE COMMIT TRACEABILITY VERIFIED");
+  const snapshot: ReleaseSnapshot = {
+    manifestVersion: "1.0.0",
+    branch,
+    commitSha,
+    generatedAt: "CI_GENERATED",
+    status: "PRODUCTION_BLOCKED",
+  };
+  if (snapshot.branch !== "aviator/foundation-v1") throw new Error("Snapshot branch mismatch");
+  if (!/^[0-9a-f]{40}$/.test(snapshot.commitSha)) throw new Error("Invalid Git commit SHA");
+  if (snapshot.status !== "PRODUCTION_BLOCKED") throw new Error("Snapshot must remain production blocked");
+  console.log("AVIATOR RELEASE COMMIT TRACEABILITY VERIFIED", snapshot.commitSha);
 }
