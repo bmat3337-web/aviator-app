@@ -3,6 +3,8 @@ name: Aviator Foundation CI
 on:
   push:
     branches: ["aviator/foundation-v1"]
+  pull_request:
+    branches: ["main"]
   workflow_dispatch:
 
 permissions:
