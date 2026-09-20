@@ -7,7 +7,7 @@
     "dev": "vite",
     "build": "tsc -b && vite build",
     "preview": "vite preview",
-    "verify": "npm run verify:domain && npm run verify:integration && npm run verify:provider && npm run verify:financial-controls && npm run verify:release && npm run verify:release-policy && npm run verify:evidence && npm run verify:evidence-policy && npm run verify:evidence-lifecycle && npm run verify:evidence-record && npm run verify:evidence-scope && npm run verify:evidence-provenance && npm run verify:evidence-audit && npm run verify:evidence-approval && npm run verify:release-report && npm run verify:release-schema && npm run verify:release-snapshot && npm run verify:release-commit && npm run verify:sprint",
+    "verify": "npm run verify:domain && npm run verify:integration && npm run verify:provider && npm run verify:financial-controls && npm run verify:release && npm run verify:release-policy && npm run verify:evidence && npm run verify:evidence-policy && npm run verify:evidence-lifecycle && npm run verify:evidence-record && npm run verify:evidence-scope && npm run verify:evidence-provenance && npm run verify:evidence-audit && npm run verify:evidence-approval && npm run verify:release-report && npm run verify:release-schema && npm run verify:release-snapshot && npm run verify:release-commit && npm run verify:sprint && npm run verify:spribe-readiness",
     "verify:domain": "tsx src/domain/simulator.test.ts",
     "verify:integration": "tsx src/application/integration.test.ts",
     "verify:provider": "tsx src/application/providerValidator.test.ts && tsx src/application/releaseGates.test.ts && tsx src/infrastructure/transactionalProviderEvents.test.ts && tsx src/infrastructure/transactionalProviderSettlement.test.ts",
@@ -26,7 +26,8 @@
     "verify:release-schema": "tsx src/application/releaseManifestSchema.test.ts",
     "verify:release-snapshot": "tsx src/application/releaseManifestSnapshot.test.ts",
     "verify:release-commit": "tsx src/application/releaseManifestCommit.test.ts",
-    "verify:sprint": "tsx src/application/foundationSprint.test.ts"
+    "verify:sprint": "tsx src/application/foundationSprint.test.ts",
+    "verify:spribe-readiness": "tsx src/application/spribeReadiness.test.ts"
   },
   "dependencies": {
     "vite": "^7.0.0",
