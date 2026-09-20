@@ -7,12 +7,13 @@
     "dev": "vite",
     "build": "tsc -b && vite build",
     "preview": "vite preview",
-    "verify": "npm run verify:domain && npm run verify:integration && npm run verify:provider && npm run verify:financial-controls && npm run verify:release",
+    "verify": "npm run verify:domain && npm run verify:integration && npm run verify:provider && npm run verify:financial-controls && npm run verify:release && npm run verify:release-policy",
     "verify:domain": "tsx src/domain/simulator.test.ts",
     "verify:integration": "tsx src/application/integration.test.ts",
     "verify:provider": "tsx src/application/providerValidator.test.ts && tsx src/application/releaseGates.test.ts && tsx src/infrastructure/transactionalProviderEvents.test.ts && tsx src/infrastructure/transactionalProviderSettlement.test.ts",
     "verify:financial-controls": "tsx src/application/reconciliation.test.ts && tsx src/application/reconciliationCases.test.ts && tsx src/application/operatorControls.test.ts && tsx src/infrastructure/postgresAudit.test.ts",
-    "verify:release": "tsx src/application/releaseManifest.test.ts"
+    "verify:release": "tsx src/application/releaseManifest.test.ts",
+    "verify:release-policy": "tsx src/application/releaseManifestPolicy.test.ts"
   },
   "dependencies": {
     "vite": "^7.0.0",
