@@ -28,7 +28,6 @@ export class ProviderRealtimeBridge {
   async connect(): Promise<void> {
     await this.adapter.connect();
     this.connected = true;
-    this.coordinator.beginResyncIfRequired?.();
   }
 
   async subscribe(): Promise<void> {
