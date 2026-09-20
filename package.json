@@ -1,1 +1,23 @@
-{"name":"aviator-app","private":true,"version":"0.1.0","type":"module","scripts":{"dev":"vite","build":"tsc -b && vite build","preview":"vite preview","verify":"npm run verify:domain && npm run verify:integration && npm run verify:provider && npm run verify:financial-controls","verify:domain":"tsx src/domain/simulator.test.ts","verify:integration":"tsx src/application/integration.test.ts","verify:provider":"tsx src/application/providerValidator.test.ts && tsx src/application/releaseGates.test.ts && tsx src/infrastructure/transactionalProviderEvents.test.ts && tsx src/infrastructure/transactionalProviderSettlement.test.ts","verify:financial-controls":"tsx src/application/reconciliation.test.ts && tsx src/application/reconciliationCases.test.ts && tsx src/application/operatorControls.test.ts && tsx src/infrastructure/postgresAudit.test.ts"},"dependencies":{"vite":"^7.0.0","typescript":"^5.4.0","tsx":"^4.19.0"},"devDependencies":{}}
+{
+  "name": "aviator-app",
+  "private": true,
+  "version": "0.1.0",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "tsc -b && vite build",
+    "preview": "vite preview",
+    "verify": "npm run verify:domain && npm run verify:integration && npm run verify:provider && npm run verify:financial-controls && npm run verify:release",
+    "verify:domain": "tsx src/domain/simulator.test.ts",
+    "verify:integration": "tsx src/application/integration.test.ts",
+    "verify:provider": "tsx src/application/providerValidator.test.ts && tsx src/application/releaseGates.test.ts && tsx src/infrastructure/transactionalProviderEvents.test.ts && tsx src/infrastructure/transactionalProviderSettlement.test.ts",
+    "verify:financial-controls": "tsx src/application/reconciliation.test.ts && tsx src/application/reconciliationCases.test.ts && tsx src/application/operatorControls.test.ts && tsx src/infrastructure/postgresAudit.test.ts",
+    "verify:release": "tsx src/application/releaseManifest.test.ts"
+  },
+  "dependencies": {
+    "vite": "^7.0.0",
+    "typescript": "^5.4.0",
+    "tsx": "^4.19.0"
+  },
+  "devDependencies": {}
+}
