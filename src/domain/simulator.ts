@@ -9,8 +9,14 @@ import type {
   IGameProvider,
   PlaceBetRequest,
 } from "./IGameProvider";
-
-const SLOT_IDS: SlotId[] = ["BET1", "BET2"];
+import {
+  BET_SLOTS,
+  cashOutPayout,
+  canCashOut,
+  canPlaceBet,
+  normalizeAutoCashOut,
+  validateStake,
+} from "./betRules";
 
 function hash(input: string): number {
   let h = 2166136261;
@@ -117,7 +123,7 @@ export class SimulatorProvider implements IGameProvider {
     }
 
     if (state === "BETTING_OPEN") {
-      for (const slot of SLOT_IDS) {
+      for (const slot of BET_SLOTS) {
         const bet = this.current.bets[slot];
         if (bet.autoBet && bet.state === "IDLE" && bet.stake > 0) {
           bet.state = "BET_PLACED";
@@ -128,7 +134,7 @@ export class SimulatorProvider implements IGameProvider {
     }
 
     if (state === "BETTING_CLOSED") {
-      for (const slot of SLOT_IDS) {
+      for (const slot of BET_SLOTS) {
         const bet = this.current.bets[slot];
         if (bet.state === "BET_PLACED") bet.state = "ACTIVE";
       }
@@ -142,7 +148,7 @@ export class SimulatorProvider implements IGameProvider {
       );
       this.current.round.multiplier = nextMultiplier;
 
-      for (const slot of SLOT_IDS) {
+      for (const slot of BET_SLOTS) {
         const bet = this.current.bets[slot];
         if (
           bet.state === "ACTIVE" &&
@@ -154,7 +160,7 @@ export class SimulatorProvider implements IGameProvider {
       }
 
       if (nextMultiplier >= this.current.round.crashMultiplier) {
-        for (const slot of SLOT_IDS) {
+        for (const slot of BET_SLOTS) {
           const bet = this.current.bets[slot];
           if (bet.state === "ACTIVE") {
             bet.state = "CRASHED";
@@ -171,35 +177,29 @@ export class SimulatorProvider implements IGameProvider {
   }
 
   placeBet(request: PlaceBetRequest): void {
-    if (this.current.round.state !== "BETTING_OPEN") return;
-
     const bet = this.current.bets[request.slot];
-    if (bet.state !== "IDLE") return;
-    if (!Number.isFinite(request.stake) || request.stake <= 0) return;
+    if (!canPlaceBet(this.current.round.state, bet)) return;
+
+    try {
+      bet.stake = validateStake(request.stake);
+      bet.autoBet = request.autoBet === true;
+      bet.autoCashOut = normalizeAutoCashOut(request.autoCashOut);
+    } catch {
+      return;
+    }
 
     bet.state = "BET_PLACED";
-    bet.stake = Number(request.stake.toFixed(2));
-    bet.autoBet = request.autoBet === true;
-    bet.autoCashOut =
-      request.autoCashOut !== undefined && request.autoCashOut !== null
-        ? Number(request.autoCashOut.toFixed(2))
-        : null;
     this.emit();
   }
 
   cashOut(slot: SlotId): CashOutResult {
     const bet = this.current.bets[slot];
-
-    if (this.current.round.state !== "FLYING") {
-      throw new Error("Cash out is only available during flight");
-    }
-
-    if (bet.state !== "BET_PLACED" && bet.state !== "ACTIVE") {
+    if (!canCashOut(this.current.round.state, bet)) {
       throw new Error("Bet slot is not cash-out eligible");
     }
 
     const multiplier = this.current.round.multiplier;
-    const payout = Number((bet.stake * multiplier).toFixed(2));
+    const payout = cashOutPayout(bet.stake, multiplier);
 
     bet.state = "CASHED_OUT";
     bet.multiplier = multiplier;
