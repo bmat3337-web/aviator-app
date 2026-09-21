@@ -19,7 +19,9 @@ export function FlightScreen(provider: IGameProvider): HTMLElement {
   const render = () => {
     const vm = createFlightViewModel(provider, [1.23, 4.56, 1.08, 12.64, 3.28, 1.45, 3.92, 2.11]);
     environment = nextEnvironment(environment, vm.multiplier);
-    const motion = flightMotion(vm.multiplier, vm.crashMultiplier);\n    const displayRoundState = vm.roundState === "CRASH" ? "CRASHED" : displayRoundState;\n    const displayPlayerCount = 1482;
+    const motion = flightMotion(vm.multiplier, vm.crashMultiplier);
+    const displayRoundState = vm.roundState === "CRASH" ? "CRASHED" : vm.roundState.replaceAll("_"," ");
+    const displayPlayerCount = 1482;
     const environmentClass = environment.environment.toLowerCase();
     const progress = Math.min(1, Math.max(0, (vm.multiplier - 1) / 9));
     const aircraftX = 16 + progress * 68;
