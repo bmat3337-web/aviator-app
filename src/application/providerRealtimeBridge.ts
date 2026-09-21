@@ -42,8 +42,12 @@ export class ProviderRealtimeBridge {
     this.subscribed = true;
   }
 
-  markTransportStale(reason = "provider-stream-stale"): void {
+  async markTransportStale(reason = "provider-stream-stale"): Promise<void> {
     this.coordinator.markConnectionStale(reason);
+    if (this.unsubscribe) {
+      await this.unsubscribe();
+      this.unsubscribe = null;
+    }
     this.subscribed = false;
   }
 
