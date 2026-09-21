@@ -1,4 +1,4 @@
-import type { ProviderRoundEvent } from "./providerAdapter";
+import type { ProviderRoundEvent } from "../application/providerAdapter";
 import type { SqlPool, SqlValue } from "./postgresContracts";
 const text=(v:string):SqlValue=>({type:"text",value:v});
 export type TransactionalIngestDecision="ACCEPTED"|"DUPLICATE"|"OUT_OF_ORDER";
