@@ -28,7 +28,7 @@ const state=session.state();
 if(state.status!=="STALE") throw new Error("Stale state not retained");
 if(state.lastSequence!==3) throw new Error("Last accepted sequence incorrect");
 if(state.acceptedEvents!==3) throw new Error("Accepted event count incorrect");
-if(state.rejectedEvents!==5) throw new Error("Rejected event count incorrect");
+if(state.rejectedEvents!==6) throw new Error("Rejected event count incorrect");
 
 session.connect("SPRIBE-DEMO-2");
 if(session.state().lastSequence!==null) throw new Error("Reconnect did not reset cursor");
