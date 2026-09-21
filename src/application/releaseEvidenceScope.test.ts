@@ -1,3 +1,4 @@
+export {};
 interface EvidenceRecord {
   gateId: string;
   reference: string;
