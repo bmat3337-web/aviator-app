@@ -35,7 +35,7 @@ if(!bridge.state().connected || !bridge.state().subscribed) throw new Error("Bri
 await handler?.({providerRoundId:"R1",sequence:0,type:"MULTIPLIER",multiplier:2,occurredAt:"2026-09-21T00:01:00.000Z"});
 if(projection.state().snapshot.round.multiplier!==2) throw new Error("Provider event not bridged");
 
-bridge.markTransportStale("socket-lost");
+await bridge.markTransportStale("socket-lost");
 if(bridge.state().coordinator.status!=="RESYNC_REQUIRED") throw new Error("Stale state not propagated");
 if(bridge.state().subscribed) throw new Error("Stale bridge remained subscribed");
 
