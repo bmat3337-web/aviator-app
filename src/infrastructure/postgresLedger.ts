@@ -1,4 +1,4 @@
-import type { BetRecord, BetRepository, RoundRecord, RoundRepository } from "./repositories";
+import type { BetRecord, BetRepository, RoundRecord, RoundRepository } from "../application/repositories";
 import type { SqlPool, SqlValue } from "./postgresContracts";
 const text=(value:string):SqlValue=>({type:"text",value});
 const nullableText=(value:string|null):SqlValue=>value===null?{type:"null",value:null}:text(value);
