@@ -1,2 +1,8 @@
-import { ProviderEventIngestor } from "./providerIngestion"; import { PostgreSqlProviderEventStore, PostgreSqlSettlementStore } from "./postgresProviderEvents"; import type { BetRepository } from "./repositories"; import type { SqlPool } from "../infrastructure/postgresContracts";
-export function createPersistentProviderIngestor(pool:SqlPool,bets:BetRepository){return new ProviderEventIngestor(new PostgreSqlProviderEventStore(pool),new PostgreSqlSettlementStore(bets));}
+import { ProviderEventIngestor } from "./providerIngestion";
+import { PostgreSqlProviderEventStore, PostgreSqlSettlementStore } from "../infrastructure/postgresProviderEvents";
+import type { BetRepository } from "./repositories";
+import type { SqlPool } from "../infrastructure/postgresContracts";
+
+export function createPersistentProviderIngestor(pool: SqlPool, bets: BetRepository) {
+  return new ProviderEventIngestor(new PostgreSqlProviderEventStore(pool), new PostgreSqlSettlementStore(bets));
+}
