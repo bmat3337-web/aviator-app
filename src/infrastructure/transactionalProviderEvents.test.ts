@@ -1,3 +1,4 @@
+export {};
 import { TransactionalProviderEventStore } from "./transactionalProviderEvents";
 class Tx { queries:string[]=[]; async query<T extends Record<string,unknown>>(sql:string){this.queries.push(sql);return {rows:[]} as T[]} async commit(){} async rollback(){} }
 class Pool { tx=new Tx(); async connect(){return this.tx} async query(){return {rows:[]}} }
