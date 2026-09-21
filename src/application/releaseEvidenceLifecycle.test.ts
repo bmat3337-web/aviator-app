@@ -1,3 +1,4 @@
+export {};
 type EvidenceState = "PENDING" | "SUBMITTED" | "VERIFIED" | "ACCEPTED";
 
 const allowed: Record<EvidenceState, readonly EvidenceState[]> = {
