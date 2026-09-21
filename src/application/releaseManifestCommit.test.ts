@@ -1,3 +1,4 @@
+export {};
 interface ReleaseSnapshot {
   manifestVersion: string;
   branch: string;
