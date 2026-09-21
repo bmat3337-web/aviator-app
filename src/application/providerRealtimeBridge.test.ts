@@ -41,6 +41,8 @@ if(bridge.state().subscribed) throw new Error("Stale bridge remained subscribed"
 
 await bridge.resync({...snapshot,receivedAt:"2026-09-21T00:02:00.000Z"});
 if(bridge.state().coordinator.status!=="READY") throw new Error("Bridge resync did not restore ready state");
+await bridge.subscribe();
+if(!bridge.state().subscribed) throw new Error("Fresh subscription was not restored");
 
 await bridge.disconnect();
 if(!disconnected || bridge.state().connected || bridge.state().subscribed) throw new Error("Bridge disconnect failed");
