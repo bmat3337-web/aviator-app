@@ -1,3 +1,4 @@
+export {};
 import { TransactionalProviderSettlement } from "./transactionalProviderSettlement";
 class Tx{queries:string[]=[]; async query<T extends Record<string,unknown>>(sql:string){this.queries.push(sql); if(sql.includes("FROM aviator_bets"))return {rows:[{bet_id:"B1",player_id:"A1",settled_at:null}]} as T[]; return {rows:[]} as T[]} async commit(){} async rollback(){}}
 class Pool{tx=new Tx();async connect(){return this.tx}}
