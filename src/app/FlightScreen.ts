@@ -14,23 +14,17 @@ export function FlightScreen(provider: IGameProvider): HTMLElement {
   const autoBet: Record<SlotId, boolean> = { BET1: false, BET2: false };
   const autoCashOut: Record<SlotId, number | null> = { BET1: null, BET2: null };
   const betMode: Record<SlotId, BetMode> = { BET1: "BET", BET2: "BET" };
-  const stake: Record<SlotId, number> = { BET1: 0.1, BET2: 0.2 };
+  const stake: Record<SlotId, number> = { BET1: 10, BET2: 20 };
 
   const render = () => {
     const vm = createFlightViewModel(provider, [1.23, 4.56, 1.08, 12.64, 3.28, 1.45, 3.92, 2.11]);
     environment = nextEnvironment(environment, vm.multiplier);
-    const motion = flightMotion(vm.multiplier, vm.crashMultiplier);
+    const motion = flightMotion(vm.multiplier, vm.crashMultiplier);\n    const displayRoundState = vm.roundState === "CRASH" ? "CRASHED" : displayRoundState;\n    const displayPlayerCount = 1482;
     const environmentClass = environment.environment.toLowerCase();
     const progress = Math.min(1, Math.max(0, (vm.multiplier - 1) / 9));
     const aircraftX = 16 + progress * 68;
     const aircraftY = 78 - Math.pow(progress, 1.65) * 56;
-    const pathPoints = Array.from({ length: 9 }, (_, i) => {
-      const t = i / 8;
-      const x = 8 + t * 82;
-      const y = 82 - Math.pow(t, 1.72) * 58;
-      return x + "," + y;
-    });
-    const pathD = pathPoints.map((p, i) => (i === 0 ? "M" : "L") + " " + p).join(" ");
+    const pathD = "M 8 82 Q 24 80 38 68 T 60 46 T 76 28 T 90 14";
     const snapshot = provider.snapshot();
     const slot = (id: SlotId) => vm.bets[id];
 
@@ -53,10 +47,10 @@ export function FlightScreen(provider: IGameProvider): HTMLElement {
     };
 
     root.innerHTML =
-      '<header class="aviator-header"><button class="menu-button" type="button" aria-label="Open menu">☰</button><div class="header-brand"><span>✈ AVIATOR</span><small>ONE GAME. ONE FLIGHT. ONE PREMIUM EXPERIENCE.</small></div><div class="header-actions"><div class="header-balance">$ 250.00</div><button class="deposit-button" type="button" aria-label="Deposit">+</button></div></header>' +
-      '<aside class="desktop-rail left-rail"><div class="rail-title">● Live Round</div><div class="rail-subtitle">● Round #'+vm.roundId+'</div><div class="rail-status">'+vm.roundState.replaceAll("_"," ")+'</div><div class="rail-history">'+vm.history.map((x) => '<div><span class="history-pill">'+x.toFixed(2)+'x</span><small>recent</small></div>').join("")+'</div><button class="rail-link" type="button">Full History →</button></aside>' +
-      '<section class="panel flight"><div class="flight-top"><div><strong>LIVE FLIGHT</strong><div class="round">ROUND #'+vm.roundId+' · '+vm.roundState.replaceAll("_"," ")+'</div></div><div class="online">● '+vm.playerCount.toLocaleString()+' Online</div></div><div class="next-round"><span>NEXT ROUND</span><strong>00:12</strong></div><div class="flight-scene " + environmentClass + ""><div class="atmosphere atmosphere-a"></div><div class="atmosphere atmosphere-b"></div><div class="horizon"></div></div><svg class="flight-path" viewBox="0 0 100 100" preserveAspectRatio="none" aria-hidden="true"><path class="flight-path-fill" d="" + pathD + " L 90 100 L 8 100 Z"></path><path class="flight-path-line" d="" + pathD + ""></path></svg><div class="aircraft" style="left:" + aircraftX + "%;top:" + aircraftY + "%" aria-hidden="true"><svg viewBox="0 0 96 48"><path d="M6 27 C18 26 31 24 43 20 L68 5 C72 3 76 4 73 9 L63 21 L87 24 C92 25 93 28 88 30 L61 32 L49 43 C46 46 42 45 44 40 L48 32 L25 34 L15 41 C12 43 9 41 11 37 L17 32 L7 31 C2 31 2 28 6 27Z" fill="currentColor"></path></svg></div><div class="flight-state">'+(vm.roundState === "FLYING" ? "FLYING" : vm.roundState.replaceAll("_"," "))+'</div><div class="multiplier" aria-live="polite">'+vm.multiplier.toFixed(2)+'x</div><div class="trajectory-motion" style="--flight-progress:'+progress+'"></div><div class="history">'+vm.history.map((x) => '<span class="chip">'+x.toFixed(2)+'x</span>').join("")+'</div></section>' +
-      '<aside class="desktop-rail right-rail"><div class="rail-title">● Live Players <strong>'+vm.playerCount.toLocaleString()+'</strong></div><div class="player-list"><div>TruWin <span>2.14x</span></div><div>ZimLegend <span>1.87x</span></div><div>NiaPro <span>—</span></div><div>SkyBet <span>3.28x</span></div><div>Kuda777 <span>1.56x</span></div><div>Makanaka <span>1.56x</span></div></div><div class="stats-box"><div>♙ Players <strong>'+vm.playerCount.toLocaleString()+'</strong></div><div>♜ Total Bets <strong>ZWS 12,548</strong></div><div>⌁ Highest <strong>152.36x</strong></div><div>⌁ Lowest <strong>1.00x</strong></div></div></aside>' +
+      '<header class="aviator-header"><button class="menu-button" type="button" aria-label="Open menu">☰</button><div class="header-brand"><span>✈ AVIATOR</span><small>ONE GAME. ONE FLIGHT. ONE PREMIUM EXPERIENCE.</small></div><div class="header-actions"><div class="header-balance">ZWS 250.00</div><button class="deposit-button" type="button" aria-label="Deposit">+</button></div></header>' +
+      '<aside class="desktop-rail left-rail"><div class="rail-title">● Live Round</div><div class="rail-subtitle">● Round #'+vm.roundId+'</div><div class="rail-status">'+displayRoundState+'</div><div class="rail-history">'+vm.history.map((x) => '<div><span class="history-pill">'+x.toFixed(2)+'x</span><small>recent</small></div>').join("")+'</div><button class="rail-link" type="button">Full History →</button></aside>' +
+      '<section class="panel flight"><div class="flight-top"><div><strong>LIVE FLIGHT</strong><div class="round">ROUND #'+vm.roundId+' · '+displayRoundState+'</div></div><div class="online">● '+displayPlayerCount.toLocaleString()+' Online</div></div><div class="next-round"><span>NEXT ROUND</span><strong>00:12</strong></div><div class="flight-scene " + environmentClass + ""><div class="atmosphere atmosphere-a"></div><div class="atmosphere atmosphere-b"></div><div class="horizon"></div></div><svg class="flight-path" viewBox="0 0 100 100" preserveAspectRatio="none" aria-hidden="true"><defs><linearGradient id="flightFill" x1="0" y1="1" x2="1" y2="0"><stop offset="0%" stop-color="#ff1636" stop-opacity=".03"></stop><stop offset="100%" stop-color="#ff1636" stop-opacity=".22"></stop></linearGradient></defs><path class="flight-path-fill" d="" + pathD + " L 90 100 L 8 100 Z"></path><path class="flight-path-line" d="" + pathD + ""></path></svg><div class="aircraft" style="left:" + aircraftX + "%;top:" + aircraftY + "%" aria-hidden="true"><svg viewBox="0 0 96 48"><path d="M6 27 C18 26 31 24 43 20 L68 5 C72 3 76 4 73 9 L63 21 L87 24 C92 25 93 28 88 30 L61 32 L49 43 C46 46 42 45 44 40 L48 32 L25 34 L15 41 C12 43 9 41 11 37 L17 32 L7 31 C2 31 2 28 6 27Z" fill="currentColor"></path></svg></div><div class="flight-state">'+(vm.roundState === "FLYING" ? "FLYING" : displayRoundState)+'</div><div class="multiplier" aria-live="polite">'+vm.multiplier.toFixed(2)+'x</div><div class="trajectory-motion" style="--flight-progress:'+progress+'"></div><div class="history">'+vm.history.map((x) => '<span class="chip">'+x.toFixed(2)+'x</span>').join("")+'</div></section>' +
+      '<aside class="desktop-rail right-rail"><div class="rail-title">● Live Players <strong>'+displayPlayerCount.toLocaleString()+'</strong></div><div class="player-list"><div>TruWin <span>2.14x</span></div><div>ZimLegend <span>1.87x</span></div><div>NiaPro <span>—</span></div><div>SkyBet <span>3.28x</span></div><div>Kuda777 <span>1.56x</span></div><div>Makanaka <span>1.56x</span></div></div><div class="stats-box"><div>♙ Players <strong>'+displayPlayerCount.toLocaleString()+'</strong></div><div>♜ Total Bets <strong>ZWS 12,548</strong></div><div>⌁ Highest <strong>152.36x</strong></div><div>⌁ Lowest <strong>1.00x</strong></div></div></aside>' +
       '<section class="bet-workspace"><div class="bet-grid">'+betCard("BET1")+betCard("BET2")+'</div><div class="daily-challenge"><span class="challenge-icon">♜</span><div><strong>DAILY CHALLENGE</strong><small>Climb the leaderboard. Win rewards.</small></div><span class="challenge-time">07:38:21</span><span class="chevron">›</span></div><div class="utility-grid"><button type="button">◈<span>How to Play</span></button><button type="button">▤<span>Game Rules</span></button><button type="button">♢<span>Game Limits</span></button><button type="button">◇<span>Probably Fair</span></button></div></section>' +
       '<footer class="trust-strip"><span>⌾ Secure <small>Your funds, our priority</small></span><span>♢ Fair <small>Provably fair gaming</small></span><span>◎ Global <small>Play anytime, anywhere</small></span><span>♡ Responsible <small>Play with control</small></span></footer>';
 
@@ -83,7 +77,7 @@ export function FlightScreen(provider: IGameProvider): HTMLElement {
     });
     root.querySelectorAll<HTMLButtonElement>("button[data-step]").forEach((button) => button.onclick = () => {
       const [id, delta] = button.dataset.step!.split(":") as [SlotId, string];
-      stake[id] = Math.max(0.1, Math.round((stake[id] + Number(delta)) * 100) / 100);
+      stake[id] = Math.max(10, Math.min(5000, Math.round((stake[id] + Number(delta)) * 100) / 100));
       render();
     });
     root.querySelectorAll<HTMLButtonElement>("button[data-quick]").forEach((button) => button.onclick = () => {
