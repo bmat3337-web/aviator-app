@@ -32,8 +32,9 @@ await bridge.connect();
 await bridge.subscribe();
 if(!bridge.state().connected || !bridge.state().subscribed) throw new Error("Bridge did not connect");
 
-if (!handler) throw new Error("Provider handler was not registered");
-await handler({providerRoundId:"R1",sequence:0,type:"MULTIPLIER",multiplier:2,occurredAt:"2026-09-21T00:01:00.000Z"});
+const currentHandler = handler;
+if (currentHandler === null) throw new Error("Provider handler was not registered");
+await currentHandler({providerRoundId:"R1",sequence:0,type:"MULTIPLIER",multiplier:2,occurredAt:"2026-09-21T00:01:00.000Z"});
 if(projection.state().snapshot.round.multiplier!==2) throw new Error("Provider event not bridged");
 
 await bridge.markTransportStale("socket-lost");
