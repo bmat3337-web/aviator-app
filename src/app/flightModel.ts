@@ -31,7 +31,9 @@ export function actionLabel(snapshot: GameSnapshot, slot: SlotId): string {
   if (bet.state === "CASHED_OUT") return bet.payout > 0 ? `CASHED OUT · ${bet.payout.toFixed(2)}` : "CASHED OUT";
   if (bet.state === "CRASHED") return "CRASHED";
   if (bet.state === "SETTLED") return bet.payout > 0 ? `SETTLED · ${bet.payout.toFixed(2)}` : "SETTLED";
-  return "WAIT";
+  if (snapshot.round.state === "BETTING_CLOSED") return "BETTING CLOSED";
+  if (snapshot.round.state === "CRASH" || snapshot.round.state === "RESULT") return "NEXT ROUND";
+  return "WAITING";
 }
 
 export function slotStatus(snapshot: GameSnapshot, slot: SlotId): string {
