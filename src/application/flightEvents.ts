@@ -21,7 +21,7 @@ export interface FlightEvent<TPayload = Record<string, unknown>> {
 export interface RoundAuthority {
   roundId: string;
   providerRoundId: string | null;
-  state: import("../../domain/game").RoundState;
+  state: import("../domain/game").RoundState;
   sequence: number;
   authoritative: true;
 }
