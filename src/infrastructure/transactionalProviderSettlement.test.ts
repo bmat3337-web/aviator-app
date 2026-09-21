@@ -4,7 +4,7 @@ class Tx{
   queries:string[]=[];
   async query<T extends Record<string,unknown>>(sql:string):Promise<{rows:T[]}>{
     this.queries.push(sql);
-    if(sql.includes("FROM aviator_bets"))return {rows:[{bet_id:"B1",player_id:"A1",settled_at:null} as T]};
+    if(sql.includes("FROM aviator_bets"))return {rows:[{bet_id:"B1",player_id:"A1",settled_at:null} as unknown as T]};
     return {rows:[]};
   }
   async commit(){} async rollback(){}
