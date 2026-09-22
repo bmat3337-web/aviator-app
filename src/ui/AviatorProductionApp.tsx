@@ -40,7 +40,7 @@ function BetCard({
   const canPlace = round.state === 'BETTING_OPEN' && slot.state === 'IDLE';
   const canCash = round.state === 'FLYING' && active;
   const locked = active || slot.state === 'CASHED_OUT' || slot.state === 'CRASHED' || slot.state === 'SETTLED';
-  const action = canCash ? 'CASH OUT' : canPlace ? (id === 'BET1' ? 'BET 1' : 'BET 2') : roundLabel(slot.state);
+  const action = canCash ? 'CASH OUT' : slot.state === 'BETTING' ? 'BET (NEXT ROUND)' : (id === 'BET1' ? 'BET 1' : 'BET 2');
   const payout = slot.payout > 0 ? slot.payout : ui.stake * (ui.autoCashOut ?? 2);
 
   return (
@@ -165,11 +165,12 @@ export function AviatorProductionApp({
       <header className="aviator-header">
         <button className="menu-button header-menu" type="button" aria-label="Open menu">☰</button>
         <div className="header-brand aviator-brand">
-          <span className="brand-lockup"><b className="brand-mark">✈</b><strong>AVIATOR</strong></span>
+          <span className="brand-lockup"><b className="brand-mark">✈</b><strong>AVIATOR</strong><em>PRO</em></span>
+          <small>FLY BEYOND LIMITS</small>
         </div>
         <div className="header-actions">
           <button className="theme-button" type="button" aria-label="Toggle appearance">☼</button>
-          <div className="header-balance"><span>▣</span><strong>$1,000.00</strong></div>
+          <div className="header-balance"><span>DEMO</span><strong>$1,000.00</strong></div>
           <button className="deposit-button" type="button" aria-label="Open menu">☰</button>
         </div>
       </header>
@@ -241,33 +242,50 @@ export function AviatorProductionApp({
           <BetCard id="BET2" slot={snapshot.bets.BET2} ui={ui.BET2} round={snapshot.round} setUI={(value) => patch('BET2', value)} place={() => place('BET2')} cash={() => cash('BET2')} />
         </div>
 
-        <div className="daily-challenge">
-          <span className="challenge-icon">♜</span>
-          <div><strong>DAILY CHALLENGE</strong><small>Climb the leaderboard. Rewards are provider-controlled.</small></div>
-          <span className="challenge-time">LIVE</span>
-          <span className="chevron">›</span>
-        </div>
+        <section className="flight-room">
+          <div className="flight-room-head">
+            <div><span className="room-live-dot" /> <strong>LIVE FLIGHT ROOM</strong> <small>SIMULATION</small></div>
+            <span className="room-online">♙ {snapshot.round.playerCount.toLocaleString(){'}'} online</span>
+          </div>
+          <div className="room-tabs"><button className="active" type="button">All Bets</button><button type="button">My Bets</button><button type="button">Top Wins</button></div>
+          <div className="room-table-head"><span>PILOT / USER</span><span>BET STAKE</span><span>CASH OUT</span></div>
+          <div className="room-row"><span>Provider feed</span><span>—</span><strong>LIVE</strong></div>
+          <div className="room-row"><span>Player identities</span><span>PRIVATE</span><strong>—</strong></div>
+          <div className="room-stats"><span>Today's Peak <b>Provider</b></span><span>Total Bets <b>Provider</b></span><span>Theoretical RTP <b>Provider</b></span></div>
+        </section>
 
-        <div className="session-stats">
-          <div><strong>♙</strong><span>{snapshot.round.playerCount.toLocaleString()}<small>Players</small></span></div>
-          <div><strong>◉</strong><span>Demo<small>Total Bets</small></span></div>
-          <div><strong>◷</strong><span>LIVE<small>Round Time</small></span></div>
+        <section className="round-ledger">
+          <div className="ledger-head"><strong>◷ ROUND LEDGER</strong><span>SIMULATION</span></div>
+          <div className="ledger-current"><span>CURRENT FLIGHT <b>#{snapshot.round.id}</b></span><span>STATUS <b>{roundLabel(snapshot.round.state){'}'}</b></span></div>
+          <div className="ledger-row"><span>Round #{snapshot.round.id}</span><strong>{snapshot.round.multiplier.toFixed(2){'}'}x</strong></div>
+          <button type="button" className="ledger-proof">♢ Full History &amp; Proofs</button>
+        </section>
+
+        <div className="daily-challenge">
+          <div className="challenge-icon">🏆</div>
+          <div className="challenge-main"><strong>DAILY FLIGHT CHALLENGE</strong><p>Climb the leaderboard. Win rewards.</p><span>Stratosphere Ace (3/5 Complete)</span><div className="challenge-progress"><i /></div></div>
+          <span className="challenge-time">◷ Resets in 06h 42m</span><span className="chevron">→</span>
         </div>
 
         <div className="utility-grid">
-          <button type="button">◈<span>How to Play</span></button>
-          <button type="button">▤<span>Game Rules</span></button>
-          <button type="button">♢<span>Game Limits</span></button>
-          <button type="button">◇<span>Probably Fair</span></button>
+          <button type="button"><span>?</span><b>How to Play</b><small>Flight mechanics...</small></button>
+          <button type="button"><span>▤</span><b>Game Rules</b><small>Multiplier logic &amp; ...</small></button>
+          <button type="button"><span>⚙</span><b>Game Limits</b><small>Min $1.00 · Max ...</small></button>
+          <button type="button"><span>♢</span><b>Probably Fair</b><small>Cryptographic verification</small></button>
         </div>
+
+        <footer className="aviator-footer">
+          <strong>AVIATOR — ONE GAME. ONE FLIGHT. ONE PREMIUM EXPERIENCE.</strong>
+          <span>FLY BEYOND LIMITS • Standalone Simulation Interface &amp; Presentation Prototype</span>
+        </footer>
       </section>
 
       <nav className="mobile-nav" aria-label="Primary navigation">
-        <button type="button" className="active">✈<span>Play</span></button>
-        <button type="button">▥<span>Stats</span></button>
-        <button type="button">◇<span>Learn</span></button>
-        <button type="button">♙<span>Community</span></button>
-        <button type="button">•••<span>More</span></button>
+        <button type="button" className="active">✈<span>Flight</span></button>
+        <button type="button">🏆<span>Challenge</span></button>
+        <button type="button">▢<span>Social</span></button>
+        <button type="button">◷<span>History</span></button>
+        <button type="button">♙<span>Profile</span></button>
       </nav>
 
       <footer className="trust-strip">
