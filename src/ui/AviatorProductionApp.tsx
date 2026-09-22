@@ -36,80 +36,73 @@ function BetCard({
   place: () => void;
   cash: () => void;
 }) {
+  const active = slot.state === 'BET_PLACED' || slot.state === 'ACTIVE';
   const canPlace = round.state === 'BETTING_OPEN' && slot.state === 'IDLE';
-  const canCash = round.state === 'FLYING' && (slot.state === 'BET_PLACED' || slot.state === 'ACTIVE');
-  const locked = !canPlace && !canCash;
-  const action = canCash ? 'CASH OUT' : canPlace ? 'PLACE BET' : roundLabel(slot.state);
+  const canCash = round.state === 'FLYING' && active;
+  const locked = active || slot.state === 'CASHED_OUT' || slot.state === 'CRASHED' || slot.state === 'SETTLED';
+  const action = canCash ? 'CASH OUT' : canPlace ? (ui.autoBet ? 'BET / NEXT ROUND' : 'BET') : roundLabel(slot.state);
+  const payout = slot.payout > 0 ? slot.payout : ui.stake * (ui.autoCashOut ?? 2);
 
   return (
-    <section className={'bet-card ' + (canPlace || canCash ? 'is-active' : '')}>
-      <div className="bet-head">
-        <div>
-          <span className={'bet-name ' + (id === 'BET1' ? 'gold-text' : 'cyan-text')}>
-            {id === 'BET1' ? 'Bet 1' : 'Bet 2'}
-          </span>
-          <span className="bet-state">{roundLabel(slot.state)}</span>
+    <section className={'bet-card cockpit-bet ' + (id === 'BET1' ? 'bet-one' : 'bet-two') + (active ? ' is-live' : '')}>
+      <div className="cockpit-bet-head">
+        <div className="cockpit-bet-title">
+          <span className="bet-name">{id === 'BET1' ? 'Bet 1' : 'Bet 2'}</span>
+          <span className="bet-state">{active ? 'LIVE' : 'IDLE'}</span>
         </div>
-        <div className="bet-balance">Balance (Demo) <strong>${DEMO_BALANCE.toFixed(2)}</strong></div>
-        <label className="toggle-label">
-          <span>Auto Cash Out</span>
-          <input
-            type="checkbox"
-            checked={ui.autoCashOut !== null}
-            disabled={canCash}
-            onChange={(e) => setUI({ autoCashOut: e.target.checked ? 2 : null })}
-          />
+        <div className="potential-payout">
+          <span>Potential Payout</span>
+          <strong>\x24{payout.toFixed(2)} {ui.autoCashOut ? '(' + ui.autoCashOut.toFixed(2) + 'x)' : ''}</strong>
+        </div>
+      </div>
+
+      <div className="cockpit-controls">
+        <div className="control-group">
+          <label>Stake</label>
+          <div className="stake-stepper">
+            <button type="button" disabled={locked} onClick={() => setUI({ stake: Math.max(1, ui.stake - 10) })}>−</button>
+            <input type="number" min="1" max="5000" value={ui.stake} disabled={locked}
+              onChange={(e) => setUI({ stake: Math.max(1, Math.min(5000, Number(e.target.value) || 1)) })}/>
+            <button type="button" disabled={locked} onClick={() => setUI({ stake: Math.min(5000, ui.stake + 10) })}>+</button>
+          </div>
+          <div className="quick-stakes cockpit-quick">
+            {[1, 5, 10, 50].map((value) => (
+              <button key={value} type="button" disabled={locked} className={ui.stake === value ? 'selected' : ''} onClick={() => setUI({ stake: value })}>{value}</button>
+            ))}
+            <button type="button" disabled={locked} className={ui.stake >= 5000 ? 'selected' : ''} onClick={() => setUI({ stake: 5000 })}>MAX</button>
+          </div>
+        </div>
+
+        <div className="control-group auto-cashout-group">
+          <label>
+            <button type="button" className={'auto-cashout-toggle ' + (ui.autoCashOut !== null ? 'enabled' : '')}
+              disabled={active} onClick={() => setUI({ autoCashOut: ui.autoCashOut === null ? 2 : null })}>
+              Auto Cashout (x)
+            </button>
+          </label>
+          <div className="stake-stepper">
+            <button type="button" disabled={active || ui.autoCashOut === null}
+              onClick={() => setUI({ autoCashOut: Math.max(1.05, Number(((ui.autoCashOut ?? 2) - 0.1).toFixed(2))) })}>−</button>
+            <input type="number" step=".1" min="1.05" max="100" value={ui.autoCashOut ?? ''} placeholder="2.00"
+              disabled={active || ui.autoCashOut === null}
+              onChange={(e) => setUI({ autoCashOut: Math.max(1.05, Math.min(100, Number(e.target.value) || 2)) })}/>
+            <button type="button" disabled={active || ui.autoCashOut === null}
+              onClick={() => setUI({ autoCashOut: Math.min(100, Number(((ui.autoCashOut ?? 2) + 0.1).toFixed(2))) })}>+</button>
+          </div>
+        </div>
+      </div>
+
+      <div className="cockpit-action-row">
+        <label className={'auto-bet-control ' + (ui.autoBet ? 'enabled' : '')}>
+          <span className="auto-badge">A</span>
+          <span className="auto-copy"><strong>Auto</strong><small>{ui.autoBet ? 'ON · NEXT ROUND' : 'OFF'}</small></span>
+          <input type="checkbox" checked={ui.autoBet} disabled={active} onChange={(e) => setUI({ autoBet: e.target.checked })}/>
+          <span className="switch-track"><span /></span>
         </label>
+        <button className="primary-bet-action cockpit-action" type="button" disabled={!canPlace && !canCash} onClick={canCash ? cash : place}>
+          <span className="action-plane">✈</span><span>{action}</span>
+        </button>
       </div>
-
-      <div className="bet-mode" role="tablist" aria-label={id + ' mode'}>
-        <button type="button" className={ui.mode === 'BET' ? 'selected' : ''} disabled={canCash} onClick={() => setUI({ mode: 'BET', autoBet: false })}>Bet</button>
-        <button type="button" className={ui.mode === 'AUTO' ? 'selected' : ''} disabled={canCash} onClick={() => setUI({ mode: 'AUTO', autoBet: true })}>Auto</button>
-      </div>
-
-      <div className="stake-control">
-        <button type="button" disabled={locked} aria-label="Decrease stake" onClick={() => setUI({ stake: Math.max(10, ui.stake - 10) })}>−</button>
-        <output>{ui.stake.toFixed(2)}</output>
-        <button type="button" disabled={locked} aria-label="Increase stake" onClick={() => setUI({ stake: Math.min(5000, ui.stake + 10) })}>+</button>
-      </div>
-
-      <div className="quick-stakes">
-        {[10, 50, 100, 500].map((value) => (
-          <button key={value} type="button" disabled={locked} onClick={() => setUI({ stake: value })}>{value}</button>
-        ))}
-      </div>
-
-      <label className="auto-cash-field">
-        <span>Auto Cash Out</span>
-        <input
-          type="number"
-          step=".1"
-          min="1.05"
-          max="100"
-          value={ui.autoCashOut ?? ''}
-          placeholder="2.00"
-          inputMode="decimal"
-          disabled={ui.autoCashOut === null || canCash}
-          onChange={(e) => {
-            const value = Number(e.target.value);
-            setUI({ autoCashOut: Number.isFinite(value) && value >= 1.05 ? Math.min(100, value) : 1.05 });
-          }}
-        />
-      </label>
-
-      <label className="auto-bet-field">
-        <input
-          type="checkbox"
-          checked={ui.autoBet}
-          disabled={canCash}
-          onChange={(e) => setUI({ autoBet: e.target.checked, mode: e.target.checked ? 'AUTO' : 'BET' })}
-        />
-        <span>Auto Bet</span>
-      </label>
-
-      <button className="primary-bet-action" type="button" disabled={locked} onClick={canCash ? cash : place}>
-        {action}
-      </button>
     </section>
   );
 }
