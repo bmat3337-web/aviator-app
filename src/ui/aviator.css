@@ -417,3 +417,141 @@
     height:52%!important;
   }
 }
+
+
+/* LOCKED REFERENCE COMPONENTS — final visual alignment */
+.recent-multipliers{
+  border-color:#17242b;
+  background:linear-gradient(180deg,#071015f5,#04090c);
+}
+.recent-row{
+  align-items:center;
+  gap:clamp(14px,2vw,28px);
+  overflow:hidden;
+}
+.recent-chip{
+  min-width:0;
+  padding:4px 2px;
+  border:0!important;
+  border-radius:0;
+  background:transparent!important;
+  font:700 16px ui-monospace,monospace;
+  letter-spacing:-.02em;
+}
+.recent-chip.positive{
+  color:var(--green);
+  border:0!important;
+  background:transparent!important;
+}
+.recent-chip.negative{
+  color:var(--red);
+  border:0!important;
+  background:transparent!important;
+}
+
+.flight-status-row{
+  gap:10px;
+}
+.flight-status-row > span{
+  box-shadow:0 4px 14px #0007;
+}
+.flight-live{
+  border-color:#7c1830!important;
+  background:#17080e!important;
+}
+.flight-quality{
+  border-color:#14553f!important;
+  background:#061610e8!important;
+}
+.flight-round{
+  background:#071017e8!important;
+}
+.flight-players{
+  background:#071017e8!important;
+}
+
+.cockpit-action-row{
+  grid-template-columns:minmax(0,1fr) 1px minmax(0,1.45fr)!important;
+  align-items:stretch;
+}
+.action-divider{
+  width:1px!important;
+  height:62%!important;
+  align-self:center!important;
+  background:#11181d!important;
+  opacity:1!important;
+  margin:0!important;
+}
+
+.mobile-nav{
+  background:linear-gradient(180deg,#061017f8,#03090df8)!important;
+}
+.mobile-nav button{
+  min-height:54px;
+  border-radius:12px!important;
+  color:#aeb8bf;
+  transition:none;
+}
+.mobile-nav button.active{
+  color:var(--cyan)!important;
+  background:linear-gradient(180deg,#092d3a,#061a22)!important;
+  box-shadow:inset 0 1px 0 #00d4ff55;
+}
+.mobile-nav .nav-icon{
+  font-size:25px!important;
+  line-height:1;
+}
+.mobile-nav button span:last-child{
+  font-size:10px!important;
+  font-weight:600;
+}
+.mobile-nav button:not(.active) .nav-icon{
+  color:#dce2e6;
+}
+
+@media(max-width:700px){
+  .recent-multipliers{
+    min-height:88px;
+    padding:9px 12px!important;
+  }
+  .section-heading strong{
+    font-size:11px;
+  }
+  .section-heading button{
+    font-size:10px;
+  }
+  .recent-row{
+    gap:18px;
+    margin-top:9px;
+    overflow:hidden;
+  }
+  .recent-chip{
+    flex:0 0 auto;
+    font-size:16px;
+    line-height:1.1;
+  }
+  .flight-status-row > span{
+    min-height:31px;
+  }
+  .flight-round{
+    flex:1 1 auto;
+    min-width:0;
+  }
+  .flight-players{
+    flex:0 0 auto;
+  }
+  .mobile-nav{
+    min-height:70px!important;
+    height:70px!important;
+    padding:6px 5px!important;
+  }
+  .mobile-nav button{
+    min-height:58px;
+  }
+  .mobile-nav .nav-icon{
+    font-size:23px!important;
+  }
+  .mobile-nav button span:last-child{
+    font-size:9px!important;
+  }
+}
