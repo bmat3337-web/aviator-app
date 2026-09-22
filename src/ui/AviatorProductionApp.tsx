@@ -158,13 +158,14 @@ export function AviatorProductionApp({
     <div className="aviator-shell">
       <header className="aviator-header">
         <button className="menu-button" type="button" aria-label="Open menu">☰</button>
-        <div className="header-brand">
-          <span>✈ AVIATOR <em>PRO</em></span>
-          <small>ONE GAME. ONE FLIGHT. ONE PREMIUM EXPERIENCE.</small>
+        <div className="header-brand igami-brand">
+          <span><b className="brand-mark">➤</b> IGAMI</span>
+          <small>PLAY FOR FUN. <strong>BUILD CONFIDENCE.</strong></small>
         </div>
         <div className="header-actions">
-          <div className="header-balance">DEMO PROVIDER</div>
-          <button className="deposit-button" type="button" aria-label="Provider status">●</button>
+          <button className="theme-button" type="button" aria-label="Toggle appearance">☼</button>
+          <div className="header-balance"><span>▣</span> $1,000.00</div>
+          <button className="deposit-button" type="button" aria-label="Open menu">☰</button>
         </div>
       </header>
 
