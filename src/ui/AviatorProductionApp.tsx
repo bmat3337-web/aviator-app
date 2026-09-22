@@ -165,7 +165,7 @@ export function AviatorProductionApp({
       <header className="aviator-header">
         <button className="menu-button header-menu" type="button" aria-label="Open menu">☰</button>
         <div className="header-brand aviator-brand">
-          <span className="brand-lockup"><b className="brand-mark">✈</b><strong>AVIATOR</strong><em>PRO</em></span>
+          <span className="brand-lockup"><b className="brand-mark">✈</b><strong>AVIATOR</strong></span>
           <small>FLY BEYOND LIMITS</small>
         </div>
         <div className="header-actions">
