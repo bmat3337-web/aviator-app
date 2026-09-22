@@ -41,19 +41,10 @@ function BetCard({
   const canCash = round.state === 'FLYING' && active;
   const locked = active || slot.state === 'CASHED_OUT' || slot.state === 'CRASHED' || slot.state === 'SETTLED';
   const action = canCash ? 'CASH OUT' : ui.autoBet && !canPlace ? 'BET (NEXT ROUND)' : (id === 'BET1' ? 'BET 1' : 'BET 2');
-  const payout = slot.payout > 0 ? slot.payout : ui.stake * (ui.autoCashOut ?? 2);
-
   return (
     <section className={'bet-card cockpit-bet ' + (id === 'BET1' ? 'bet-one' : 'bet-two') + (active ? ' is-live' : '')}>
       <div className="cockpit-bet-head">
-        <div className="cockpit-bet-title">
-          <span className="bet-name">{id === 'BET1' ? 'Bet 1' : 'Bet 2'}</span>
-          <span className="bet-state">{active ? 'LIVE' : 'IDLE'}</span>
-        </div>
-        <div className="potential-payout">
-          <span>Potential Payout</span>
-          <strong>${payout.toFixed(2)} {ui.autoCashOut ? '(' + ui.autoCashOut.toFixed(2) + 'x)' : ''}</strong>
-        </div>
+        <span className="bet-name">{id === 'BET1' ? 'Bet 1' : 'Bet 2'}</span>
       </div>
 
       <div className="cockpit-controls">
@@ -76,15 +67,6 @@ function BetCard({
         <div className="control-group auto-cashout-group">
           <div className="auto-cashout-head">
             <label htmlFor={id + '-auto-cashout'}>Auto Cashout</label>
-            <button
-              type="button"
-              className={'auto-cashout-state ' + (ui.autoCashOut !== null ? 'enabled' : '')}
-              disabled={active}
-              aria-pressed={ui.autoCashOut !== null}
-              onClick={() => setUI({ autoCashOut: ui.autoCashOut === null ? 2 : null })}
-            >
-              {ui.autoCashOut !== null ? 'ON' : 'OFF'}
-            </button>
           </div>
           <div className="stake-stepper">
             <button type="button" disabled={active || ui.autoCashOut === null}
@@ -94,7 +76,16 @@ function BetCard({
               onChange={(e) => setUI({ autoCashOut: Math.max(1.05, Math.min(100, Number(e.target.value) || 2)) })}/>
             <button type="button" disabled={active || ui.autoCashOut === null}
               onClick={() => setUI({ autoCashOut: Math.min(100, Number(((ui.autoCashOut ?? 2) + 0.1).toFixed(2))) })}>+</button>
-          </div>
+          <
+          <button
+            type="button"
+            className={'auto-cashout-button ' + (ui.autoCashOut !== null ? 'enabled' : '')}
+            disabled={active}
+            aria-pressed={ui.autoCashOut !== null}
+            onClick={() => setUI({ autoCashOut: ui.autoCashOut === null ? 2 : null })}
+          >
+            Auto Cashout {ui.autoCashOut !== null ? 'ON' : 'OFF'}
+          </button>/div>
         </div>
       </div>
 
