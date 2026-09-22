@@ -39,344 +39,46 @@
   .mobile-nav{margin-top:auto}
 }
 
-/* REFERENCE COCKPIT v2 — compact, premium mobile control geometry */
-.aviator-brand{display:flex;align-items:center;gap:8px}.aviator-brand .brand-mark{display:inline-grid;place-items:center;width:28px;height:28px;border-radius:8px;background:#00d4ff;color:#061015;font-size:18px;transform:rotate(-18deg)}.aviator-brand small{color:#00d4ff;font-size:9px;letter-spacing:.03em}.aviator-brand small strong{display:block;color:#00e6ff}.theme-button{border:1px solid #34434c;background:#071016;color:#f4d27a;width:36px;height:36px;border-radius:9px;margin-right:6px}.header-balance{display:flex;align-items:center;gap:7px;border:1px solid #34434c;border-radius:9px;padding:8px 11px;font-weight:800;font-size:11px;color:#f5f2ea}.header-balance span{color:#d9a441}.deposit-button{margin-left:6px;border-radius:9px!important;background:transparent!important;color:#00d4ff!important;border:1px solid #00d4ff!important}
-.cockpit-bet{position:relative;overflow:hidden;padding:12px!important;border-radius:14px!important;background:linear-gradient(180deg,#071015f5,#050b0ff8)!important}.cockpit-bet.bet-one{border-color:#d9a44199!important}.cockpit-bet.bet-two{border-color:#00d4ff99!important}.cockpit-bet.is-live{box-shadow:0 0 0 1px #21c77a44,0 12px 32px #0009}.cockpit-bet-head{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:8px}.cockpit-bet-title{display:grid;gap:2px}.cockpit-bet .bet-name{font-size:20px}.cockpit-bet.bet-one .bet-name{color:#f4d27a}.cockpit-bet.bet-two .bet-name{color:#00d4ff}.cockpit-bet .bet-state{font-size:9px}.potential-payout{display:grid;text-align:right;gap:2px}.potential-payout span{font-size:9px;color:#a9b0b4}.potential-payout strong{font-size:14px;color:#f4d27a}.bet-two .potential-payout strong{color:#00d4ff}.cockpit-controls{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:12px}.control-group>label{display:block;color:#dbe0e2;font-size:10px;margin-bottom:4px}.stake-stepper{display:grid;grid-template-columns:38px minmax(0,1fr) 38px;height:40px;border:1px solid #30404a;border-radius:8px;overflow:hidden;background:#04090c}.stake-stepper button{border:0;background:#101a21;color:#f5f2ea;font-size:20px}.stake-stepper input{min-width:0;width:100%;border:0;border-left:1px solid #25323a;border-right:1px solid #25323a;background:#020608;color:#fff;text-align:center;font-size:16px;font-weight:800}.cockpit-quick{grid-template-columns:repeat(5,minmax(0,1fr));margin-top:5px}.cockpit-quick button{height:28px;border:1px solid #26343d;background:#0e1820;color:#dfe5e8}.cockpit-quick button.selected{background:#d9a441;color:#080a0b;border-color:#f4d27a}.bet-two .cockpit-quick button.selected{background:#00d4ff;border-color:#62eaff}.auto-cashout-toggle{border:0;background:none;padding:0;color:#c8d0d4;font-size:10px}.auto-cashout-toggle.enabled{color:#f4d27a}.bet-two .auto-cashout-toggle.enabled{color:#00d4ff}.cockpit-action-row{display:grid;grid-template-columns:1fr 1.35fr;gap:8px;margin-top:10px}.auto-bet-control{min-height:48px;border:1px solid #d9a441;border-radius:9px;display:flex;align-items:center;gap:8px;padding:5px 9px;background:#080d11}.bet-two .auto-bet-control{border-color:#00d4ff}.auto-badge{width:30px;height:30px;border:2px solid currentColor;border-radius:50%;display:grid;place-items:center;font-weight:900;color:#f4d27a}.bet-two .auto-badge{color:#00d4ff}.auto-copy{display:grid;gap:1px;min-width:0}.auto-copy strong{font-size:12px}.auto-copy small{font-size:9px;color:#9da8ae}.auto-bet-control input{display:none}.switch-track{margin-left:auto;width:43px;height:24px;border-radius:999px;background:#16222b;padding:3px}.switch-track span{display:block;width:18px;height:18px;border-radius:50%;background:#e7eef4;transition:transform .18s}.auto-bet-control.enabled .switch-track{background:#d9a441}.bet-two .auto-bet-control.enabled .switch-track{background:#00d4ff}.auto-bet-control.enabled .switch-track span{transform:translateX(19px)}.cockpit-action{min-height:48px!important;margin:0!important;border-radius:9px!important;font-size:13px!important;display:flex;align-items:center;justify-content:center;gap:10px}.bet-one .cockpit-action{background:linear-gradient(90deg,#d9a441,#f4d27a)!important;color:#080a0b}.bet-two .cockpit-action{background:linear-gradient(90deg,#00b8dc,#00e6ff)!important;color:#061015}.action-plane{font-size:18px}.mobile-first-recent{order:0!important}
+
+/* AVIATOR STANDARD CONSOLIDATION */
+.aviator-brand{display:flex;align-items:center;gap:8px;color:var(--gold2)}
+.aviator-brand .brand-lockup{display:flex;align-items:center;gap:8px;font-size:22px;letter-spacing:.04em}
+.aviator-brand .brand-mark{display:grid;place-items:center;width:28px;height:28px;border-radius:8px;background:var(--gold);color:#080a0b;font-size:16px}
+.theme-button{border:1px solid #34434c;background:#071016;color:var(--gold2);width:36px;height:36px;border-radius:9px;margin-right:6px}
+.header-balance{display:flex;align-items:center;gap:7px;border:1px solid #34434c;border-radius:9px;padding:8px 11px;font-weight:800;font-size:11px;color:var(--text)}
+.header-balance span{color:var(--gold)}
+.deposit-button{margin-left:6px;border-radius:9px;background:transparent;color:var(--gold2);border:1px solid var(--gold)}
+
+.cockpit-bet{position:relative;overflow:hidden;padding:12px;border-radius:14px;background:linear-gradient(180deg,#071015f5,#050b0ff8)}
+.cockpit-bet.bet-one{border-color:#d9a44199}.cockpit-bet.bet-two{border-color:#00d4ff99}
+.cockpit-bet.is-live{box-shadow:0 0 0 1px #21c77a44,0 12px 32px #0009}
+.cockpit-bet-head{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:8px}
+.cockpit-bet-title{display:grid;gap:2px}.cockpit-bet .bet-name{font-size:20px}
+.cockpit-bet.bet-one .bet-name{color:var(--gold2)}.cockpit-bet.bet-two .bet-name{color:var(--cyan)}
+.cockpit-bet .bet-state{font-size:9px}.potential-payout{display:grid;text-align:right;gap:2px}
+.potential-payout span{font-size:9px;color:#a9b0b4}.potential-payout strong{font-size:14px;color:var(--gold2)}
+.bet-two .potential-payout strong{color:var(--cyan)}
+.cockpit-controls{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:12px}
+.control-group>label,.auto-cashout-head label{display:block;color:#dbe0e2;font-size:10px;margin-bottom:4px}
+.stake-stepper{display:grid;grid-template-columns:38px minmax(0,1fr) 38px;height:40px;border:1px solid #30404a;border-radius:8px;overflow:hidden;background:#04090c}
+.stake-stepper button{border:0;background:#101a21;color:var(--text);font-size:20px}.stake-stepper input{min-width:0;width:100%;border:0;border-left:1px solid #25323a;border-right:1px solid #25323a;background:#020608;color:#fff;text-align:center;font-size:16px;font-weight:800}
+.cockpit-quick{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));margin-top:5px}.cockpit-quick button{height:28px;border:1px solid #26343d;background:#0e1820;color:#dfe5e8}.cockpit-quick button.selected{background:var(--gold);color:#080a0b;border-color:var(--gold2)}.bet-two .cockpit-quick button.selected{background:var(--cyan);border-color:#62eaff}
+.auto-cashout-head{display:flex;align-items:center;justify-content:space-between;gap:8px;margin-bottom:4px}.auto-cashout-state{border:1px solid #47545c;border-radius:999px;background:#0b1419;color:var(--muted);padding:2px 7px;font-size:9px;font-weight:800}.auto-cashout-state.enabled{color:var(--gold2);border-color:var(--gold)}.bet-two .auto-cashout-state.enabled{color:var(--cyan);border-color:var(--cyan)}
+.cockpit-action-row{display:grid;grid-template-columns:1fr 1.35fr;gap:8px;margin-top:10px}
+.auto-bet-control{min-height:48px;border:1px solid var(--gold);border-radius:9px;display:flex;align-items:center;gap:8px;padding:5px 9px;background:#080d11}.bet-two .auto-bet-control{border-color:var(--cyan)}
+.auto-badge{width:30px;height:30px;border:2px solid currentColor;border-radius:50%;display:grid;place-items:center;font-weight:900;color:var(--gold2)}.bet-two .auto-badge{color:var(--cyan)}
+.auto-copy{display:grid;gap:1px;min-width:0}.auto-copy strong{font-size:12px}.auto-copy small{font-size:9px;color:#9da8ae}.auto-bet-control input{position:absolute;opacity:0;width:1px;height:1px}.switch-track{margin-left:auto;width:43px;height:24px;border-radius:999px;background:#16222b;padding:3px}.switch-track span{display:block;width:18px;height:18px;border-radius:50%;background:#e7eef4;transition:transform .18s}.auto-bet-control.enabled .switch-track{background:var(--gold)}.bet-two .auto-bet-control.enabled .switch-track{background:var(--cyan)}.auto-bet-control.enabled .switch-track span{transform:translateX(19px)}
+.cockpit-action{min-height:48px;margin:0;border:0;border-radius:9px;font-size:13px;display:flex;align-items:center;justify-content:center;gap:10px}.bet-one .cockpit-action{background:linear-gradient(90deg,var(--gold),var(--gold2));color:#080a0b}.bet-two .cockpit-action{background:linear-gradient(90deg,#00b8dc,#00e6ff);color:#061015}.action-plane{font-size:18px}
 @media(max-width:700px){
- .aviator-header{height:64px!important;padding:7px 9px!important}.aviator-brand{font-size:20px!important}.aviator-brand .brand-mark{width:25px;height:25px}.aviator-brand small{font-size:7px}.header-actions{display:flex!important}.theme-button{display:block!important;width:29px;height:29px;margin-right:3px}.header-balance{font-size:9px;padding:7px 8px}.deposit-button{width:31px;height:31px!important;font-size:13px!important}
- .flight{height:260px!important;min-height:260px!important;border-radius:14px!important}.flight-top{padding:11px 13px!important}.flight-state{top:34%!important}.multiplier{top:40%!important;font-size:48px!important}.flight-path{inset:18% 3% 18%!important;height:64%!important}.aircraft{width:42px!important}.history{bottom:9px!important}
- .bet-workspace{gap:6px!important}.mobile-first-recent{display:block!important;order:0!important}.recent-multipliers{padding:11px!important;border-radius:13px!important}.section-heading strong{font-size:14px}.section-heading button{font-size:11px}.recent-chip{min-width:64px;padding:7px 8px;font-size:11px}
- .bet-grid{display:flex!important;flex-direction:column!important;gap:7px!important}.cockpit-bet{width:100%!important;padding:11px!important}.cockpit-bet-head{margin-bottom:7px}.cockpit-bet .bet-name{font-size:18px}.potential-payout span{font-size:8px}.potential-payout strong{font-size:12px}.cockpit-controls{grid-template-columns:minmax(0,1fr) minmax(0,1fr)!important;gap:7px!important}.stake-stepper{grid-template-columns:34px minmax(0,1fr) 34px;height:38px}.stake-stepper input{font-size:15px}.cockpit-quick{gap:3px!important}.cockpit-quick button{height:27px!important;font-size:9px!important}.cockpit-action-row{grid-template-columns:1fr 1.35fr;gap:6px;margin-top:8px}.auto-bet-control{min-height:45px;padding:4px 7px;gap:5px}.auto-badge{width:27px;height:27px}.auto-copy strong{font-size:11px}.auto-copy small{font-size:8px}.switch-track{width:38px;height:22px}.switch-track span{width:16px;height:16px}.auto-bet-control.enabled .switch-track span{transform:translateX(16px)}.cockpit-action{min-height:45px!important;font-size:11px!important}.action-plane{font-size:16px}
- .daily-challenge,.session-stats,.utility-grid{margin-top:0}
+  .aviator-header{height:64px;padding:7px 9px}.aviator-brand .brand-lockup{font-size:18px}.aviator-brand .brand-mark{width:25px;height:25px}.theme-button{width:29px;height:29px;margin-right:3px}.header-balance{font-size:9px;padding:7px 8px}.deposit-button{width:31px;height:31px;font-size:13px}
+  .aviator-shell{display:flex;flex-direction:column;width:100%;min-height:0;height:auto;overflow:visible;padding:0 10px;gap:6px}
+  .aviator-header,.flight,.bet-workspace,.bet-grid,.bet-card,.daily-challenge,.session-stats,.utility-grid,.mobile-nav{position:relative;top:auto;right:auto;bottom:auto;left:auto;float:none;flex:none}
+  .aviator-header{margin:0 -10px;min-height:64px;z-index:2}.flight{height:205px;min-height:205px;max-height:none;z-index:1}
+  .bet-workspace{display:flex;flex-direction:column;height:auto;min-height:0;overflow:visible}.bet-grid{display:grid;grid-template-columns:1fr;gap:6px;height:auto;overflow:visible}
+  .bet-card{height:auto;min-height:0;max-height:none;overflow:visible}.daily-challenge,.session-stats,.utility-grid{display:block}.session-stats{display:grid}.utility-grid{display:grid}.mobile-nav{display:flex;height:64px;min-height:64px;margin:0 -10px;padding:6px;z-index:2}
+  .cockpit-bet{padding:9px}.cockpit-bet .bet-name{font-size:18px}.potential-payout strong{font-size:13px}.cockpit-controls{gap:7px}.control-group>label,.auto-cashout-head label{font-size:9px}.stake-stepper{height:38px;grid-template-columns:32px minmax(0,1fr) 32px}.stake-stepper button{font-size:18px}.stake-stepper input{font-size:16px}.cockpit-quick{gap:3px;margin-top:4px}.cockpit-quick button{height:25px;font-size:9px}.cockpit-action-row{grid-template-columns:1fr 1.45fr;gap:5px;margin-top:7px}.auto-bet-control,.cockpit-action{height:42px;min-height:42px}.auto-bet-control{padding:3px 6px}.auto-badge{width:29px;height:29px;font-size:16px}.auto-copy strong{font-size:11px}.auto-copy small{font-size:7px}.switch-track{width:36px;height:20px}.switch-track span{width:14px;height:14px}.auto-bet-control.enabled .switch-track span{transform:translateX(16px)}.cockpit-action{font-size:12px}.action-plane{font-size:15px}
+  html,body,#root,#app{height:auto;min-height:0;max-height:none;overflow-x:hidden;overflow-y:auto}
 }
-
-/* REFERENCE BUILD — IGAMI mobile cockpit */
-.aviator-shell{background:#02080d!important;color:#eef4f7}.aviator-header{height:76px!important;padding:10px 14px!important;background:#030a10!important;border-bottom:1px solid #263740!important}.brand-lockup{display:flex;align-items:center;gap:8px;font-size:27px;letter-spacing:.01em;color:#f5f2ea}.brand-mark{width:31px!important;height:31px!important;border-radius:10px!important;background:#00d4ff!important;color:#031018!important;display:grid!important;place-items:center!important}.brand-tagline{font-size:10px;line-height:1.2;color:#00d4ff;letter-spacing:.02em}.brand-tagline strong{color:#00d4ff}.header-balance{background:#071117!important;border:1px solid #334650!important;border-radius:10px!important;color:#f5f2ea!important}.theme-button{background:#071117!important}.deposit-button{background:#06141c!important}.flight{height:470px!important;min-height:470px!important;border-radius:16px!important;background:#06101a!important;border:1px solid #263844!important}.flight-status-row{position:absolute;z-index:20;top:12px;left:12px;right:12px;display:flex;gap:8px;align-items:center}.flight-status-row>span{height:34px;padding:7px 12px;border:1px solid #253640;border-radius:7px;background:#061017df;font-size:11px;font-weight:700}.flight-live{color:#ff3158!important;border-color:#8d1830!important}.flight-live i{display:inline-block;width:8px;height:8px;border-radius:50%;background:#ff3158;margin-right:6px}.flight-round{color:#dce6ea}.flight-players{color:#dce6ea}.flight-quality{color:#21d88a!important;border-color:#155f48!important}.flight-scene{inset:0!important;background:#020b13!important}.reference-stars{position:absolute;inset:0;background:radial-gradient(circle at 12% 25%,#ffffff99 0 1px,transparent 2px),radial-gradient(circle at 25% 18%,#ffffff77 0 1px,transparent 2px),radial-gradient(circle at 55% 12%,#ffffff66 0 1px,transparent 2px),radial-gradient(circle at 82% 24%,#ffffff77 0 1px,transparent 2px),radial-gradient(circle at 90% 42%,#ffffff66 0 1px,transparent 2px),radial-gradient(circle at 46% 32%,#ffffff55 0 1px,transparent 2px);opacity:.8}.reference-mountains{position:absolute;left:-5%;right:-5%;bottom:12%;height:45%;background:linear-gradient(155deg,transparent 0 30%,#111d2b 31% 48%,transparent 49%),linear-gradient(25deg,transparent 0 35%,#162638 36% 52%,transparent 53%),linear-gradient(150deg,transparent 0 48%,#0a1622 49% 65%,transparent 66%);filter:drop-shadow(0 -15px 20px #00101b)}.reference-runway{position:absolute;left:0;right:0;bottom:0;height:20%;background:linear-gradient(180deg,transparent,#060e14 25%,#02070b 100%);border-top:1px solid #00d4ff44}.reference-runway:after{content:"";position:absolute;left:8%;right:8%;bottom:28%;height:2px;background:linear-gradient(90deg,transparent,#00d4ff,#ff3158,#00d4ff,transparent);box-shadow:0 0 14px #00d4ff}.flight-axis{position:absolute;z-index:15;right:10px;top:62px;bottom:60px;display:flex;flex-direction:column;justify-content:space-between;color:#dfe9ed;font-size:10px}.flight-axis:before{content:"";position:absolute;right:26px;top:0;bottom:0;border-right:1px solid #aab7bd88}.flight-axis span{position:relative}.flight-path{z-index:12!important;inset:25% 4% 13%!important;width:92%!important;height:62%!important}.flight-path-line{stroke:#ff2852!important;stroke-width:1.8!important;filter:drop-shadow(0 0 7px #ff2852)!important}.flight-path-fill{fill:#ff285214!important}.aircraft{z-index:14!important;color:#ff3158!important;width:68px!important;filter:drop-shadow(0 0 14px #ff3158)!important;transform:translate(-50%,-50%) rotate(12deg)!important}.flight-copy{position:absolute;z-index:18;top:25%;left:0;right:0;text-align:center}.flight-copy .multiplier{position:static!important;font-size:clamp(60px,10vw,92px)!important;color:#f7fbff!important;text-shadow:0 0 12px #4ecaffaa,0 5px 25px #000!important}.flight-message{font-size:24px;font-weight:800;color:#00d4ff;margin-top:4px}.flight-history{position:absolute;z-index:19;left:14px;right:14px;bottom:12px;display:flex;gap:12px;overflow:auto}.history-chip{font-weight:800;font-size:13px;white-space:nowrap}.history-chip.win{color:#20e59a}.history-chip.loss{color:#ff3158}.bet-workspace{gap:8px!important}.mobile-first-recent{background:#030b10!important;border-color:#253741!important;padding:12px 14px!important}.section-heading strong{font-size:16px!important}.recent-row{gap:18px!important}.recent-chip{border:0!important;background:none!important;padding:0!important;font-size:14px!important;min-width:auto!important}.recent-chip.positive{color:#20e59a!important}.recent-chip.negative{color:#ff3158!important}
-.cockpit-bet{padding:14px!important;background:#030c12!important}.cockpit-bet-head{margin-bottom:10px}.cockpit-bet .bet-name{font-size:24px!important}.cockpit-bet .bet-state{font-size:10px}.potential-payout strong{font-size:18px!important}.cockpit-controls{gap:16px!important}.control-group>label{font-size:12px!important}.stake-stepper{height:50px!important;grid-template-columns:44px minmax(0,1fr) 44px!important}.stake-stepper button{font-size:24px!important}.stake-stepper input{font-size:22px!important}.cockpit-quick{gap:8px!important;margin-top:7px!important}.cockpit-quick button{height:34px!important;border-radius:9px!important;font-size:11px!important}.cockpit-action-row{margin-top:12px!important;grid-template-columns:1fr 1.45fr!important;gap:8px!important}.auto-bet-control{height:58px!important;min-height:58px!important}.auto-badge{width:38px!important;height:38px!important;font-size:20px}.auto-copy strong{font-size:15px!important}.auto-copy small{font-size:10px!important}.switch-track{width:48px!important;height:27px!important}.switch-track span{width:21px!important;height:21px!important}.auto-bet-control.enabled .switch-track span{transform:translateX(21px)!important}.cockpit-action{height:58px!important;min-height:58px!important;font-size:18px!important}.action-plane{font-size:22px!important}.bet-one{border-color:#d9a441!important}.bet-two{border-color:#00d4ff!important}.bet-one .cockpit-action{background:linear-gradient(90deg,#f3bd25,#ffd75c)!important}.bet-two .cockpit-action{background:linear-gradient(90deg,#00bde5,#10e7ff)!important}
-@media(max-width:700px){
- /* Mobile active-play cockpit: keep flight + both betting controls within one practical viewport. */
- .aviator-shell{padding:0 10px 0!important;gap:6px!important;background:#02080d!important}
- .aviator-header{margin:0 -10px!important;height:76px!important;position:sticky!important;top:0!important;z-index:50!important}
- .menu-button{display:block!important;background:none!important;color:#00d4ff!important;font-size:23px!important}
- .header-brand{font-size:0!important}.brand-lockup{font-size:21px}.brand-mark{width:30px!important;height:30px!important}.brand-tagline{font-size:7px}
- .header-actions{display:flex!important;gap:4px}.theme-button{width:34px!important;height:34px!important}.header-balance{font-size:9px!important;padding:7px!important}.deposit-button{width:34px!important;height:34px!important}
- .flight{height:225px!important;min-height:225px!important;border-radius:15px!important}.flight-status-row{top:9px;left:9px;right:9px;gap:5px}.flight-status-row>span{height:31px;padding:6px 8px;font-size:9px}.flight-quality{display:none}.flight-axis{top:52px;bottom:44px;right:7px;font-size:8px}.flight-copy{top:28%}.flight-copy .multiplier{font-size:48px!important}.flight-message{font-size:13px}.flight-path{inset:30% 4% 10%!important;height:60%!important}.aircraft{width:44px!important}.flight-history{bottom:9px;gap:10px}.history-chip{font-size:10px}
- .recent-multipliers{padding:10px!important}.section-heading strong{font-size:15px!important}.section-heading button{font-size:10px!important}.recent-row{gap:15px!important}.recent-chip{font-size:13px!important}
- .cockpit-bet{padding:9px!important;border-radius:13px!important}.cockpit-bet .bet-name{font-size:18px!important}.potential-payout strong{font-size:13px!important}.cockpit-controls{gap:7px!important}.control-group>label{font-size:9px!important}.stake-stepper{height:38px!important;grid-template-columns:32px minmax(0,1fr) 32px!important}.stake-stepper button{font-size:18px!important}.stake-stepper input{font-size:16px!important}.cockpit-quick{gap:3px!important;margin-top:4px!important}.cockpit-quick button{height:25px!important;font-size:9px!important;border-radius:7px!important}.cockpit-action-row{grid-template-columns:1fr 1.45fr!important;gap:5px!important;margin-top:7px!important}.auto-bet-control{height:42px!important;min-height:42px!important;padding:3px 6px!important}.auto-badge{width:29px!important;height:29px!important;font-size:16px!important}.auto-copy strong{font-size:11px!important}.auto-copy small{font-size:7px!important}.switch-track{width:36px!important;height:20px!important}.switch-track span{width:14px!important;height:14px!important}.auto-bet-control.enabled .switch-track span{transform:translateX(16px)!important}.cockpit-action{height:42px!important;min-height:42px!important;font-size:12px!important}.action-plane{font-size:15px!important}
- .daily-challenge,.session-stats,.utility-grid{display:none!important}
- .mobile-nav{position:sticky!important;bottom:0!important;margin:0 -10px!important;padding:7px 6px!important;height:58px;background:#020b11!important;border-top:1px solid #263842!important;z-index:45!important}
-}
-
-/* FINAL MOBILE ACTIVE-PLAY COMPOSITION */
-@media(max-width:700px){
- .aviator-shell{gap:4px!important}
- .aviator-header{height:64px!important}
- .flight{height:205px!important;min-height:205px!important}
- .flight-status-row{top:7px!important}
- .flight-axis{top:48px!important;bottom:34px!important}
- .flight-copy{top:25%!important}
- .flight-copy .multiplier{font-size:43px!important}
- .flight-message{font-size:12px!important;margin-top:2px!important}
- .flight-path{inset:34% 4% 8%!important;height:58%!important}
- .aircraft{width:38px!important}
- .recent-multipliers{padding:7px 10px!important}
- .recent-row{gap:12px!important}
- .recent-chip{font-size:12px!important}
- .cockpit-bet{padding:7px!important;border-radius:12px!important}
- .cockpit-bet-head{margin-bottom:5px!important}
- .cockpit-bet .bet-name{font-size:17px!important}
- .cockpit-bet .bet-state{font-size:8px!important}
- .potential-payout span{font-size:7px!important}
- .potential-payout strong{font-size:12px!important}
- .cockpit-controls{gap:5px!important}
- .control-group>label{font-size:8px!important;margin-bottom:2px!important}
- .stake-stepper{height:34px!important;grid-template-columns:29px minmax(0,1fr) 29px!important}
- .stake-stepper button{font-size:17px!important}
- .stake-stepper input{font-size:15px!important}
- .cockpit-quick{margin-top:3px!important;gap:2px!important}
- .cockpit-quick button{height:23px!important;font-size:8px!important}
- .cockpit-action-row{margin-top:5px!important;gap:4px!important}
- .auto-bet-control,.cockpit-action{height:38px!important;min-height:38px!important}
- .auto-bet-control{padding:2px 5px!important}
- .auto-badge{width:27px!important;height:27px!important;font-size:14px!important}
- .auto-copy strong{font-size:10px!important}
- .auto-copy small{font-size:7px!important}
- .switch-track{width:34px!important;height:19px!important}
- .switch-track span{width:13px!important;height:13px!important}
- .cockpit-action{font-size:11px!important}
- .action-plane{font-size:14px!important}
- .mobile-nav{height:54px!important;padding:5px 5px!important}
-}
-
-/* REFERENCE FLIGHT VISUAL — CSS fallback when environment media is unavailable */
-.flight-scene{
- background:
-  radial-gradient(ellipse at 72% 58%,rgba(255,55,75,.34) 0%,rgba(255,55,75,.12) 18%,transparent 43%),
-  radial-gradient(ellipse at 22% 35%,rgba(41,111,170,.30) 0%,rgba(18,58,91,.16) 25%,transparent 52%),
-  linear-gradient(180deg,#020a18 0%,#06142a 42%,#15243a 68%,#100b17 100%)!important;
-}
-.flight-scene:before{
- content:"";position:absolute;inset:0;z-index:1;pointer-events:none;
- background:
-  radial-gradient(ellipse at 12% 30%,rgba(151,187,214,.24) 0 6%,transparent 20%),
-  radial-gradient(ellipse at 27% 34%,rgba(102,151,190,.20) 0 5%,transparent 18%),
-  radial-gradient(ellipse at 67% 27%,rgba(57,103,148,.16) 0 5%,transparent 19%),
-  radial-gradient(ellipse at 83% 38%,rgba(31,73,111,.22) 0 5%,transparent 18%);
- filter:blur(8px);
-}
-.flight-scene:after{
- content:"";position:absolute;left:0;right:0;bottom:13%;height:42%;z-index:2;pointer-events:none;
- background:
-  linear-gradient(145deg,transparent 0 27%,#0b1a2c 28% 44%,transparent 45%),
-  linear-gradient(32deg,transparent 0 35%,#13263b 36% 54%,transparent 55%),
-  linear-gradient(150deg,transparent 0 49%,#071321 50% 68%,transparent 69%);
- opacity:.95;
-}
-.reference-stars{z-index:3!important}
-.reference-mountains{z-index:4!important;opacity:.82}
-.reference-runway{z-index:5!important}
-.flight-path{z-index:12!important}
-.flight-axis{z-index:15!important}
-.flight-copy{z-index:18!important}
-.aircraft{z-index:14!important}
-
-/* SINGLE-PAGE MOBILE SCROLL STANDARD
-   One document flow only: header, flight, history, Bet 1, Bet 2,
-   secondary content and navigation all participate in the same page scroll.
-   No sticky/fixed cockpit surfaces and no nested scrolling layer.
-*/
-@media(max-width:700px){
-  html,body{height:auto!important;min-height:100%!important;overflow-x:hidden!important;overflow-y:auto!important}
-  #root{min-height:100%!important;height:auto!important;overflow:visible!important}
-  .aviator-shell{
-    min-height:0!important;
-    height:auto!important;
-    overflow:visible!important;
-    display:flex!important;
-    flex-direction:column!important;
-    padding-bottom:8px!important;
-  }
-  .aviator-header{
-    position:relative!important;
-    top:auto!important;
-    z-index:30!important;
-    flex:none!important;
-  }
-  .flight{
-    position:relative!important;
-    top:auto!important;
-    z-index:1!important;
-    flex:none!important;
-  }
-  .mobile-nav{
-    position:relative!important;
-    bottom:auto!important;
-    top:auto!important;
-    z-index:2!important;
-    margin-top:0!important;
-    flex:none!important;
-  }
-}
-
-/* FINAL MOBILE SCROLL OVERRIDE — SINGLE DOCUMENT FLOW
-   Must appear after every responsive rule above so no earlier sticky cockpit
-   declaration can reintroduce an independent viewport.
-*/
-@media (max-width:700px){
-  html, body, #root, #app {
-    height:auto!important;
-    min-height:100%!important;
-    max-height:none!important;
-    overflow-x:hidden!important;
-    overflow-y:auto!important;
-  }
-
-  .aviator-shell{
-    display:flex!important;
-    flex-direction:column!important;
-    width:100%!important;
-    min-height:100dvh!important;
-    height:auto!important;
-    max-height:none!important;
-    overflow:visible!important;
-    padding-bottom:0!important;
-  }
-
-  .aviator-header{
-    position:relative!important;
-    top:auto!important;
-    bottom:auto!important;
-    height:auto!important;
-    min-height:52px!important;
-    flex:none!important;
-    z-index:30!important;
-  }
-
-  .flight{
-    position:relative!important;
-    top:auto!important;
-    bottom:auto!important;
-    height:220px!important;
-    min-height:220px!important;
-    max-height:none!important;
-    flex:none!important;
-    z-index:1!important;
-    overflow:hidden!important;
-  }
-
-  .bet-workspace{
-    position:relative!important;
-    top:auto!important;
-    bottom:auto!important;
-    height:auto!important;
-    min-height:0!important;
-    max-height:none!important;
-    overflow:visible!important;
-    flex:none!important;
-    z-index:2!important;
-  }
-
-  .bet-grid{
-    display:grid!important;
-    grid-template-columns:1fr!important;
-    height:auto!important;
-    overflow:visible!important;
-  }
-
-  .bet-card{
-    position:relative!important;
-    height:auto!important;
-    min-height:0!important;
-    max-height:none!important;
-    overflow:visible!important;
-  }
-
-  .mobile-nav{
-    position:relative!important;
-    top:auto!important;
-    right:auto!important;
-    bottom:auto!important;
-    left:auto!important;
-    height:auto!important;
-    min-height:64px!important;
-    flex:none!important;
-    z-index:3!important;
-  }
-}
-
-/* MOBILE SINGLE-PAGE SCROLL — FINAL CANONICAL OVERRIDE */
-@media (max-width:700px){
-  html,body{
-    margin:0!important;
-    width:100%!important;
-    height:auto!important;
-    min-height:0!important;
-    max-height:none!important;
-    overflow-x:hidden!important;
-    overflow-y:visible!important;
-  }
-
-  #root,#app{
-    width:100%!important;
-    height:auto!important;
-    min-height:0!important;
-    max-height:none!important;
-    overflow:visible!important;
-  }
-
-  .aviator-shell{
-    display:flex!important;
-    flex-direction:column!important;
-    width:100%!important;
-    height:auto!important;
-    min-height:0!important;
-    max-height:none!important;
-    overflow:visible!important;
-    padding:0 10px 0!important;
-    gap:6px!important;
-  }
-
-  .aviator-header,
-  .flight,
-  .bet-workspace,
-  .bet-grid,
-  .bet-card,
-  .daily-challenge,
-  .session-stats,
-  .utility-grid,
-  .mobile-nav{
-    position:relative!important;
-    top:auto!important;
-    right:auto!important;
-    bottom:auto!important;
-    left:auto!important;
-    float:none!important;
-    flex:none!important;
-  }
-
-  .aviator-header{
-    height:64px!important;
-    min-height:64px!important;
-    margin:0 -10px!important;
-    z-index:2!important;
-  }
-
-  .flight{
-    height:205px!important;
-    min-height:205px!important;
-    max-height:none!important;
-    z-index:1!important;
-  }
-
-  .bet-workspace{
-    display:flex!important;
-    flex-direction:column!important;
-    height:auto!important;
-    min-height:0!important;
-    overflow:visible!important;
-  }
-
-  .bet-grid{
-    display:grid!important;
-    grid-template-columns:1fr!important;
-    gap:6px!important;
-    height:auto!important;
-    min-height:0!important;
-    overflow:visible!important;
-  }
-
-  .bet-card{
-    height:auto!important;
-    min-height:0!important;
-    max-height:none!important;
-    overflow:visible!important;
-  }
-
-  /* Keep the complete page in the document instead of hiding it on mobile. */
-  .daily-challenge,
-  .session-stats,
-  .utility-grid{
-    display:flex!important;
-  }
-
-  .session-stats{
-    display:grid!important;
-  }
-
-  .utility-grid{
-    display:grid!important;
-  }
-
-  .daily-challenge{
-    margin-top:2px!important;
-  }
-
-  .mobile-nav{
-    display:flex!important;
-    height:64px!important;
-    min-height:64px!important;
-    margin:0 -10px!important;
-    padding:6px!important;
-    z-index:2!important;
-  }
-}
+@media(min-width:701px) and (max-width:1100px){.aviator-shell{grid-template-columns:minmax(0,1fr);}.desktop-rail{display:none}.bet-workspace{grid-column:1}.bet-grid{grid-template-columns:1fr}}
+@media(max-width:700px){.flight-copy .multiplier{font-size:43px}.flight-message{font-size:12px}.flight-axis{font-size:8px}.aircraft{width:38px}.flight-path{inset:34% 4% 8%;height:58%}.recent-multipliers{padding:7px 10px}.recent-row{gap:12px}.recent-chip{font-size:12px}}
+@media(prefers-reduced-motion:reduce){*,*::before,*::after{animation-duration:.01ms!important;animation-iteration-count:1!important;scroll-behavior:auto!important;transition-duration:.01ms!important}}
