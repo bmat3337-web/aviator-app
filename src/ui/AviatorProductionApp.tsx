@@ -36,80 +36,73 @@ function BetCard({
   place: () => void;
   cash: () => void;
 }) {
+  const active = slot.state === 'BET_PLACED' || slot.state === 'ACTIVE';
   const canPlace = round.state === 'BETTING_OPEN' && slot.state === 'IDLE';
-  const canCash = round.state === 'FLYING' && (slot.state === 'BET_PLACED' || slot.state === 'ACTIVE');
-  const locked = !canPlace && !canCash;
-  const action = canCash ? 'CASH OUT' : canPlace ? 'PLACE BET' : roundLabel(slot.state);
+  const canCash = round.state === 'FLYING' && active;
+  const locked = active || slot.state === 'CASHED_OUT' || slot.state === 'CRASHED' || slot.state === 'SETTLED';
+  const action = canCash ? 'CASH OUT' : canPlace ? (ui.autoBet ? 'BET / NEXT ROUND' : 'BET') : roundLabel(slot.state);
+  const payout = slot.payout > 0 ? slot.payout : ui.stake * (ui.autoCashOut ?? 2);
 
   return (
-    <section className={'bet-card ' + (canPlace || canCash ? 'is-active' : '')}>
-      <div className="bet-head">
-        <div>
-          <span className={'bet-name ' + (id === 'BET1' ? 'gold-text' : 'cyan-text')}>
-            {id === 'BET1' ? 'Bet 1' : 'Bet 2'}
-          </span>
-          <span className="bet-state">{roundLabel(slot.state)}</span>
+    <section className={'bet-card cockpit-bet ' + (id === 'BET1' ? 'bet-one' : 'bet-two') + (active ? ' is-live' : '')}>
+      <div className="cockpit-bet-head">
+        <div className="cockpit-bet-title">
+          <span className="bet-name">{id === 'BET1' ? 'Bet 1' : 'Bet 2'}</span>
+          <span className="bet-state">{active ? 'LIVE' : 'IDLE'}</span>
         </div>
-        <div className="bet-balance">Balance (Demo) <strong>${DEMO_BALANCE.toFixed(2)}</strong></div>
-        <label className="toggle-label">
-          <span>Auto Cash Out</span>
-          <input
-            type="checkbox"
-            checked={ui.autoCashOut !== null}
-            disabled={canCash}
-            onChange={(e) => setUI({ autoCashOut: e.target.checked ? 2 : null })}
-          />
+        <div className="potential-payout">
+          <span>Potential Payout</span>
+          <strong>${payout.toFixed(2)} {ui.autoCashOut ? '(' + ui.autoCashOut.toFixed(2) + 'x)' : ''}</strong>
+        </div>
+      </div>
+
+      <div className="cockpit-controls">
+        <div className="control-group">
+          <label>Stake</label>
+          <div className="stake-stepper">
+            <button type="button" disabled={locked} onClick={() => setUI({ stake: Math.max(1, ui.stake - 10) })}>−</button>
+            <input type="number" min="1" max="5000" value={ui.stake} disabled={locked}
+              onChange={(e) => setUI({ stake: Math.max(1, Math.min(5000, Number(e.target.value) || 1)) })}/>
+            <button type="button" disabled={locked} onClick={() => setUI({ stake: Math.min(5000, ui.stake + 10) })}>+</button>
+          </div>
+          <div className="quick-stakes cockpit-quick">
+            {[1, 5, 10, 50].map((value) => (
+              <button key={value} type="button" disabled={locked} className={ui.stake === value ? 'selected' : ''} onClick={() => setUI({ stake: value })}>{value}</button>
+            ))}
+            <button type="button" disabled={locked} className={ui.stake >= 5000 ? 'selected' : ''} onClick={() => setUI({ stake: 5000 })}>MAX</button>
+          </div>
+        </div>
+
+        <div className="control-group auto-cashout-group">
+          <label>
+            <button type="button" className={'auto-cashout-toggle ' + (ui.autoCashOut !== null ? 'enabled' : '')}
+              disabled={active} onClick={() => setUI({ autoCashOut: ui.autoCashOut === null ? 2 : null })}>
+              Auto Cashout (x)
+            </button>
+          </label>
+          <div className="stake-stepper">
+            <button type="button" disabled={active || ui.autoCashOut === null}
+              onClick={() => setUI({ autoCashOut: Math.max(1.05, Number(((ui.autoCashOut ?? 2) - 0.1).toFixed(2))) })}>−</button>
+            <input type="number" step=".1" min="1.05" max="100" value={ui.autoCashOut ?? ''} placeholder="2.00"
+              disabled={active || ui.autoCashOut === null}
+              onChange={(e) => setUI({ autoCashOut: Math.max(1.05, Math.min(100, Number(e.target.value) || 2)) })}/>
+            <button type="button" disabled={active || ui.autoCashOut === null}
+              onClick={() => setUI({ autoCashOut: Math.min(100, Number(((ui.autoCashOut ?? 2) + 0.1).toFixed(2))) })}>+</button>
+          </div>
+        </div>
+      </div>
+
+      <div className="cockpit-action-row">
+        <label className={'auto-bet-control ' + (ui.autoBet ? 'enabled' : '')}>
+          <span className="auto-badge">A</span>
+          <span className="auto-copy"><strong>Auto</strong><small>{ui.autoBet ? 'ON · NEXT ROUND' : 'OFF'}</small></span>
+          <input type="checkbox" checked={ui.autoBet} disabled={active} onChange={(e) => setUI({ autoBet: e.target.checked })}/>
+          <span className="switch-track"><span /></span>
         </label>
+        <button className="primary-bet-action cockpit-action" type="button" disabled={!canPlace && !canCash} onClick={canCash ? cash : place}>
+          <span className="action-plane">✈</span><span>{action}</span>
+        </button>
       </div>
-
-      <div className="bet-mode" role="tablist" aria-label={id + ' mode'}>
-        <button type="button" className={ui.mode === 'BET' ? 'selected' : ''} disabled={canCash} onClick={() => setUI({ mode: 'BET', autoBet: false })}>Bet</button>
-        <button type="button" className={ui.mode === 'AUTO' ? 'selected' : ''} disabled={canCash} onClick={() => setUI({ mode: 'AUTO', autoBet: true })}>Auto</button>
-      </div>
-
-      <div className="stake-control">
-        <button type="button" disabled={locked} aria-label="Decrease stake" onClick={() => setUI({ stake: Math.max(10, ui.stake - 10) })}>−</button>
-        <output>{ui.stake.toFixed(2)}</output>
-        <button type="button" disabled={locked} aria-label="Increase stake" onClick={() => setUI({ stake: Math.min(5000, ui.stake + 10) })}>+</button>
-      </div>
-
-      <div className="quick-stakes">
-        {[10, 50, 100, 500].map((value) => (
-          <button key={value} type="button" disabled={locked} onClick={() => setUI({ stake: value })}>{value}</button>
-        ))}
-      </div>
-
-      <label className="auto-cash-field">
-        <span>Auto Cash Out</span>
-        <input
-          type="number"
-          step=".1"
-          min="1.05"
-          max="100"
-          value={ui.autoCashOut ?? ''}
-          placeholder="2.00"
-          inputMode="decimal"
-          disabled={ui.autoCashOut === null || canCash}
-          onChange={(e) => {
-            const value = Number(e.target.value);
-            setUI({ autoCashOut: Number.isFinite(value) && value >= 1.05 ? Math.min(100, value) : 1.05 });
-          }}
-        />
-      </label>
-
-      <label className="auto-bet-field">
-        <input
-          type="checkbox"
-          checked={ui.autoBet}
-          disabled={canCash}
-          onChange={(e) => setUI({ autoBet: e.target.checked, mode: e.target.checked ? 'AUTO' : 'BET' })}
-        />
-        <span>Auto Bet</span>
-      </label>
-
-      <button className="primary-bet-action" type="button" disabled={locked} onClick={canCash ? cash : place}>
-        {action}
-      </button>
     </section>
   );
 }
@@ -123,8 +116,8 @@ export function AviatorProductionApp({
 }) {
   const [snapshot, setSnapshot] = useState(provider.snapshot());
   const [ui, setUI] = useState<Record<SlotId, UIState>>({
-    BET1: { stake: 10, autoBet: false, autoCashOut: null, mode: 'BET' },
-    BET2: { stake: 20, autoBet: false, autoCashOut: null, mode: 'BET' },
+    BET1: { stake: 10, autoBet: false, autoCashOut: 2, mode: 'BET' },
+    BET2: { stake: 25, autoBet: false, autoCashOut: 3, mode: 'BET' },
   });
   const [history, setHistory] = useState<number[]>([]);
 
@@ -164,14 +157,15 @@ export function AviatorProductionApp({
   return (
     <div className="aviator-shell">
       <header className="aviator-header">
-        <button className="menu-button" type="button" aria-label="Open menu">☰</button>
-        <div className="header-brand">
-          <span>✈ AVIATOR <em>PRO</em></span>
-          <small>ONE GAME. ONE FLIGHT. ONE PREMIUM EXPERIENCE.</small>
+        <button className="menu-button header-menu" type="button" aria-label="Open menu">☰</button>
+        <div className="header-brand igami-brand">
+          <span className="brand-lockup"><b className="brand-mark">➤</b><strong>IGAMI</strong></span>
+          <span className="brand-tagline">PLAY FOR FUN.<br /><strong>BUILD CONFIDENCE.</strong></span>
         </div>
         <div className="header-actions">
-          <div className="header-balance">DEMO PROVIDER</div>
-          <button className="deposit-button" type="button" aria-label="Provider status">●</button>
+          <button className="theme-button" type="button" aria-label="Toggle appearance">☼</button>
+          <div className="header-balance"><span>▣</span><strong>$1,000.00</strong></div>
+          <button className="deposit-button" type="button" aria-label="Open menu">☰</button>
         </div>
       </header>
 
@@ -188,39 +182,31 @@ export function AviatorProductionApp({
       </aside>
 
       <section className="panel flight">
-        <div className="flight-top">
-          <div>
-            <strong>LIVE FLIGHT</strong>
-            <div className="round">ROUND #{snapshot.round.id} · {roundLabel(snapshot.round.state)}</div>
-          </div>
-          <div className="online">● {snapshot.round.playerCount.toLocaleString()} Online</div>
+        <div className="flight-status-row">
+          <span className="flight-live"><i /> LIVE</span>
+          <span className="flight-round">Round #${snapshot.round.id}</span>
+          <span className="flight-players">♟ ${snapshot.round.playerCount.toLocaleString()}</span>
+          <span className="flight-quality">▮▮▮ Good</span>
         </div>
-
-        <div className="next-round">
-          <span>ROUND STATE</span>
-          <strong>{snapshot.round.state === 'BETTING_OPEN' ? 'OPEN' : snapshot.round.state === 'FLYING' ? 'LIVE' : '—'}</strong>
-        </div>
-
         <div className="flight-scene">
           <Atmosphere environment={environment} intensity={flightIntensityFromSnapshot(snapshot)} />
-          <div className="horizon" />
+          <div className="reference-stars" />
+          <div className="reference-mountains" />
+          <div className="reference-runway" />
         </div>
-
+        <div className="flight-axis" aria-hidden="true">
+          <span>5.0x</span><span>4.0x</span><span>3.0x</span><span>2.0x</span><span>1.0x</span>
+        </div>
         <svg className="flight-path" viewBox="0 0 100 100" preserveAspectRatio="none" aria-hidden="true">
           <path className="flight-path-fill" d={pathD + ' L 90 100 L 8 100 Z'} />
           <path className="flight-path-line" d={pathD} />
         </svg>
-
-        <div className="aircraft" style={{ left: aircraftX + '%', top: aircraftY + '%' }} aria-hidden="true">
-          <svg viewBox="0 0 96 48">
-            <path d="M6 27 C18 26 31 24 43 20 L68 5 C72 3 76 4 73 9 L63 21 L87 24 C92 25 93 28 88 30 L61 32 L49 43 C46 46 42 45 44 40 L48 32 L25 34 L15 41 C12 43 9 41 11 37 L17 32 L7 31 C2 31 2 28 6 27Z" fill="currentColor" />
-          </svg>
+        <div className="aircraft" style={{ left: aircraftX + '%' , top: aircraftY + '%' }} aria-hidden="true">
+          <svg viewBox="0 0 96 48"><path d="M6 27 C18 26 31 24 43 20 L68 5 C72 3 76 4 73 9 L63 21 L87 24 C92 25 93 28 88 30 L61 32 L49 43 C46 46 42 45 44 40 L48 32 L25 34 L15 41 C12 43 9 41 11 37 L17 32 L7 31 C2 31 2 28 6 27Z" fill="currentColor" /></svg>
         </div>
-
-        <div className="flight-state">{snapshot.round.state === 'FLYING' ? 'FLYING' : roundLabel(snapshot.round.state)}</div>
-        <div className="multiplier" aria-live="polite">{snapshot.round.multiplier.toFixed(2)}x</div>
-        <div className="history">
-          {history.map((value, index) => <span className="chip" key={index}>{value.toFixed(2)}x</span>)}
+        <div className="flight-copy">
+          <div className="multiplier" aria-live="polite">${snapshot.round.multiplier.toFixed(2)}x</div>
+          <div className="flight-message">${snapshot.round.state === 'FLYING' ? 'Keep it going...' : roundLabel(snapshot.round.state)}</div>
         </div>
       </section>
 
@@ -240,6 +226,11 @@ export function AviatorProductionApp({
       </aside>
 
       <section className="bet-workspace">
+        <div className="recent-multipliers mobile-first-recent">
+          <div className="section-heading"><strong>Recent Multipliers</strong><button type="button">All Rounds →</button></div>
+          <div className="recent-row">{history.slice(0, 8).map((value, index) => <span key={index} className={'recent-chip ' + (value >= 2 ? 'positive' : 'negative')}>{value.toFixed(2)}x</span>)}</div>
+        </div>
+
         <div className="bet-grid">
           <BetCard id="BET1" slot={snapshot.bets.BET1} ui={ui.BET1} round={snapshot.round} setUI={(value) => patch('BET1', value)} place={() => place('BET1')} cash={() => cash('BET1')} />
           <BetCard id="BET2" slot={snapshot.bets.BET2} ui={ui.BET2} round={snapshot.round} setUI={(value) => patch('BET2', value)} place={() => place('BET2')} cash={() => cash('BET2')} />
@@ -250,11 +241,6 @@ export function AviatorProductionApp({
           <div><strong>DAILY CHALLENGE</strong><small>Climb the leaderboard. Rewards are provider-controlled.</small></div>
           <span className="challenge-time">LIVE</span>
           <span className="chevron">›</span>
-        </div>
-
-        <div className="recent-multipliers">
-          <div className="section-heading"><strong>Recent Multipliers</strong><button type="button">All Rounds →</button></div>
-          <div className="recent-row">{history.slice(0, 6).map((value, index) => <span key={index} className={'recent-chip ' + (value >= 2 ? 'positive' : 'negative')}>{value.toFixed(2)}x</span>)}</div>
         </div>
 
         <div className="session-stats">
