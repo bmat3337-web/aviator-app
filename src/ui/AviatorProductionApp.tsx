@@ -205,7 +205,7 @@ export function AviatorProductionApp({
           <svg viewBox="0 0 96 48"><path d="M6 27 C18 26 31 24 43 20 L68 5 C72 3 76 4 73 9 L63 21 L87 24 C92 25 93 28 88 30 L61 32 L49 43 C46 46 42 45 44 40 L48 32 L25 34 L15 41 C12 43 9 41 11 37 L17 32 L7 31 C2 31 2 28 6 27Z" fill="currentColor" /></svg>
         </div>
         <div className="flight-copy">
-          <div className="multiplier" aria-live="polite">${snapshot.round.multiplier.toFixed(2)}x</div>
+          <div className="multiplier" aria-live="polite">{snapshot.round.multiplier.toFixed(2)}x</div>
           <div className="flight-message">${snapshot.round.state === 'FLYING' ? 'Keep it going...' : roundLabel(snapshot.round.state)}</div>
         </div>
       </section>
