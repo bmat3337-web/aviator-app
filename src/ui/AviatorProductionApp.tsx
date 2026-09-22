@@ -273,11 +273,21 @@ export function AviatorProductionApp({
       </section>
 
       <nav className="mobile-nav" aria-label="Primary navigation">
-        <button type="button" className="active"><span className="nav-icon" aria-hidden="true">✈</span><span>Play</span></button>
-        <button type="button"><span className="nav-icon" aria-hidden="true">▥</span><span>Stats</span></button>
-        <button type="button"><span className="nav-icon" aria-hidden="true">◇</span><span>Learn</span></button>
-        <button type="button"><span className="nav-icon" aria-hidden="true">♙</span><span>Community</span></button>
-        <button type="button"><span className="nav-icon" aria-hidden="true">•••</span><span>More</span></button>
+        <button type="button" className="active">
+          <span className="nav-icon" aria-hidden="true">🎮</span><span>Play</span>
+        </button>
+        <button type="button">
+          <span className="nav-icon" aria-hidden="true">▥</span><span>Stats</span>
+        </button>
+        <button type="button">
+          <span className="nav-icon" aria-hidden="true">🎓</span><span>Learn</span>
+        </button>
+        <button type="button">
+          <span className="nav-icon" aria-hidden="true">♟♟</span><span>Community</span>
+        </button>
+        <button type="button">
+          <span className="nav-icon" aria-hidden="true">•••</span><span>More</span>
+        </button>
       </nav>
 
       <footer className="trust-strip">
