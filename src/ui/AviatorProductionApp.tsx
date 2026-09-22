@@ -158,9 +158,8 @@ export function AviatorProductionApp({
     <div className="aviator-shell">
       <header className="aviator-header">
         <button className="menu-button header-menu" type="button" aria-label="Open menu">☰</button>
-        <div className="header-brand igami-brand">
-          <span className="brand-lockup"><b className="brand-mark">➤</b><strong>IGAMI</strong></span>
-          <span className="brand-tagline">PLAY FOR FUN.<br /><strong>BUILD CONFIDENCE.</strong></span>
+        <div className="header-brand aviator-brand">
+          <span className="brand-lockup"><b className="brand-mark">✈</b><strong>AVIATOR</strong></span>
         </div>
         <div className="header-actions">
           <button className="theme-button" type="button" aria-label="Toggle appearance">☼</button>
