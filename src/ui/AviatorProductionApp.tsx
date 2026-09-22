@@ -40,7 +40,7 @@ function BetCard({
   const canPlace = round.state === 'BETTING_OPEN' && slot.state === 'IDLE';
   const canCash = round.state === 'FLYING' && active;
   const locked = active || slot.state === 'CASHED_OUT' || slot.state === 'CRASHED' || slot.state === 'SETTLED';
-  const action = canCash ? 'CASH OUT' : slot.state === 'BETTING' ? 'BET (NEXT ROUND)' : (id === 'BET1' ? 'BET 1' : 'BET 2');
+  const action = canCash ? 'CASH OUT' : ui.autoBet && !canPlace ? 'BET (NEXT ROUND)' : (id === 'BET1' ? 'BET 1' : 'BET 2');
   const payout = slot.payout > 0 ? slot.payout : ui.stake * (ui.autoCashOut ?? 2);
 
   return (
