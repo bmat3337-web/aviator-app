@@ -107,3 +107,35 @@
  .action-plane{font-size:14px!important}
  .mobile-nav{height:54px!important;padding:5px 5px!important}
 }
+
+/* REFERENCE FLIGHT VISUAL — CSS fallback when environment media is unavailable */
+.flight-scene{
+ background:
+  radial-gradient(ellipse at 72% 58%,rgba(255,55,75,.34) 0%,rgba(255,55,75,.12) 18%,transparent 43%),
+  radial-gradient(ellipse at 22% 35%,rgba(41,111,170,.30) 0%,rgba(18,58,91,.16) 25%,transparent 52%),
+  linear-gradient(180deg,#020a18 0%,#06142a 42%,#15243a 68%,#100b17 100%)!important;
+}
+.flight-scene:before{
+ content:"";position:absolute;inset:0;z-index:1;pointer-events:none;
+ background:
+  radial-gradient(ellipse at 12% 30%,rgba(151,187,214,.24) 0 6%,transparent 20%),
+  radial-gradient(ellipse at 27% 34%,rgba(102,151,190,.20) 0 5%,transparent 18%),
+  radial-gradient(ellipse at 67% 27%,rgba(57,103,148,.16) 0 5%,transparent 19%),
+  radial-gradient(ellipse at 83% 38%,rgba(31,73,111,.22) 0 5%,transparent 18%);
+ filter:blur(8px);
+}
+.flight-scene:after{
+ content:"";position:absolute;left:0;right:0;bottom:13%;height:42%;z-index:2;pointer-events:none;
+ background:
+  linear-gradient(145deg,transparent 0 27%,#0b1a2c 28% 44%,transparent 45%),
+  linear-gradient(32deg,transparent 0 35%,#13263b 36% 54%,transparent 55%),
+  linear-gradient(150deg,transparent 0 49%,#071321 50% 68%,transparent 69%);
+ opacity:.95;
+}
+.reference-stars{z-index:3!important}
+.reference-mountains{z-index:4!important;opacity:.82}
+.reference-runway{z-index:5!important}
+.flight-path{z-index:12!important}
+.flight-axis{z-index:15!important}
+.flight-copy{z-index:18!important}
+.aircraft{z-index:14!important}
