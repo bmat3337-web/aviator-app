@@ -263,3 +263,120 @@
     z-index:3!important;
   }
 }
+
+/* MOBILE SINGLE-PAGE SCROLL — FINAL CANONICAL OVERRIDE */
+@media (max-width:700px){
+  html,body{
+    margin:0!important;
+    width:100%!important;
+    height:auto!important;
+    min-height:0!important;
+    max-height:none!important;
+    overflow-x:hidden!important;
+    overflow-y:visible!important;
+  }
+
+  #root,#app{
+    width:100%!important;
+    height:auto!important;
+    min-height:0!important;
+    max-height:none!important;
+    overflow:visible!important;
+  }
+
+  .aviator-shell{
+    display:flex!important;
+    flex-direction:column!important;
+    width:100%!important;
+    height:auto!important;
+    min-height:0!important;
+    max-height:none!important;
+    overflow:visible!important;
+    padding:0 10px 0!important;
+    gap:6px!important;
+  }
+
+  .aviator-header,
+  .flight,
+  .bet-workspace,
+  .bet-grid,
+  .bet-card,
+  .daily-challenge,
+  .session-stats,
+  .utility-grid,
+  .mobile-nav{
+    position:relative!important;
+    top:auto!important;
+    right:auto!important;
+    bottom:auto!important;
+    left:auto!important;
+    float:none!important;
+    flex:none!important;
+  }
+
+  .aviator-header{
+    height:64px!important;
+    min-height:64px!important;
+    margin:0 -10px!important;
+    z-index:2!important;
+  }
+
+  .flight{
+    height:205px!important;
+    min-height:205px!important;
+    max-height:none!important;
+    z-index:1!important;
+  }
+
+  .bet-workspace{
+    display:flex!important;
+    flex-direction:column!important;
+    height:auto!important;
+    min-height:0!important;
+    overflow:visible!important;
+  }
+
+  .bet-grid{
+    display:grid!important;
+    grid-template-columns:1fr!important;
+    gap:6px!important;
+    height:auto!important;
+    min-height:0!important;
+    overflow:visible!important;
+  }
+
+  .bet-card{
+    height:auto!important;
+    min-height:0!important;
+    max-height:none!important;
+    overflow:visible!important;
+  }
+
+  /* Keep the complete page in the document instead of hiding it on mobile. */
+  .daily-challenge,
+  .session-stats,
+  .utility-grid{
+    display:flex!important;
+  }
+
+  .session-stats{
+    display:grid!important;
+  }
+
+  .utility-grid{
+    display:grid!important;
+  }
+
+  .daily-challenge{
+    margin-top:2px!important;
+  }
+
+  .mobile-nav{
+    display:flex!important;
+    height:64px!important;
+    min-height:64px!important;
+    margin:0 -10px!important;
+    padding:6px!important;
+    z-index:2!important;
+  }
+}
