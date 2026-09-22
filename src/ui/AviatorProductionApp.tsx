@@ -76,7 +76,7 @@ function BetCard({
               onChange={(e) => setUI({ autoCashOut: Math.max(1.05, Math.min(100, Number(e.target.value) || 2)) })}/>
             <button type="button" disabled={active || ui.autoCashOut === null}
               onClick={() => setUI({ autoCashOut: Math.min(100, Number(((ui.autoCashOut ?? 2) + 0.1).toFixed(2))) })}>+</button>
-          <
+          </div>
           <button
             type="button"
             className={'auto-cashout-button ' + (ui.autoCashOut !== null ? 'enabled' : '')}
@@ -85,7 +85,7 @@ function BetCard({
             onClick={() => setUI({ autoCashOut: ui.autoCashOut === null ? 2 : null })}
           >
             Auto Cashout {ui.autoCashOut !== null ? 'ON' : 'OFF'}
-          </button>/div>
+          </button>
         </div>
       </div>
 
