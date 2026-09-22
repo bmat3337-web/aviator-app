@@ -1,13 +1,12 @@
+import { createRoot } from 'react-dom/client';
 import { SimulatorProvider } from './domain/simulator';
-import { FlightScreen } from './app/FlightScreen';
 import { AviatorProductionApp } from './ui/AviatorProductionApp';
 
 const provider = new SimulatorProvider('AVIATOR-DEMO-001', 0);
 const root = document.getElementById('app');
 if (!root) throw new Error('AVIATOR application root was not found');
 
-const appRoot = AviatorProductionApp as unknown as (args: {provider: typeof provider}) => HTMLElement;
-root.appendChild(appRoot({ provider }));
+createRoot(root).render(<AviatorProductionApp provider={provider} />);
 
 provider.start();
 const timer = window.setInterval(() => {
