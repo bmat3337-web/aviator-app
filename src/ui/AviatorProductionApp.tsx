@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import type { IGameProvider } from '../domain/IGameProvider';
 import type { GameSnapshot, SlotId } from '../domain/game';
+import type { EnvironmentId } from './Atmosphere';
 import './aviator.css';
 import { Atmosphere } from './Atmosphere';
 import { flightIntensityFromSnapshot } from './atmosphereController';
@@ -41,7 +42,13 @@ function BetCard(p:{
  </section>;
 }
 
-export function AviatorProductionApp({provider}:{provider:IGameProvider}){
+export function AviatorProductionApp({
+ provider,
+ environment = 'above-clouds',
+}: {
+ provider: IGameProvider;
+ environment?: EnvironmentId;
+}){
  const [snapshot,setSnapshot]=useState(provider.snapshot());
  const [ui,setUI]=useState<Record<SlotId,UIState>>({
   BET1:{stake:10,autoBet:false,autoCashOut:null},
@@ -72,7 +79,7 @@ export function AviatorProductionApp({provider}:{provider:IGameProvider}){
     {history.length?history.map((v,i)=><i key={i}>{v.toFixed(2)}x</i>):<div className="history-empty">ROUND HISTORY WILL APPEAR FROM COMPLETED PROVIDER ROUNDS.</div>}
    </aside>
    <section className="center">
-    <div className="flight"><Atmosphere environment="above-clouds" intensity={flightIntensityFromSnapshot(snapshot)} /><div className="telemetry">● LIVE FLIGHT · ROUND #{snapshot.round.id}<span>{snapshot.round.playerCount.toLocaleString()} ONLINE</span></div>
+    <div className="flight"><Atmosphere environment={environment} intensity={flightIntensityFromSnapshot(snapshot)} /><div className="telemetry">● LIVE FLIGHT · ROUND #{snapshot.round.id}<span>{snapshot.round.playerCount.toLocaleString()} ONLINE</span></div>
      <div className="stage"><svg viewBox="0 0 100 100" preserveAspectRatio="none"><path d="M8 88Q25 82 40 70T62 48T78 30T92 14L92 100L8 100Z"/><path className="line" d="M8 88Q25 82 40 70T62 48T78 30T92 14"/></svg>
       <div className="plane" style={{left:x+'%',top:y+'%'}}>✈</div><div className="state">{label(snapshot.round.state)}</div><div className="mult">{snapshot.round.multiplier.toFixed(2)}x</div>
      </div>
