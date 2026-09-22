@@ -245,7 +245,7 @@ export function AviatorProductionApp({
         <section className="flight-room">
           <div className="flight-room-head">
             <div><span className="room-live-dot" /> <strong>LIVE FLIGHT ROOM</strong> <small>SIMULATION</small></div>
-            <span className="room-online">♙ {snapshot.round.playerCount.toLocaleString(){'}'} online</span>
+            <span className="room-online">♙ {snapshot.round.playerCount.toLocaleString()} online</span>
           </div>
           <div className="room-tabs"><button className="active" type="button">All Bets</button><button type="button">My Bets</button><button type="button">Top Wins</button></div>
           <div className="room-table-head"><span>PILOT / USER</span><span>BET STAKE</span><span>CASH OUT</span></div>
@@ -256,8 +256,8 @@ export function AviatorProductionApp({
 
         <section className="round-ledger">
           <div className="ledger-head"><strong>◷ ROUND LEDGER</strong><span>SIMULATION</span></div>
-          <div className="ledger-current"><span>CURRENT FLIGHT <b>#{snapshot.round.id}</b></span><span>STATUS <b>{roundLabel(snapshot.round.state){'}'}</b></span></div>
-          <div className="ledger-row"><span>Round #{snapshot.round.id}</span><strong>{snapshot.round.multiplier.toFixed(2){'}'}x</strong></div>
+          <div className="ledger-current"><span>CURRENT FLIGHT <b>#{snapshot.round.id}</b></span><span>STATUS <b>{roundLabel(snapshot.round.state)}</b></span></div>
+          <div className="ledger-row"><span>Round #{snapshot.round.id}</span><strong>{snapshot.round.multiplier.toFixed(2)}x</strong></div>
           <button type="button" className="ledger-proof">♢ Full History &amp; Proofs</button>
         </section>
 
