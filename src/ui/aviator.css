@@ -173,3 +173,84 @@
 .round-ledger .ledger-head{
   border-top:0!important;
 }
+
+/* FINAL BET COMPACT PASS */
+@media(max-width:700px){
+  .cockpit-bet{
+    padding:6px!important;
+    min-height:0!important;
+  }
+  .cockpit-bet-head{
+    margin:0 0 3px!important;
+    min-height:18px!important;
+  }
+  .cockpit-bet .bet-name{font-size:14px!important;line-height:1.1!important}
+  .cockpit-controls{
+    display:grid!important;
+    grid-template-columns:1fr 1fr!important;
+    gap:6px!important;
+    align-items:start!important;
+  }
+  .cockpit-controls .control-group{min-width:0!important}
+  .control-group>label,.auto-cashout-head label{font-size:8px!important}
+  .stake-stepper{height:32px!important;grid-template-columns:28px minmax(0,1fr) 28px!important}
+  .stake-stepper button{height:32px!important;font-size:15px!important}
+  .stake-stepper input{font-size:13px!important}
+  .cockpit-quick{margin-top:2px!important;gap:2px!important}
+  .cockpit-quick button{height:20px!important;padding:0!important;font-size:8px!important}
+  .auto-cashout-head{margin-bottom:2px!important}
+  .auto-cashout-button{
+    width:100%!important;
+    height:20px!important;
+    margin-top:2px!important;
+    padding:0 5px!important;
+    border:1px solid #33404a!important;
+    border-radius:6px!important;
+    background:#10171c!important;
+    color:#98958e!important;
+    font:700 8px ui-monospace!important;
+  }
+  .auto-cashout-button.enabled{
+    border-color:currentColor!important;
+    color:var(--gold2)!important;
+  }
+  .cockpit-action-row{gap:5px!important;margin-top:4px!important}
+  .auto-bet-control,.cockpit-action{height:34px!important;min-height:34px!important}
+  .auto-bet-control{padding:2px 5px!important}
+  .auto-badge{width:23px!important;height:23px!important;font-size:13px!important}
+  .auto-copy strong{font-size:9px!important}
+  .auto-copy small{font-size:7px!important}
+  .cockpit-action{font-size:10px!important}
+  .action-plane{font-size:12px!important}
+}
+
+/* ROUND HISTORY — compact, borderless */
+@media(max-width:700px){
+  .round-ledger{
+    margin-top:4px!important;
+    padding:0!important;
+  }
+  .ledger-head{
+    padding:7px 8px!important;
+    font-size:9px!important;
+  }
+  .ledger-head span{font-size:7px!important;padding:2px 4px!important}
+  .ledger-current{
+    padding:7px 8px!important;
+    font-size:7px!important;
+  }
+  .ledger-current b{font-size:10px!important;margin-top:2px!important}
+  .ledger-row{
+    padding:7px 8px!important;
+    font-size:9px!important;
+  }
+  .ledger-row strong{font-size:10px!important}
+  .ledger-proof{
+    margin:6px 0!important;
+    width:100%!important;
+    height:30px!important;
+    font-size:9px!important;
+    border:0!important;
+    background:#11161a!important;
+  }
+}
