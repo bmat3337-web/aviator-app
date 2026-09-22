@@ -17,6 +17,8 @@ function roundLabel(state: string) {
   return state === 'CRASH' ? 'CRASHED' : state.replaceAll('_', ' ');
 }
 
+const DEMO_BALANCE = 1000;
+
 function BetCard({
   id,
   slot,
@@ -48,6 +50,7 @@ function BetCard({
           </span>
           <span className="bet-state">{roundLabel(slot.state)}</span>
         </div>
+        <div className="bet-balance">Balance (Demo) <strong>${DEMO_BALANCE.toFixed(2)}</strong></div>
         <label className="toggle-label">
           <span>Auto Cash Out</span>
           <input
@@ -249,6 +252,17 @@ export function AviatorProductionApp({
           <span className="chevron">›</span>
         </div>
 
+        <div className="recent-multipliers">
+          <div className="section-heading"><strong>Recent Multipliers</strong><button type="button">All Rounds →</button></div>
+          <div className="recent-row">{history.slice(0, 6).map((value, index) => <span key={index} className={'recent-chip ' + (value >= 2 ? 'positive' : 'negative')}>{value.toFixed(2)}x</span>)}</div>
+        </div>
+
+        <div className="session-stats">
+          <div><strong>♙</strong><span>{snapshot.round.playerCount.toLocaleString()}<small>Players</small></span></div>
+          <div><strong>◉</strong><span>Demo<small>Total Bets</small></span></div>
+          <div><strong>◷</strong><span>LIVE<small>Round Time</small></span></div>
+        </div>
+
         <div className="utility-grid">
           <button type="button">◈<span>How to Play</span></button>
           <button type="button">▤<span>Game Rules</span></button>
@@ -256,6 +270,14 @@ export function AviatorProductionApp({
           <button type="button">◇<span>Probably Fair</span></button>
         </div>
       </section>
+
+      <nav className="mobile-nav" aria-label="Primary navigation">
+        <button type="button" className="active">✈<span>Play</span></button>
+        <button type="button">▥<span>Stats</span></button>
+        <button type="button">◇<span>Learn</span></button>
+        <button type="button">♙<span>Community</span></button>
+        <button type="button">•••<span>More</span></button>
+      </nav>
 
       <footer className="trust-strip">
         <span>⌾ Secure <small>Provider-controlled funds</small></span>
