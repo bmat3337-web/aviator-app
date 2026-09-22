@@ -179,11 +179,11 @@ export function AviatorProductionApp({
       </aside>
 
       <section className="panel flight">
-        <div className="flight-status-row">
+        <div className="flight-status-row" aria-label="Live flight status">
           <span className="flight-live"><i /> LIVE</span>
           <span className="flight-round">Round #{snapshot.round.id}</span>
-          <span className="flight-players">♟ {snapshot.round.playerCount.toLocaleString()}</span>
-          <span className="flight-quality">▮▮▮ Good</span>
+          <span className="flight-players"><span aria-hidden="true">♟</span> {snapshot.round.playerCount.toLocaleString()}</span>
+          <span className="flight-quality"><span aria-hidden="true">▮▮▮</span> Good</span>
         </div>
         <div className="flight-scene">
           <Atmosphere environment={environment} intensity={flightIntensityFromSnapshot(snapshot)} />
@@ -272,11 +272,11 @@ export function AviatorProductionApp({
       </section>
 
       <nav className="mobile-nav" aria-label="Primary navigation">
-        <button type="button" className="active">✈<span>Flight</span></button>
-        <button type="button">🏆<span>Challenge</span></button>
-        <button type="button">▢<span>Social</span></button>
-        <button type="button">◷<span>History</span></button>
-        <button type="button">♙<span>Profile</span></button>
+        <button type="button" className="active"><span className="nav-icon" aria-hidden="true">✈</span><span>Play</span></button>
+        <button type="button"><span className="nav-icon" aria-hidden="true">▥</span><span>Stats</span></button>
+        <button type="button"><span className="nav-icon" aria-hidden="true">◇</span><span>Learn</span></button>
+        <button type="button"><span className="nav-icon" aria-hidden="true">♙</span><span>Community</span></button>
+        <button type="button"><span className="nav-icon" aria-hidden="true">•••</span><span>More</span></button>
       </nav>
 
       <footer className="trust-strip">
