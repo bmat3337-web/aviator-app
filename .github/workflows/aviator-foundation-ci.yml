@@ -2,7 +2,7 @@ name: Aviator Foundation CI
 
 on:
   push:
-    branches: ["aviator/foundation-v1"]
+    branches: ["aviator/foundation-v1", "aviator/ui-transfer-ai-studio"]
   pull_request:
     branches: ["main"]
   workflow_dispatch:
