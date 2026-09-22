@@ -233,6 +233,11 @@ export function AviatorProductionApp({
       </aside>
 
       <section className="bet-workspace">
+        <div className="recent-multipliers mobile-first-recent">
+          <div className="section-heading"><strong>Recent Multipliers</strong><button type="button">All Rounds →</button></div>
+          <div className="recent-row">{history.slice(0, 8).map((value, index) => <span key={index} className={'recent-chip ' + (value >= 2 ? 'positive' : 'negative')}>{value.toFixed(2)}x</span>)}</div>
+        </div>
+
         <div className="bet-grid">
           <BetCard id="BET1" slot={snapshot.bets.BET1} ui={ui.BET1} round={snapshot.round} setUI={(value) => patch('BET1', value)} place={() => place('BET1')} cash={() => cash('BET1')} />
           <BetCard id="BET2" slot={snapshot.bets.BET2} ui={ui.BET2} round={snapshot.round} setUI={(value) => patch('BET2', value)} place={() => place('BET2')} cash={() => cash('BET2')} />
@@ -243,11 +248,6 @@ export function AviatorProductionApp({
           <div><strong>DAILY CHALLENGE</strong><small>Climb the leaderboard. Rewards are provider-controlled.</small></div>
           <span className="challenge-time">LIVE</span>
           <span className="chevron">›</span>
-        </div>
-
-        <div className="recent-multipliers">
-          <div className="section-heading"><strong>Recent Multipliers</strong><button type="button">All Rounds →</button></div>
-          <div className="recent-row">{history.slice(0, 6).map((value, index) => <span key={index} className={'recent-chip ' + (value >= 2 ? 'positive' : 'negative')}>{value.toFixed(2)}x</span>)}</div>
         </div>
 
         <div className="session-stats">
