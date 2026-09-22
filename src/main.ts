@@ -6,7 +6,7 @@ const provider = new SimulatorProvider('AVIATOR-DEMO-001', 0);
 const root = document.getElementById('app');
 if (!root) throw new Error('AVIATOR application root was not found');
 
-createRoot(root).render(<AviatorProductionApp provider={provider} />);
+createRoot(root).render(AviatorProductionApp({ provider }));
 
 provider.start();
 const timer = window.setInterval(() => {
