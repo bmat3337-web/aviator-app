@@ -66,3 +66,44 @@
  .daily-challenge,.session-stats,.utility-grid{display:none!important}
  .mobile-nav{position:sticky!important;bottom:0!important;margin:0 -10px!important;padding:7px 6px!important;height:58px;background:#020b11!important;border-top:1px solid #263842!important;z-index:45!important}
 }
+
+/* FINAL MOBILE ACTIVE-PLAY COMPOSITION */
+@media(max-width:700px){
+ .aviator-shell{gap:4px!important}
+ .aviator-header{height:64px!important}
+ .flight{height:205px!important;min-height:205px!important}
+ .flight-status-row{top:7px!important}
+ .flight-axis{top:48px!important;bottom:34px!important}
+ .flight-copy{top:25%!important}
+ .flight-copy .multiplier{font-size:43px!important}
+ .flight-message{font-size:12px!important;margin-top:2px!important}
+ .flight-path{inset:34% 4% 8%!important;height:58%!important}
+ .aircraft{width:38px!important}
+ .recent-multipliers{padding:7px 10px!important}
+ .recent-row{gap:12px!important}
+ .recent-chip{font-size:12px!important}
+ .cockpit-bet{padding:7px!important;border-radius:12px!important}
+ .cockpit-bet-head{margin-bottom:5px!important}
+ .cockpit-bet .bet-name{font-size:17px!important}
+ .cockpit-bet .bet-state{font-size:8px!important}
+ .potential-payout span{font-size:7px!important}
+ .potential-payout strong{font-size:12px!important}
+ .cockpit-controls{gap:5px!important}
+ .control-group>label{font-size:8px!important;margin-bottom:2px!important}
+ .stake-stepper{height:34px!important;grid-template-columns:29px minmax(0,1fr) 29px!important}
+ .stake-stepper button{font-size:17px!important}
+ .stake-stepper input{font-size:15px!important}
+ .cockpit-quick{margin-top:3px!important;gap:2px!important}
+ .cockpit-quick button{height:23px!important;font-size:8px!important}
+ .cockpit-action-row{margin-top:5px!important;gap:4px!important}
+ .auto-bet-control,.cockpit-action{height:38px!important;min-height:38px!important}
+ .auto-bet-control{padding:2px 5px!important}
+ .auto-badge{width:27px!important;height:27px!important;font-size:14px!important}
+ .auto-copy strong{font-size:10px!important}
+ .auto-copy small{font-size:7px!important}
+ .switch-track{width:34px!important;height:19px!important}
+ .switch-track span{width:13px!important;height:13px!important}
+ .cockpit-action{font-size:11px!important}
+ .action-plane{font-size:14px!important}
+ .mobile-nav{height:54px!important;padding:5px 5px!important}
+}
