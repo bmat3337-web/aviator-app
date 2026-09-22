@@ -391,3 +391,29 @@
   .mobile-nav .nav-icon{font-size:19px}
   .mobile-nav button{font-size:9px!important}
 }
+
+/* FIX: reference bet action must occupy the full right-hand control area */
+.cockpit-action-row{
+  grid-template-columns:minmax(0,1fr) 1px minmax(0,1.35fr)!important;
+}
+.cockpit-action{
+  width:100%!important;
+  min-width:0!important;
+}
+.action-divider{
+  width:1px!important;
+  height:58%!important;
+  align-self:center!important;
+  background:#69747a!important;
+  opacity:.55;
+  margin:0!important;
+}
+@media(max-width:700px){
+  .cockpit-action-row{
+    grid-template-columns:minmax(0,1fr) 1px minmax(0,1.45fr)!important;
+    gap:5px!important;
+  }
+  .action-divider{
+    height:52%!important;
+  }
+}
