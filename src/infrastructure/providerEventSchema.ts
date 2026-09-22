@@ -1,0 +1,1 @@
+export const PROVIDER_EVENT_SCHEMA=`CREATE TABLE IF NOT EXISTS aviator_provider_events (event_key TEXT PRIMARY KEY,provider_round_id TEXT NOT NULL,sequence BIGINT NOT NULL,event_type TEXT NOT NULL,multiplier NUMERIC(12,2),occurred_at TIMESTAMPTZ NOT NULL,UNIQUE(provider_round_id,sequence,event_type));`;

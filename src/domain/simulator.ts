@@ -1,27 +1,211 @@
-import type { BetSlot, GameSnapshot, Round, SlotId } from "./game";
-import type { CashOutResult, IGameProvider, PlaceBetRequest } from "./IGameProvider";
+import type {
+  BetSlot,
+  GameSnapshot,
+  RoundState,
+  SlotId,
+} from "./game";
+import type {
+  CashOutResult,
+  IGameProvider,
+  PlaceBetRequest,
+} from "./IGameProvider";
+import {
+  BET_SLOTS,
+  cashOutPayout,
+  canCashOut,
+  canPlaceBet,
+  normalizeAutoCashOut,
+  validateStake,
+} from "./betRules";
 
-const slots: Record<SlotId, BetSlot> = {
-  BET1:{slot:"BET1",state:"IDLE",stake:0,multiplier:null,payout:0,autoBet:false,autoCashOut:null},
-  BET2:{slot:"BET2",state:"IDLE",stake:0,multiplier:null,payout:0,autoBet:false,autoCashOut:null}
-};
+function hash(input: string): number {
+  let h = 2166136261;
+  for (let i = 0; i < input.length; i += 1) {
+    h ^= input.charCodeAt(i);
+    h = Math.imul(h, 16777619);
+  }
+  return h >>> 0;
+}
+
+export function deterministicCrash(seed: string, sequenceIndex: number): number {
+  const value = hash(seed + ":" + sequenceIndex);
+  const normalized = (value + 1) / 4294967297;
+  const raw = 1 + normalized * 7;
+  return Math.max(1.01, Number(raw.toFixed(2)));
+}
+
+function createBet(slot: SlotId): BetSlot {
+  return {
+    slot,
+    state: "IDLE",
+    stake: 0,
+    multiplier: null,
+    payout: 0,
+    autoBet: false,
+    autoCashOut: null,
+  };
+}
 
 export class SimulatorProvider implements IGameProvider {
-  private value: GameSnapshot;
-  private listeners=new Set<(s:GameSnapshot)=>void>();
-  constructor(private seed="AVIATOR-DEMO-001",private index=0){this.value=this.make("WAITING");}
-  snapshot(){return structuredClone(this.value);}
-  subscribe(fn:(s:GameSnapshot)=>void){this.listeners.add(fn);return()=>this.listeners.delete(fn);}
-  start(){if(this.value.round.state==="WAITING")this.transition("BETTING_OPEN");}
-  stop(){}
-  reset(){this.value=this.make("WAITING");this.emit();}
-  placeBet(r:PlaceBetRequest){const b=this.value.bets[r.slot];if(this.value.round.state!=="BETTING_OPEN"||b.state!=="IDLE")return;this.setBet(r.slot,{state:"BET_PLACED",stake:Math.max(0,r.stake),autoBet:!!r.autoBet,autoCashOut:r.autoCashOut??null});}
-  cashOut(id:SlotId):CashOutResult{const b=this.value.bets[id];if(this.value.round.state!=="FLYING"||!["BET_PLACED","ACTIVE"].includes(b.state))throw new Error("Bet is not cashable");const m=this.value.round.multiplier,p=Number((b.stake*m).toFixed(2));this.setBet(id,{state:"CASHED_OUT",multiplier:m,payout:p});return{slot:id,multiplier:m,payout:p};}
-  advance(){const s=this.value.round.state;if(s==="WAITING")this.transition("BETTING_OPEN");else if(s==="BETTING_OPEN"){for(const id of ["BET1","BET2"] as SlotId[])if(this.value.bets[id].state==="BET_PLACED")this.setBet(id,{state:"ACTIVE"});this.transition("BETTING_CLOSED");}else if(s==="BETTING_CLOSED"){this.transition("FLYING");this.setMultiplier(1);}else if(s==="FLYING"){const n=Number((this.value.round.multiplier+.25).toFixed(2));if(n>=this.value.round.crashMultiplier){this.setMultiplier(this.value.round.crashMultiplier);for(const id of ["BET1","BET2"] as SlotId[]){const b=this.value.bets[id];if(b.state==="BET_PLACED"||b.state==="ACTIVE")this.setBet(id,{state:"CRASHED"});}this.transition("CRASH");}else{this.setMultiplier(n);for(const id of ["BET1","BET2"] as SlotId[]){const b=this.value.bets[id];if((b.state==="BET_PLACED"||b.state==="ACTIVE")&&b.autoCashOut&&n>=b.autoCashOut)this.cashOut(id);}}}else if(s==="CRASH")this.transition("RESULT");else if(s==="RESULT"){for(const id of ["BET1","BET2"] as SlotId[])this.setBet(id,{state:this.value.bets[id].autoBet?"IDLE":"SETTLED",multiplier:null,payout:0});this.transition("NEXT_ROUND");}else if(s==="NEXT_ROUND")this.transition("BETTING_OPEN");return this.snapshot();}
-  private make(state:Round["state"]):GameSnapshot{return{round:{id:"SIM-"+(this.index+1),state,multiplier:1,crashMultiplier:deterministicCrash(this.seed,this.index),seed:this.seed,sequenceIndex:this.index,playerCount:1},bets:structuredClone(slots)};}
-  private transition(state:Round["state"]){this.value={...this.value,round:{...this.value.round,state}};this.emit();}
-  private setMultiplier(multiplier:number){this.value={...this.value,round:{...this.value.round,multiplier}};this.emit();}
-  private setBet(id:SlotId,patch:Partial<BetSlot>){this.value={...this.value,bets:{...this.value.bets,[id]:{...this.value.bets[id],...patch}}};this.emit();}
-  private emit(){const s=this.snapshot();for(const fn of this.listeners)fn(s);}
+  private readonly seed: string;
+  private sequenceIndex: number;
+  private running = false;
+  private listeners = new Set<(snapshot: GameSnapshot) => void>();
+  private current: GameSnapshot;
+
+  constructor(seed: string, sequenceIndex = 0) {
+    this.seed = seed;
+    this.sequenceIndex = sequenceIndex;
+    this.current = this.createRound("WAITING");
+  }
+
+  private createRound(state: RoundState): GameSnapshot {
+    const crashMultiplier = deterministicCrash(this.seed, this.sequenceIndex);
+    return {
+      round: {
+        id: "SIM-" + this.sequenceIndex.toString().padStart(6, "0"),
+        state,
+        multiplier: 1,
+        crashMultiplier,
+        seed: this.seed,
+        sequenceIndex: this.sequenceIndex,
+        playerCount: 42,
+      },
+      bets: {
+        BET1: createBet("BET1"),
+        BET2: createBet("BET2"),
+      },
+    };
+  }
+
+  snapshot(): GameSnapshot {
+    return structuredClone(this.current);
+  }
+
+  subscribe(listener: (snapshot: GameSnapshot) => void): () => void {
+    this.listeners.add(listener);
+    listener(this.snapshot());
+    return () => this.listeners.delete(listener);
+  }
+
+  start(): void {
+    this.running = true;
+  }
+
+  stop(): void {
+    this.running = false;
+  }
+
+  reset(): void {
+    this.sequenceIndex = 0;
+    this.current = this.createRound("WAITING");
+    this.emit();
+  }
+
+  private emit(): void {
+    const snapshot = this.snapshot();
+    this.listeners.forEach((listener) => listener(snapshot));
+  }
+
+  private transition(state: RoundState): void {
+    this.current.round.state = state;
+    this.emit();
+  }
+
+  advance(): void {
+    if (!this.running) return;
+
+    const state = this.current.round.state;
+
+    if (state === "WAITING") {
+      this.transition("BETTING_OPEN");
+      return;
+    }
+
+    if (state === "BETTING_OPEN") {
+      for (const slot of BET_SLOTS) {
+        const bet = this.current.bets[slot];
+        if (bet.autoBet && bet.state === "IDLE" && bet.stake > 0) {
+          bet.state = "BET_PLACED";
+        }
+      }
+      this.transition("BETTING_CLOSED");
+      return;
+    }
+
+    if (state === "BETTING_CLOSED") {
+      for (const slot of BET_SLOTS) {
+        const bet = this.current.bets[slot];
+        if (bet.state === "BET_PLACED") bet.state = "ACTIVE";
+      }
+      this.transition("FLYING");
+      return;
+    }
+
+    if (state === "FLYING") {
+      const nextMultiplier = Number(
+        Math.min(this.current.round.crashMultiplier, this.current.round.multiplier + 0.25).toFixed(2),
+      );
+      this.current.round.multiplier = nextMultiplier;
+
+      for (const slot of BET_SLOTS) {
+        const bet = this.current.bets[slot];
+        if (
+          bet.state === "ACTIVE" &&
+          bet.autoCashOut !== null &&
+          nextMultiplier >= bet.autoCashOut
+        ) {
+          this.cashOut(slot);
+        }
+      }
+
+      if (nextMultiplier >= this.current.round.crashMultiplier) {
+        for (const slot of BET_SLOTS) {
+          const bet = this.current.bets[slot];
+          if (bet.state === "ACTIVE") {
+            bet.state = "CRASHED";
+            bet.multiplier = null;
+            bet.payout = 0;
+          }
+        }
+        this.transition("CRASH");
+        return;
+      }
+
+      this.emit();
+    }
+  }
+
+  placeBet(request: PlaceBetRequest): void {
+    const bet = this.current.bets[request.slot];
+    if (!canPlaceBet(this.current.round.state, bet)) return;
+
+    try {
+      bet.stake = validateStake(request.stake);
+      bet.autoBet = request.autoBet === true;
+      bet.autoCashOut = normalizeAutoCashOut(request.autoCashOut);
+    } catch {
+      return;
+    }
+
+    bet.state = "BET_PLACED";
+    this.emit();
+  }
+
+  cashOut(slot: SlotId): CashOutResult {
+    const bet = this.current.bets[slot];
+    if (!canCashOut(this.current.round.state, bet)) {
+      throw new Error("Bet slot is not cash-out eligible");
+    }
+
+    const multiplier = this.current.round.multiplier;
+    const payout = cashOutPayout(bet.stake, multiplier);
+
+    bet.state = "CASHED_OUT";
+    bet.multiplier = multiplier;
+    bet.payout = payout;
+    this.emit();
+
+    return { slot, multiplier, payout };
+  }
 }
-export function deterministicCrash(seed:string,index:number){let h=2166136261>>>0;const input=seed+":"+index;for(let i=0;i<input.length;i++){h^=input.charCodeAt(i);h=Math.imul(h,16777619);}const u=(h>>>0)/4294967296;return Number(Math.max(1.01,1/Math.max(.01,1-u)).toFixed(2));}

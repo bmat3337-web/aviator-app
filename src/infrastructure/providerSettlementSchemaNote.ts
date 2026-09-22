@@ -1,0 +1,1 @@
+export const PROVIDER_SETTLEMENT_SCHEMA_NOTE="Settlement writes must share the same PostgreSQL transaction as the bet state transition and ledger payout. The existing unique(account_id,idempotency_key) constraint is the duplicate-payout guard.";

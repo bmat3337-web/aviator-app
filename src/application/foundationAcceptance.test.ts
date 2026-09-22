@@ -1,0 +1,11 @@
+import { reconcileSettlement } from "./reconciliation"; import { createReconciliationCase,acknowledgeCase,resolveCase } from "./reconciliationCases"; import { authorize,buildAuditEvent } from "./operatorControls";
+const now=new Date().toISOString();
+const provider={providerBetId:"PB1",providerRoundId:"PR1",payoutMinorUnits:250n,outcome:"CASHED_OUT" as const};
+const internal={betId:"B1",providerBetId:"PB1",payoutMinorUnits:250n,settled:true};
+const ledger=[{referenceId:"PB1",idempotencyKey:"provider:settlement:PB1",amountMinorUnits:250n}];
+const match=reconcileSettlement(provider,internal,ledger); if(match.status!=="MATCHED")throw new Error("End-to-end match failed");
+const mismatch=reconcileSettlement(provider,{...internal,payoutMinorUnits:200n},ledger); if(mismatch.status!=="MISMATCH")throw new Error("Exception path failed");
+const c=createReconciliationCase(mismatch,now); if(!c)throw new Error("Exception case missing"); const op={operatorId:"operator-1",role:"RECONCILIATION_OPERATOR" as const,requestId:"req-1"}; authorize(op,"CASE_ACKNOWLEDGED"); const ack=acknowledgeCase(c); if(ack.state!=="ACKNOWLEDGED")throw new Error("Acknowledgement failed");
+const approver={operatorId:"approver-1",role:"RECONCILIATION_APPROVER" as const,requestId:"req-2"}; authorize(approver,"CASE_RESOLVED"); const resolved=resolveCase(ack,now); const audit=buildAuditEvent(approver,"CASE_RESOLVED",resolved.caseId,now,{status:resolved.status,reason:resolved.reason}); if(resolved.state!=="RESOLVED"||audit.caseId!==resolved.caseId)throw new Error("Resolution/audit failed");
+let viewerDenied=false;try{authorize({operatorId:"viewer",role:"RECONCILIATION_VIEWER",requestId:"req-3"},"CASE_RESOLVED")}catch{viewerDenied=true}if(!viewerDenied)throw new Error("Authorization boundary failed");
+console.log("AVIATOR FOUNDATION ACCEPTANCE VERIFIED");

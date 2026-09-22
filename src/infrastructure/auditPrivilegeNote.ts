@@ -1,0 +1,1 @@
+export const AUDIT_PRIVILEGE_NOTE="Production database roles must deny UPDATE/DELETE on aviator_audit_events; append access should be granted only to the controlled audit writer.";

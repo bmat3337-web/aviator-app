@@ -1,0 +1,4 @@
+export interface ProviderRoundEvent { providerRoundId:string; sequence:number; type:"ROUND_OPEN"|"ROUND_CLOSE"|"FLIGHT_START"|"MULTIPLIER"|"CRASH"|"SETTLED"; multiplier:number|null; occurredAt:string; }
+export interface ProviderBetReceipt { providerBetId:string; providerRoundId:string; acceptedAt:string; }
+export interface ProviderSettlement { providerBetId:string; providerRoundId:string; outcome:"CASHED_OUT"|"CRASHED"; multiplier:number|null; payoutMinorUnits:bigint; settledAt:string; }
+export interface ProviderAdapter { readonly providerName:string; connect():Promise<void>; subscribeRoundEvents(onEvent:(event:ProviderRoundEvent)=>Promise<void>):Promise<()=>Promise<void>>; placeBet(request:{providerRoundId:string;slot:"BET1"|"BET2";stakeMinorUnits:bigint}):Promise<ProviderBetReceipt>; cashOut(providerBetId:string):Promise<void>; }
