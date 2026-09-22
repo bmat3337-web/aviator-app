@@ -1,0 +1,1 @@
+export const RECONCILIATION_CASE_SCHEMA=`CREATE TABLE IF NOT EXISTS aviator_reconciliation_cases (case_id TEXT PRIMARY KEY,provider_bet_id TEXT NOT NULL,status TEXT NOT NULL,reason TEXT NOT NULL,state TEXT NOT NULL,created_at TIMESTAMPTZ NOT NULL,resolved_at TIMESTAMPTZ);`;

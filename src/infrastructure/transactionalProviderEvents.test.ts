@@ -1,0 +1,14 @@
+export {};
+import { TransactionalProviderEventStore } from "./transactionalProviderEvents";
+class Tx {
+  queries:string[]=[];
+  async query<T extends Record<string,unknown>>(sql:string):Promise<{rows:T[]}>{this.queries.push(sql);return {rows:[]};}
+  async commit(){} async rollback(){}
+}
+class Pool {tx=new Tx();async connect(){return this.tx}async query<T extends Record<string,unknown>>():Promise<{rows:T[]}>{return {rows:[]}}}
+const pool=new Pool();const store=new TransactionalProviderEventStore(pool as any);
+const e={providerRoundId:"R1",sequence:1,type:"MULTIPLIER" as const,multiplier:1.2,occurredAt:new Date().toISOString()};
+if(await store.ingest(e)!=="ACCEPTED")throw new Error("transactional accept failed");
+if(!pool.tx.queries.some(q=>q.includes("pg_advisory_xact_lock")))throw new Error("round concurrency lock missing");
+if(!pool.tx.queries.some(q=>q.includes("ON CONFLICT")))throw new Error("duplicate conflict guard missing");
+console.log("AVIATOR CONCURRENCY GATE VERIFIED");

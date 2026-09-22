@@ -1,0 +1,33 @@
+{
+  "schemaVersion": 1,
+  "environmentFamilies": [
+    "sunrise",
+    "day",
+    "sunset",
+    "night",
+    "above-clouds",
+    "storm",
+    "runway"
+  ],
+  "flightIntensityStates": [
+    "calm",
+    "rising",
+    "fast",
+    "intense",
+    "pre-crash",
+    "reset"
+  ],
+  "rendering": {
+    "preferred": "video-loop",
+    "fallback": "static-poster",
+    "logicSource": "application-game-state"
+  },
+  "prototype": {
+    "provider": "Gemini Veo",
+    "resolution": "1280x720",
+    "fps": 24,
+    "durationSeconds": 10,
+    "productionApproved": false,
+    "reason": "Prototype contains a visible generator watermark and is not verified as a seamless loop."
+  }
+}

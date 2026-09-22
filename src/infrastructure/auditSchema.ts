@@ -1,0 +1,1 @@
+export const AUDIT_SCHEMA=`CREATE TABLE IF NOT EXISTS aviator_audit_events (event_id TEXT PRIMARY KEY,operator_id TEXT NOT NULL,action TEXT NOT NULL,case_id TEXT,request_id TEXT NOT NULL,occurred_at TIMESTAMPTZ NOT NULL,metadata_json TEXT NOT NULL);`;
