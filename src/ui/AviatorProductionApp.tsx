@@ -52,7 +52,7 @@ function BetCard({
         </div>
         <div className="potential-payout">
           <span>Potential Payout</span>
-          <strong>\x24{payout.toFixed(2)} {ui.autoCashOut ? '(' + ui.autoCashOut.toFixed(2) + 'x)' : ''}</strong>
+          <strong>${payout.toFixed(2)} {ui.autoCashOut ? '(' + ui.autoCashOut.toFixed(2) + 'x)' : ''}</strong>
         </div>
       </div>
 
@@ -116,8 +116,8 @@ export function AviatorProductionApp({
 }) {
   const [snapshot, setSnapshot] = useState(provider.snapshot());
   const [ui, setUI] = useState<Record<SlotId, UIState>>({
-    BET1: { stake: 10, autoBet: false, autoCashOut: null, mode: 'BET' },
-    BET2: { stake: 20, autoBet: false, autoCashOut: null, mode: 'BET' },
+    BET1: { stake: 10, autoBet: false, autoCashOut: 2, mode: 'BET' },
+    BET2: { stake: 25, autoBet: false, autoCashOut: 3, mode: 'BET' },
   });
   const [history, setHistory] = useState<number[]>([]);
 
@@ -157,14 +157,14 @@ export function AviatorProductionApp({
   return (
     <div className="aviator-shell">
       <header className="aviator-header">
-        <button className="menu-button" type="button" aria-label="Open menu">☰</button>
+        <button className="menu-button header-menu" type="button" aria-label="Open menu">☰</button>
         <div className="header-brand igami-brand">
-          <span><b className="brand-mark">➤</b> IGAMI</span>
-          <small>PLAY FOR FUN. <strong>BUILD CONFIDENCE.</strong></small>
+          <span className="brand-lockup"><b className="brand-mark">➤</b><strong>IGAMI</strong></span>
+          <span className="brand-tagline">PLAY FOR FUN.<br /><strong>BUILD CONFIDENCE.</strong></span>
         </div>
         <div className="header-actions">
           <button className="theme-button" type="button" aria-label="Toggle appearance">☼</button>
-          <div className="header-balance"><span>▣</span> $1,000.00</div>
+          <div className="header-balance"><span>▣</span><strong>$1,000.00</strong></div>
           <button className="deposit-button" type="button" aria-label="Open menu">☰</button>
         </div>
       </header>
@@ -182,39 +182,31 @@ export function AviatorProductionApp({
       </aside>
 
       <section className="panel flight">
-        <div className="flight-top">
-          <div>
-            <strong>LIVE FLIGHT</strong>
-            <div className="round">ROUND #{snapshot.round.id} · {roundLabel(snapshot.round.state)}</div>
-          </div>
-          <div className="online">● {snapshot.round.playerCount.toLocaleString()} Online</div>
+        <div className="flight-status-row">
+          <span className="flight-live"><i /> LIVE</span>
+          <span className="flight-round">Round #${snapshot.round.id}</span>
+          <span className="flight-players">♟ ${snapshot.round.playerCount.toLocaleString()}</span>
+          <span className="flight-quality">▮▮▮ Good</span>
         </div>
-
-        <div className="next-round">
-          <span>ROUND STATE</span>
-          <strong>{snapshot.round.state === 'BETTING_OPEN' ? 'OPEN' : snapshot.round.state === 'FLYING' ? 'LIVE' : '—'}</strong>
-        </div>
-
         <div className="flight-scene">
           <Atmosphere environment={environment} intensity={flightIntensityFromSnapshot(snapshot)} />
-          <div className="horizon" />
+          <div className="reference-stars" />
+          <div className="reference-mountains" />
+          <div className="reference-runway" />
         </div>
-
+        <div className="flight-axis" aria-hidden="true">
+          <span>5.0x</span><span>4.0x</span><span>3.0x</span><span>2.0x</span><span>1.0x</span>
+        </div>
         <svg className="flight-path" viewBox="0 0 100 100" preserveAspectRatio="none" aria-hidden="true">
           <path className="flight-path-fill" d={pathD + ' L 90 100 L 8 100 Z'} />
           <path className="flight-path-line" d={pathD} />
         </svg>
-
-        <div className="aircraft" style={{ left: aircraftX + '%', top: aircraftY + '%' }} aria-hidden="true">
-          <svg viewBox="0 0 96 48">
-            <path d="M6 27 C18 26 31 24 43 20 L68 5 C72 3 76 4 73 9 L63 21 L87 24 C92 25 93 28 88 30 L61 32 L49 43 C46 46 42 45 44 40 L48 32 L25 34 L15 41 C12 43 9 41 11 37 L17 32 L7 31 C2 31 2 28 6 27Z" fill="currentColor" />
-          </svg>
+        <div className="aircraft" style={{ left: aircraftX + '%' , top: aircraftY + '%' }} aria-hidden="true">
+          <svg viewBox="0 0 96 48"><path d="M6 27 C18 26 31 24 43 20 L68 5 C72 3 76 4 73 9 L63 21 L87 24 C92 25 93 28 88 30 L61 32 L49 43 C46 46 42 45 44 40 L48 32 L25 34 L15 41 C12 43 9 41 11 37 L17 32 L7 31 C2 31 2 28 6 27Z" fill="currentColor" /></svg>
         </div>
-
-        <div className="flight-state">{snapshot.round.state === 'FLYING' ? 'FLYING' : roundLabel(snapshot.round.state)}</div>
-        <div className="multiplier" aria-live="polite">{snapshot.round.multiplier.toFixed(2)}x</div>
-        <div className="history">
-          {history.map((value, index) => <span className="chip" key={index}>{value.toFixed(2)}x</span>)}
+        <div className="flight-copy">
+          <div className="multiplier" aria-live="polite">${snapshot.round.multiplier.toFixed(2)}x</div>
+          <div className="flight-message">${snapshot.round.state === 'FLYING' ? 'Keep it going...' : roundLabel(snapshot.round.state)}</div>
         </div>
       </section>
 
