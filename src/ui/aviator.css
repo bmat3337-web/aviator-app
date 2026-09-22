@@ -27,3 +27,46 @@ button,input{font:inherit}
 .atmosphere-vignette{position:absolute;inset:0;background:radial-gradient(ellipse at center,transparent 35%,#00000066 100%)}
 .flight{position:relative}
 .flight>.telemetry,.flight>.stage{position:relative;z-index:1}
+
+/* Mobile play-surface contract: flight remains visible above a persistent two-card betting workspace. */
+@media(max-width:600px){
+  .aviator{padding-bottom:8px}
+  .aviator main{display:block}
+  .center{display:flex;flex-direction:column;min-height:calc(100vh - 56px)}
+  .flight{height:220px;flex:0 0 220px}
+  .stage{height:180px}
+  .telemetry{height:36px;padding:10px 8px;font-size:8px}
+  .mult{font-size:42px}
+  .plane{font-size:30px}
+  .bets{
+    position:sticky;
+    top:56px;
+    z-index:20;
+    margin-top:6px;
+    padding:5px;
+    background:#050505e8;
+    border:1px solid #ffffff12;
+    border-radius:12px;
+    backdrop-filter:blur(14px);
+    -webkit-backdrop-filter:blur(14px);
+  }
+  .bet{
+    min-width:0;
+    padding:6px;
+    gap:5px;
+    border-radius:10px;
+  }
+  .bet header{font-size:8px}
+  .controls{grid-template-columns:1fr;gap:4px}
+  .controls>div{min-width:0}
+  .controls label{font-size:7px;margin-bottom:2px}
+  .step{grid-template-columns:21px minmax(0,1fr) 21px;gap:2px}
+  .step button,.step input{height:28px;font-size:8px}
+  .quick{grid-template-columns:repeat(5,minmax(0,1fr));gap:2px}
+  .quick button{height:22px;font-size:7px;padding:0}
+  .bet footer{gap:3px}
+  .bet footer label{font-size:7px}
+  .action{height:30px;font-size:7px;min-width:0}
+  .toggle{font-size:7px}
+  .aviator>footer{padding:10px 7px;font-size:7px}
+}
