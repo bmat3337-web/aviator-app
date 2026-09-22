@@ -157,3 +157,19 @@
   .cockpit-action{font-size:11px!important}
   .action-plane{font-size:14px!important}
 }
+
+/* AVIATOR APP — Round Ledger / Round History borderless treatment */
+.round-ledger{
+  border:0!important;
+  background:transparent!important;
+  border-radius:0!important;
+  box-shadow:none!important;
+}
+.round-ledger .ledger-head,
+.round-ledger .ledger-current,
+.round-ledger .ledger-row{
+  border-bottom:0!important;
+}
+.round-ledger .ledger-head{
+  border-top:0!important;
+}
