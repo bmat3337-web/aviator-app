@@ -30,3 +30,11 @@
 }
 
 .sr-only{position:absolute!important;width:1px!important;height:1px!important;padding:0!important;margin:-1px!important;overflow:hidden!important;clip:rect(0,0,0,0)!important;white-space:nowrap!important;border:0!important}
+
+.bet-head{position:relative}.bet-balance{margin-left:auto;margin-right:6px;font-size:8px;color:var(--muted);white-space:nowrap}.bet-balance strong{color:var(--text);font-size:10px;margin-left:3px}
+.recent-multipliers,.session-stats{border:1px solid var(--line);background:linear-gradient(180deg,#0c1519ee,#071015e8);border-radius:12px;padding:10px}
+.section-heading{display:flex;justify-content:space-between;align-items:center}.section-heading strong{font-size:11px}.section-heading button{border:0;background:none;color:var(--cyan);font-size:10px}
+.recent-row{display:flex;gap:6px;overflow:auto;margin-top:8px;scrollbar-width:none}.recent-chip{min-width:58px;text-align:center;padding:6px 7px;border-radius:6px;font:11px ui-monospace;font-weight:700}.recent-chip.positive{border:1px solid #155f45;color:#25df92;background:#08261c}.recent-chip.negative{border:1px solid #64203a;color:#ff5c78;background:#260b16}
+.session-stats{display:grid;grid-template-columns:repeat(3,1fr);padding:8px}.session-stats>div{display:flex;justify-content:center;align-items:center;gap:7px;border-right:1px solid var(--line)}.session-stats>div:last-child{border-right:0}.session-stats strong{font-size:18px;color:#b9ddff}.session-stats span{font-size:10px}.session-stats small{display:block;color:var(--muted);font-size:8px;margin-top:2px}
+.mobile-nav{display:none}
+@media(max-width:700px){.bet-balance{display:none}.recent-multipliers,.session-stats{padding:8px}.mobile-nav{display:grid;grid-template-columns:repeat(5,1fr);position:sticky;bottom:0;z-index:35;margin:0 -6px -6px;padding:7px 4px;background:#061017f5;border-top:1px solid #26333b;backdrop-filter:blur(12px)}.mobile-nav button{border:0;background:none;color:#9caab4;display:grid;gap:3px;justify-items:center;font-size:14px}.mobile-nav button span{font-size:7px}.mobile-nav button.active{color:var(--cyan)}.utility-grid{grid-template-columns:repeat(4,1fr)}}
