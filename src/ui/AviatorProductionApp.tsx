@@ -96,8 +96,9 @@ function BetCard({
           <input type="checkbox" checked={ui.autoBet} disabled={active} onChange={(e) => setUI({ autoBet: e.target.checked })}/>
           <span className="switch-track"><span /></span>
         </label>
+        <span className="action-divider" aria-hidden="true" />
         <button className="primary-bet-action cockpit-action" type="button" disabled={!canPlace && !canCash} onClick={canCash ? cash : place}>
-          <span className="action-plane">✈</span><span>{action}</span>
+          <span className="action-plane" aria-hidden="true">✈</span><span>{action}</span>
         </button>
       </div>
     </section>
