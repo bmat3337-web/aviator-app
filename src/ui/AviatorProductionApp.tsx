@@ -184,8 +184,8 @@ export function AviatorProductionApp({
       <section className="panel flight">
         <div className="flight-status-row">
           <span className="flight-live"><i /> LIVE</span>
-          <span className="flight-round">Round #${snapshot.round.id}</span>
-          <span className="flight-players">♟ ${snapshot.round.playerCount.toLocaleString()}</span>
+          <span className="flight-round">Round #{snapshot.round.id}</span>
+          <span className="flight-players">♟ {snapshot.round.playerCount.toLocaleString()}</span>
           <span className="flight-quality">▮▮▮ Good</span>
         </div>
         <div className="flight-scene">
@@ -206,7 +206,7 @@ export function AviatorProductionApp({
         </div>
         <div className="flight-copy">
           <div className="multiplier" aria-live="polite">{snapshot.round.multiplier.toFixed(2)}x</div>
-          <div className="flight-message">${snapshot.round.state === 'FLYING' ? 'Keep it going...' : roundLabel(snapshot.round.state)}</div>
+          <div className="flight-message">{snapshot.round.state === 'FLYING' ? 'Keep it going...' : roundLabel(snapshot.round.state)}</div>
         </div>
       </section>
 
