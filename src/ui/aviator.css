@@ -139,3 +139,41 @@
 .flight-axis{z-index:15!important}
 .flight-copy{z-index:18!important}
 .aircraft{z-index:14!important}
+
+/* SINGLE-PAGE MOBILE SCROLL STANDARD
+   One document flow only: header, flight, history, Bet 1, Bet 2,
+   secondary content and navigation all participate in the same page scroll.
+   No sticky/fixed cockpit surfaces and no nested scrolling layer.
+*/
+@media(max-width:700px){
+  html,body{height:auto!important;min-height:100%!important;overflow-x:hidden!important;overflow-y:auto!important}
+  #root{min-height:100%!important;height:auto!important;overflow:visible!important}
+  .aviator-shell{
+    min-height:0!important;
+    height:auto!important;
+    overflow:visible!important;
+    display:flex!important;
+    flex-direction:column!important;
+    padding-bottom:8px!important;
+  }
+  .aviator-header{
+    position:relative!important;
+    top:auto!important;
+    z-index:30!important;
+    flex:none!important;
+  }
+  .flight{
+    position:relative!important;
+    top:auto!important;
+    z-index:1!important;
+    flex:none!important;
+  }
+  .mobile-nav{
+    position:relative!important;
+    bottom:auto!important;
+    top:auto!important;
+    z-index:2!important;
+    margin-top:0!important;
+    flex:none!important;
+  }
+}
