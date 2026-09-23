@@ -597,3 +597,13 @@
 @media(prefers-reduced-motion:reduce){
   .ui-icon{transition:none!important}
 }
+
+/* LOCKED MOBILE ORDER — supporting information */
+@media(max-width:700px){
+  .bet-workspace .recent-multipliers{order:1!important}
+  .bet-workspace .bet-grid{order:2!important}
+  .bet-workspace .daily-challenge{order:3!important}
+  .bet-workspace .session-stats{order:4!important}
+  .bet-workspace .utility-grid{order:5!important}
+  .bet-workspace .aviator-footer{order:6!important}
+}
