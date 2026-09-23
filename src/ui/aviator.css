@@ -555,3 +555,45 @@
     font-size:9px!important;
   }
 }
+
+
+/* REFERENCE FINAL PASS — component primitives */
+.ui-icon{width:1.15em;height:1.15em;display:block;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round;flex:none}
+.brand-mark .ui-icon,.action-plane .ui-icon{fill:currentColor;stroke:none}
+.menu-button .ui-icon,.theme-button .ui-icon,.deposit-button .ui-icon{width:20px;height:20px}
+.flight-players .ui-icon,.flight-quality>.ui-icon{width:17px;height:17px}
+.mobile-nav .nav-icon .ui-icon{width:25px;height:25px}
+.trust-strip .ui-icon{width:15px;height:15px}
+
+.session-stats{
+  border:1px solid var(--line);
+  background:linear-gradient(180deg,#0c1519ee,#071015e8);
+  border-radius:12px;
+  display:grid;
+  grid-template-columns:repeat(3,1fr);
+  padding:10px;
+  gap:0;
+}
+.session-stats>div{
+  min-width:0;
+  display:grid;
+  justify-items:center;
+  gap:3px;
+  padding:2px 8px;
+  border-right:1px solid var(--line);
+}
+.session-stats>div:last-child{border-right:0}
+.session-stats strong{font-size:17px;color:var(--text);font-weight:800}
+.session-stats span{font-size:9px;color:var(--muted);text-transform:uppercase;letter-spacing:.05em}
+
+@media(max-width:700px){
+  .session-stats{padding:8px;border-radius:10px}
+  .session-stats strong{font-size:15px}
+  .session-stats span{font-size:8px}
+  .mobile-nav{position:sticky!important;bottom:0!important}
+  .aviator-footer{padding-bottom:12px}
+}
+
+@media(prefers-reduced-motion:reduce){
+  .ui-icon{transition:none!important}
+}
