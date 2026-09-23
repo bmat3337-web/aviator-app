@@ -23,7 +23,6 @@ function BetCard({id,slot,ui,round,setUI,place,cash}:{id:SlotId;slot:GameSnapsho
  const active=slot.state==='BET_PLACED'||slot.state==='ACTIVE',canPlace=round.state==='BETTING_OPEN'&&slot.state==='IDLE',canCash=round.state==='FLYING'&&active;
  const locked=active||slot.state==='CASHED_OUT'||slot.state==='CRASHED'||slot.state==='SETTLED';
  const action=canCash?'CASH OUT':ui.autoBet&&!canPlace?'BET (NEXT ROUND)':id==='BET1'?'BET 1':'BET 2';
- const payout=ui.stake*(ui.autoCashOut??2), multiplier=ui.autoCashOut??2;
  return <section className={'bet-card cockpit-bet '+(id==='BET1'?'bet-one':'bet-two')+(active?' is-live':'')}>
   <div className="cockpit-bet-head"><div className="cockpit-bet-title"><span className="bet-name">{id==='BET1'?'Bet 1':'Bet 2'}</span><span className="bet-state">{active?'LIVE':'IDLE'}</span></div><div className="potential-payout"><span>Potential Payout</span><strong>{'$'+payout.toFixed(2)+' ('+multiplier.toFixed(2)+'x)'}</strong></div></div>
   <div className="cockpit-controls">
