@@ -184,6 +184,7 @@ button:disabled,input:disabled{cursor:not-allowed;opacity:.5}
 .atmosphere[data-environment="night"] .atmosphere-fallback{background:linear-gradient(180deg,#01030a,#07152c 56%,#110b1b 100%)}
 .atmosphere[data-environment="storm"] .atmosphere-fallback{background:linear-gradient(180deg,#111820,#36434a 50%,#10161a 100%)}
 .atmosphere[data-environment="runway"] .atmosphere-fallback{background:linear-gradient(180deg,#081018,#18262b 58%,#07090b 100%)}
+.atmosphere[data-environment="cycle"] .atmosphere-fallback{background:linear-gradient(180deg,#0b1f2c 0,#31556b 32%,#c17b52 66%,#11121a 100%)}
 .atmosphere[data-environment="runway"] .atmosphere-mountains{opacity:.25}
 .atmosphere[data-intensity="fast"] .atmosphere-clouds,.atmosphere[data-intensity="intense"] .atmosphere-clouds{transform:scale(1.12) translateX(-2%);filter:blur(8px)}
 .atmosphere[data-intensity="pre-crash"] .atmosphere-haze{background:radial-gradient(ellipse at 55% 48%,rgba(255,93,64,.22),transparent 60%)}
