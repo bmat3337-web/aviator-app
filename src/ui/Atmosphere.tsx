@@ -24,7 +24,7 @@ type AtmosphereProps = {
 
 const environmentLabel: Record<EnvironmentId, string> = {
   sunrise: 'SUNRISE',
-  day: 'DAY',
+  day: 'DAYTIME',
   sunset: 'SUNSET',
   night: 'NIGHT',
   'above-clouds': 'ABOVE CLOUDS',
@@ -32,39 +32,19 @@ const environmentLabel: Record<EnvironmentId, string> = {
   runway: 'RUNWAY',
 };
 
-const intensityLevel: Record<FlightIntensity, number> = {
-  calm: 0,
-  rising: 1,
-  fast: 2,
-  intense: 3,
-  'pre-crash': 4,
-  reset: 0,
-};
-
 export function environmentAsset(environment: EnvironmentId) {
-  const base = '/assets/aviator/environments/' + environment;
-  return {
-    webm: base + '/loop.webm',
-    mp4: base + '/loop.mp4',
-    poster: base + '/poster.webp',
-  };
+  const base = `/assets/aviator/environments/${environment}`;
+  return { webm: `${base}/loop.webm`, mp4: `${base}/loop.mp4`, poster: `${base}/poster.webp` };
 }
 
 export function Atmosphere({ environment = 'above-clouds', intensity }: AtmosphereProps) {
   const assets = useMemo(() => environmentAsset(environment), [environment]);
   const [videoFailed, setVideoFailed] = useState(false);
 
-  useEffect(() => {
-    setVideoFailed(false);
-  }, [environment]);
+  useEffect(() => setVideoFailed(false), [environment]);
 
   return (
-    <div
-      className="atmosphere"
-      data-environment={environment}
-      data-intensity={intensity}
-      aria-hidden="true"
-    >
+    <div className="atmosphere" data-environment={environment} data-intensity={intensity} aria-hidden="true">
       {!videoFailed && (
         <video
           className="atmosphere-video"
@@ -81,14 +61,11 @@ export function Atmosphere({ environment = 'above-clouds', intensity }: Atmosphe
         </video>
       )}
       <div className="atmosphere-fallback" />
-      <div
-        className="atmosphere-haze"
-        style={{ opacity: 0.18 + intensityLevel[intensity] * 0.07 }}
-      />
+      <div className="atmosphere-clouds" />
+      <div className="atmosphere-mountains" />
+      <div className="atmosphere-haze" />
       <div className="atmosphere-vignette" />
-      <span className="sr-only">
-        {environmentLabel[environment]} flight atmosphere
-      </span>
+      <span className="sr-only">{environmentLabel[environment]} flight atmosphere</span>
     </div>
   );
 }
