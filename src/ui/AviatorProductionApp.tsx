@@ -13,6 +13,7 @@ const HISTORY_SEED = [12.48, 1.32, 3.21, 1.05, 8.14, 2.36, 1.18, 4.72, 1.0];
 function stateLabel(state: string) {
   switch (state) {
     case 'WAITING':
+    case 'PREPARING':
     case 'BETTING_CLOSED': return 'PREPARING';
     case 'BETTING_OPEN': return 'BETTING OPEN';
     case 'FLYING': return 'FLYING';
@@ -358,6 +359,7 @@ export function AviatorProductionApp({
                 ['Storm', 'storm'],
                 ['Above Clouds', 'above-clouds'],
                 ['Runway', 'runway'],
+                ['Cycle', 'cycle'],
               ] as Array<[string, EnvironmentId]>).map(([label, value]) => (
                 <button
                   key={value}
