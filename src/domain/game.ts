@@ -1,5 +1,5 @@
 export type RoundState =
-  | "WAITING" | "PREPARING" | "BETTING_OPEN" | "BETTING_CLOSED" | "FLYING"
+  | "WAITING" | "BETTING_OPEN" | "BETTING_CLOSED" | "FLYING"
   | "CRASH" | "RESULT" | "NEXT_ROUND";
 
 export type BetState =
