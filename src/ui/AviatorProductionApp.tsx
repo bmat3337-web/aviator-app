@@ -75,11 +75,7 @@ function BetCard({ id, slot, ui, round, setUI, place, cash }: {
         </div>
 
         <label className={`auto-bet top-auto-bet ${ui.autoBet ? 'on' : ''}`}>
-          <span className="auto-badge">A</span>
-          <span>
-            <strong>AUTO BET</strong>
-            <small>{ui.autoBet ? 'ON · NEXT ROUND' : 'OFF'}</small>
-          </span>
+          <span className="auto-copy"><strong>AUTO BET</strong></span>
           <input
             type="checkbox"
             checked={ui.autoBet}
@@ -150,17 +146,6 @@ function BetCard({ id, slot, ui, round, setUI, place, cash }: {
           </button>
         ))}
       </div>
-
-      <button
-        type="button"
-        className={`auto-cashout-button ${ui.autoCashOut !== null ? 'enabled' : ''}`}
-        disabled={live}
-        onClick={() =>
-          setUI({ autoCashOut: ui.autoCashOut === null ? 2 : null })
-        }
-      >
-        Auto Cash Out {ui.autoCashOut !== null ? 'ON' : 'OFF'}
-      </button>
 
       <button
         className="bet-action"
