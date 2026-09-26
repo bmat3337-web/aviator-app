@@ -7,7 +7,7 @@ import { flightIntensityFromSnapshot } from './atmosphereController';
 import './aviator.css';
 
 type BetUI = { stake: number; autoBet: boolean; autoCashOut: number | null };
-const DEMO_BALANCE = 1000;
+const DEMO_BALANCE = 1247.5;
 
 function stateLabel(state: string) {
   if (state === 'CRASH') return 'FLEW AWAY';
@@ -88,13 +88,17 @@ export function AviatorProductionApp({provider, environment = 'above-clouds'}: {
   const aircraftX = 8 + progress * 78;
   const aircraftY = 78 - Math.pow(progress,1.45) * 58;
   const pathD = 'M 7 82 Q 24 80 39 68 T 61 46 T 77 28 T 92 12';
-  const compactHistory = useMemo(() => history.length ? history : [2.07,1.62,24.62,1.11,4.41,1.77,1.69], [history]);
+  const compactHistory = useMemo(() => {
+    const seed = [12.48,1.32,3.21,1.05,8.14,2.36,1.18,4.72,1.00];
+    return [...history, ...seed].filter((v,i,a) => a.indexOf(v) === i).slice(0,9);
+  }, [history]);
 
   return <div className="aviator-shell">
     <header className="aviator-header">
-      <button className="icon-button menu" type="button" aria-label="Open menu">☰</button>
       <div className="brand"><strong>AVIATOR</strong><span>FLY BEYOND LIMITS</span></div>
-      <div className="header-tools"><button className="icon-button" type="button">◐</button><button className="icon-button" type="button">◌</button><button className="icon-button" type="button">⚙</button><span className="demo-badge">DEMO</span></div>
+      <div className="demo-wallet" aria-label="Demo balance"><span>▣</span><strong>${DEMO_BALANCE.toFixed(2)}</strong></div>
+      <div className="header-tools"><button className="icon-button" type="button" aria-label="Theme">◐</button><button className="icon-button" type="button" aria-label="Settings">⚙</button><span className="demo-badge">DEMO</span></div>
+      <button className="icon-button menu" type="button" aria-label="Open menu">☰</button>
     </header>
 
     <main className="play-column">
