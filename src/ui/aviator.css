@@ -84,7 +84,7 @@ button:disabled,input:disabled{cursor:not-allowed;opacity:.5}
   min-width:0;display:flex;align-items:center;gap:7px;padding:7px 8px;border:1px solid var(--line);
   border-radius:9px;background:rgba(255,255,255,.025)
 }
-.auto-badge{display:grid;place-items:center;flex:0 0 28px;width:28px;height:28px;border-radius:8px;background:#101920;color:#aeb9bf;font-weight:900}
+ .auto-badge{display:none}
 .auto-bet>span:nth-child(2){min-width:0;display:grid}.auto-bet strong{font:800 9px ui-monospace,monospace}.auto-bet small{color:#7f8b91;font:700 7px ui-monospace,monospace;white-space:nowrap}
 .auto-bet input{position:absolute;opacity:0}.switch{width:35px;height:20px;padding:2px;margin-left:auto;border-radius:99px;background:#29343a}.switch i{display:block;width:16px;height:16px;border-radius:50%;background:#9aa5aa;transition:transform .18s}
 .auto-bet.on .switch{background:#155b67}.auto-bet.on .switch i{transform:translateX(15px);background:var(--cyan)}
@@ -159,7 +159,7 @@ button:disabled,input:disabled{cursor:not-allowed;opacity:.5}
   .trajectory{inset:34% 5% 7%;height:60%}.aircraft{width:50px}.flight-horizon{bottom:13%}
   .recent-multipliers{min-height:66px;padding:7px 9px;gap:10px}.recent-scroll{gap:8px}.recent-scroll span{min-width:98px;font-size:14px;padding:8px 10px}
   .bet-grid{grid-template-columns:1fr;gap:8px}.cockpit-bet{padding:10px;border-radius:13px}
-  .bet-topline{grid-template-columns:1fr 1fr;gap:6px}.top-auto-bet{grid-column:1/-1;order:3;height:38px}
+  .bet-topline{grid-template-columns:1fr 1fr;gap:6px} .top-auto-bet{grid-column:auto;order:initial;height:38px}
   .stepper{height:38px;grid-template-columns:32px minmax(0,1fr) 32px}.stepper button{font-size:17px}.stepper input{font-size:14px}
   .presets{margin-top:4px}.presets button{height:25px;font-size:8px}.auto-cashout-button{height:27px}
   .bet-action{min-height:43px;padding:0 10px}.bet-action span{font-size:10px}.bet-status{font-size:7px;margin-top:6px}
@@ -177,3 +177,6 @@ button:disabled,input:disabled{cursor:not-allowed;opacity:.5}
  .recent-multipliers{min-height:72px}.recent-scroll{gap:10px}.recent-scroll span{min-width:98px;font-size:16px}
  .cockpit-bet{padding:16px;border-radius:18px}.bet-topline{grid-template-columns:1fr 1fr;gap:8px}.top-auto-bet{grid-column:1/-1;order:3;height:46px}.stepper{height:54px;grid-template-columns:44px minmax(0,1fr) 44px}.presets button{height:38px;font-size:11px}.auto-cashout-button{height:38px;font-size:10px}.bet-action{min-height:52px;font-size:12px}.bet-action span{font-size:14px}.bet-status{font-size:9px}.secondary-grid{grid-template-columns:1fr}.bottom-nav{position:relative;left:auto;bottom:auto;transform:none;margin:12px auto 0;width:calc(100% - 8px)}
 }
+/* Exact reference bet-row geometry */
+.auto-copy{color:#aeb8bd;font:700 14px ui-monospace,monospace;white-space:nowrap}.top-auto-bet .switch{flex:0 0 38px}
+@media(max-width:760px){.bet-topline{grid-template-columns:1fr 1fr 1fr;gap:8px}.top-auto-bet{grid-column:auto;order:initial;height:38px}.auto-copy{font-size:11px}.bet-field label{font-size:9px}.bet-action{min-height:52px}.cockpit-bet{padding:12px 12px 10px}}
