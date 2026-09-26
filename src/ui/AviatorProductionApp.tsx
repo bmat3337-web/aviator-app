@@ -12,7 +12,10 @@ const DEMO_BALANCE = 1000;
 function stateLabel(state: string) {
   if (state === 'CRASH') return 'FLEW AWAY';
   if (state === 'RESULT') return 'ROUND ENDED';
-  if (state === 'BETTING_CLOSED') return 'PREPARING';
+  if (state === 'WAITING' || state === 'BETTING_CLOSED') return 'PREPARING';
+  if (state === 'BETTING_OPEN') return 'BETTING OPEN';
+  if (state === 'FLYING') return 'FLYING';
+  if (state === 'NEXT_ROUND') return 'NEXT ROUND';
   return state.replaceAll('_', ' ');
 }
 
@@ -72,6 +75,7 @@ export function AviatorProductionApp({provider, environment = 'above-clouds'}: {
   const [snapshot, setSnapshot] = useState(provider.snapshot());
   const [ui, setUI] = useState<Record<SlotId, BetUI>>({BET1:{stake:1,autoBet:false,autoCashOut:2},BET2:{stake:1,autoBet:false,autoCashOut:2}});
   const [history, setHistory] = useState<number[]>([]);
+  const [theme, setTheme] = useState<EnvironmentId>(environment);
   useEffect(() => provider.subscribe(setSnapshot), [provider]);
   useEffect(() => {
     if (snapshot.round.state === 'RESULT' || snapshot.round.state === 'CRASH') {
@@ -99,7 +103,7 @@ export function AviatorProductionApp({provider, environment = 'above-clouds'}: {
       <section className="live-flight" aria-label="Live flight">
         <div className="flight-context"><span className="live-badge"><i/> LIVE</span><span>ROUND #{snapshot.round.id}</span><span className="context-spacer"/><span>{snapshot.round.playerCount.toLocaleString()} ONLINE</span></div>
         <div className="flight-scene">
-          <Atmosphere environment={environment} intensity={flightIntensityFromSnapshot(snapshot)}/>
+          <Atmosphere environment={theme} intensity={flightIntensityFromSnapshot(snapshot)}/>
           <div className="flight-horizon"/>
           <svg className="trajectory" viewBox="0 0 100 100" preserveAspectRatio="none" aria-hidden="true"><path d={pathD} className="trajectory-glow"/><path d={pathD} className="trajectory-line"/></svg>
           <div className="aircraft" style={{left:`${aircraftX}%`,top:`${aircraftY}%`}} aria-hidden="true"><svg viewBox="0 0 96 48"><path d="M6 27C18 26 31 24 43 20L68 5C72 3 76 4 73 9L63 21L87 24C92 25 93 28 88 30L61 32L49 43C46 46 42 45 44 40L48 32L25 34L15 41C12 43 9 41 11 37L17 32L7 31C2 31 2 28 6 27Z" fill="currentColor"/></svg></div>
@@ -119,7 +123,12 @@ export function AviatorProductionApp({provider, environment = 'above-clouds'}: {
       <section className="secondary-grid">
         <article className="secondary-card challenge"><span className="secondary-kicker">DAILY CHALLENGE</span><strong>STRATOSPHERE ACE</strong><small>3 / 5 complete · demo reward</small><div className="progress"><i/></div></article>
         <article className="secondary-card"><span className="secondary-kicker">LIVE STATISTICS</span><div className="stat-grid"><b>{snapshot.round.playerCount.toLocaleString()}<small>Players Online</small></b><b>LIVE<small>Round</small></b><b>—<small>Highest</small></b><b>—<small>Average</small></b></div></article>
-        <article className="secondary-card"><span className="secondary-kicker">DYNAMIC THEMES</span><div className="theme-list">{['Sunrise','Daytime','Sunset','Night','Storm','Above Clouds','Runway'].map(t=><button key={t} type="button">{t}</button>)}</div></article>
+        <article className="secondary-card"><span className="secondary-kicker">DYNAMIC THEMES</span><div className="theme-list">{([
+  ['Sunrise','sunrise'],['Daytime','day'],['Sunset','sunset'],['Night','night'],
+  ['Storm','storm'],['Above Clouds','above-clouds'],['Runway','runway']
+] as Array<[string,EnvironmentId]>).map(([label,value]) =>
+  <button key={value} type="button" className={theme === value ? 'selected' : ''} onClick={() => setTheme(value)}>{label}</button>
+)}</div></article>
         <article className="secondary-card"><span className="secondary-kicker">SESSION HISTORY</span><div className="session-list">{compactHistory.slice(0,5).map((v,i)=><div key={i}><span>#{snapshot.round.sequenceIndex-i}</span><strong>{v.toFixed(2)}x</strong></div>)}</div></article>
         <article className="secondary-card probably-fair"><span className="secondary-kicker">PROBABLY FAIR</span><strong>DEMO SIMULATION</strong><small>Verification presentation only. No real-money settlement is enabled in this UI.</small></article>
         <article className="secondary-card"><span className="secondary-kicker">FLY BEYOND LIMITS</span><strong>ONE GAME. ONE FLIGHT.</strong><small>Explore challenges, social, history, wallet and settings.</small></article>
