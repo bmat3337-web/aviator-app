@@ -2,7 +2,7 @@ name: Aviator UI Transfer CI
 
 on:
   push:
-    branches: ["aviator/ui-transfer-ai-studio"]
+    branches: ["main", "aviator/ui-transfer-ai-studio"]
   pull_request:
     branches: ["main"]
   workflow_dispatch:
