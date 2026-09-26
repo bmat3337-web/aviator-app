@@ -32,7 +32,7 @@ function BetCard({ id, slot, ui, round, setUI, place, cash }: {
   const adjustCash = (d: number) => setUI({ autoCashOut: Math.max(1.05, Math.min(100, Number(((ui.autoCashOut ?? 2) + d).toFixed(2)))) });
 
   return <section className={`cockpit-bet ${id === 'BET1' ? 'bet-one' : 'bet-two'} ${live ? 'is-live' : ''}`}>
-    <div className="bet-control-grid">
+    <div className="bet-topline">
       <div className="bet-field">
         <label>STAKE</label>
         <div className="stepper">
@@ -41,10 +41,11 @@ function BetCard({ id, slot, ui, round, setUI, place, cash }: {
             onChange={e => setUI({ stake: Math.max(1, Math.min(5000, Number(e.target.value) || 1)) })}/>
           <button type="button" disabled={locked} onClick={() => adjustStake(1)}>+</button>
         </div>
-        <div className="presets">{[1,5,10,20,5000].map(v =>
-          <button key={v} type="button" disabled={locked} className={ui.stake === v ? 'selected' : ''} onClick={() => setUI({stake:v})}>{v === 5000 ? 'MAX' : v}</button>
-        )}</div>
       </div>
+      <label className={`auto-bet top-auto-bet ${ui.autoBet ? 'on' : ''}`}>
+        <span className="auto-badge">A</span><span><strong>AUTO BET</strong><small>{ui.autoBet ? 'ON · NEXT ROUND' : 'OFF'}</small></span>
+        <input type="checkbox" checked={ui.autoBet} disabled={live} onChange={e => setUI({autoBet:e.target.checked})}/><span className="switch"><i/></span>
+      </label>
       <div className="bet-field">
         <div className="field-topline"><label>AUTO C/O</label><button type="button" className={`mini-toggle ${ui.autoCashOut !== null ? 'on' : ''}`} disabled={live}
           aria-pressed={ui.autoCashOut !== null} onClick={() => setUI({autoCashOut: ui.autoCashOut === null ? 2 : null})}>{ui.autoCashOut !== null ? 'ON' : 'OFF'}</button></div>
@@ -54,20 +55,17 @@ function BetCard({ id, slot, ui, round, setUI, place, cash }: {
             disabled={live || ui.autoCashOut === null} onChange={e => setUI({autoCashOut: Math.max(1.05, Math.min(100, Number(e.target.value) || 2))})}/>
           <button type="button" disabled={live || ui.autoCashOut === null} onClick={() => adjustCash(.1)}>+</button>
         </div>
-        <button type="button" className={`auto-cashout-button ${ui.autoCashOut !== null ? 'enabled' : ''}`} disabled={live}
-          onClick={() => setUI({autoCashOut: ui.autoCashOut === null ? 2 : null})}>Auto Cash Out {ui.autoCashOut !== null ? 'ON' : 'OFF'}</button>
       </div>
     </div>
-    <div className="bet-meta-row">
-      <label className={`auto-bet ${ui.autoBet ? 'on' : ''}`}>
-        <span className="auto-badge">A</span><span><strong>AUTO BET</strong><small>{ui.autoBet ? 'ON · NEXT ROUND' : 'OFF'}</small></span>
-        <input type="checkbox" checked={ui.autoBet} disabled={live} onChange={e => setUI({autoBet:e.target.checked})}/><span className="switch"><i/></span>
-      </label>
-      <button className="bet-action" type="button" disabled={!canPlace && !canCash} onClick={canCash ? cash : place}>
-        <span>{canCash ? 'CASH OUT' : canPlace ? name : ui.autoBet ? `${name} · NEXT ROUND` : name}</span><b>${ui.stake.toFixed(2)}</b>
-      </button>
-    </div>
-    <div className="bet-status"><span><i/> {live ? 'BET PLACED · ACTIVE' : slot.state === 'CASHED_OUT' ? 'CASHED OUT' : 'Ready to bet'}</span><strong>BALANCE ${DEMO_BALANCE.toFixed(2)}</strong></div>
+    <div className="presets">{[1,5,10,20,5000].map(v =>
+      <button key={v} type="button" disabled={locked} className={ui.stake === v ? 'selected' : ''} onClick={() => setUI({stake:v})}>{v === 5000 ? 'MAX' : v}</button>
+    )}</div>
+    <button type="button" className={`auto-cashout-button ${ui.autoCashOut !== null ? 'enabled' : ''}`} disabled={live}
+      onClick={() => setUI({autoCashOut: ui.autoCashOut === null ? 2 : null})}>Auto Cash Out {ui.autoCashOut !== null ? 'ON' : 'OFF'}</button>
+    <button className="bet-action" type="button" disabled={!canPlace && !canCash} onClick={canCash ? cash : place}>
+      <span>▶ &nbsp;{canCash ? 'CASH OUT' : canPlace ? name : ui.autoBet ? `${name} · NEXT ROUND` : name}</span><b>$${ui.stake.toFixed(2)}</b>
+    </button>
+    <div className="bet-status"><span><i/> {live ? 'BET PLACED · ACTIVE' : slot.state === 'CASHED_OUT' ? 'CASHED OUT' : 'Ready to bet'}</span><strong>BALANCE $${DEMO_BALANCE.toFixed(2)}</strong></div>
   </section>;
 }
 
