@@ -112,10 +112,10 @@ button:disabled,input:disabled{cursor:not-allowed;opacity:.5}
   display:grid;place-items:center;gap:2px
 }
 .bottom-nav button span{font-size:22px}.bottom-nav button.active{color:#ffd447;background:rgba(255,205,64,.08);box-shadow:inset 0 1px 0 rgba(255,205,64,.3)}
-.atmosphere,.atmosphere-video,.atmosphere-fallback,.atmosphere-haze,.atmosphere-vignette,.atmosphere-clouds,.atmosphere-mountains{
+.atmosphere,.atmosphere-video,.atmosphere-fallback,.atmosphere-reference,.atmosphere-haze,.atmosphere-vignette,.atmosphere-clouds,.atmosphere-mountains{
   position:absolute;inset:0;width:100%;height:100%
 }
-.atmosphere{z-index:0;overflow:hidden;background:#07101a}.atmosphere-video{object-fit:cover;opacity:.72;filter:saturate(.9) contrast(1.06)}
+.atmosphere{z-index:0;overflow:hidden;background:#07101a}.atmosphere-reference{object-fit:cover;z-index:1;opacity:.98}.atmosphere-fallback{z-index:0}.atmosphere-video{object-fit:cover;opacity:.72;filter:saturate(.9) contrast(1.06)}
 .atmosphere-fallback{
   background:
     radial-gradient(ellipse at 50% 86%,rgba(255,187,78,.18),transparent 27%),
