@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import type { IGameProvider } from '../domain/IGameProvider';
 import type { GameSnapshot, SlotId } from '../domain/game';
 import type { EnvironmentId } from './Atmosphere';
@@ -6,296 +6,126 @@ import { Atmosphere } from './Atmosphere';
 import { flightIntensityFromSnapshot } from './atmosphereController';
 import './aviator.css';
 
-type UIState = {
-  stake: number;
-  autoBet: boolean;
-  autoCashOut: number | null;
-  mode: 'BET' | 'AUTO';
-};
-
-function roundLabel(state: string) {
-  return state === 'CRASH' ? 'CRASHED' : state.replaceAll('_', ' ');
-}
-
+type BetUI = { stake: number; autoBet: boolean; autoCashOut: number | null };
 const DEMO_BALANCE = 1000;
 
-function BetCard({
-  id,
-  slot,
-  ui,
-  round,
-  setUI,
-  place,
-  cash,
-}: {
-  id: SlotId;
-  slot: GameSnapshot['bets'][SlotId];
-  ui: UIState;
-  round: GameSnapshot['round'];
-  setUI: (patch: Partial<UIState>) => void;
-  place: () => void;
-  cash: () => void;
-}) {
-  const active = slot.state === 'BET_PLACED' || slot.state === 'ACTIVE';
-  const canPlace = round.state === 'BETTING_OPEN' && slot.state === 'IDLE';
-  const canCash = round.state === 'FLYING' && active;
-  const locked = active || slot.state === 'CASHED_OUT' || slot.state === 'CRASHED' || slot.state === 'SETTLED';
-  const action = canCash ? 'CASH OUT' : ui.autoBet && !canPlace ? 'BET (NEXT ROUND)' : (id === 'BET1' ? 'BET 1' : 'BET 2');
-  return (
-    <section className={'bet-card cockpit-bet ' + (id === 'BET1' ? 'bet-one' : 'bet-two') + (active ? ' is-live' : '')}>
-      <div className="cockpit-bet-head">
-        <span className="bet-name">{id === 'BET1' ? 'Bet 1' : 'Bet 2'}</span>
-      </div>
-
-      <div className="cockpit-controls">
-        <div className="control-group">
-          <label>Stake</label>
-          <div className="stake-stepper">
-            <button type="button" disabled={locked} onClick={() => setUI({ stake: Math.max(1, ui.stake - 10) })}>−</button>
-            <input type="number" min="1" max="5000" value={ui.stake} disabled={locked}
-              onChange={(e) => setUI({ stake: Math.max(1, Math.min(5000, Number(e.target.value) || 1)) })}/>
-            <button type="button" disabled={locked} onClick={() => setUI({ stake: Math.min(5000, ui.stake + 10) })}>+</button>
-          </div>
-          <div className="quick-stakes cockpit-quick">
-            {[1, 5, 10, 50].map((value) => (
-              <button key={value} type="button" disabled={locked} className={ui.stake === value ? 'selected' : ''} onClick={() => setUI({ stake: value })}>{value}</button>
-            ))}
-            <button type="button" disabled={locked} className={ui.stake >= 5000 ? 'selected' : ''} onClick={() => setUI({ stake: 5000 })}>MAX</button>
-          </div>
-        </div>
-
-        <div className="control-group auto-cashout-group">
-          <div className="auto-cashout-head">
-            <label htmlFor={id + '-auto-cashout'}>Auto Cashout</label>
-          </div>
-          <div className="stake-stepper">
-            <button type="button" disabled={active || ui.autoCashOut === null}
-              onClick={() => setUI({ autoCashOut: Math.max(1.05, Number(((ui.autoCashOut ?? 2) - 0.1).toFixed(2))) })}>−</button>
-            <input type="number" step=".1" min="1.05" max="100" id={id + '-auto-cashout'} value={ui.autoCashOut ?? ''} placeholder="2.00" aria-label={id + ' auto cashout multiplier'}
-              disabled={active || ui.autoCashOut === null}
-              onChange={(e) => setUI({ autoCashOut: Math.max(1.05, Math.min(100, Number(e.target.value) || 2)) })}/>
-            <button type="button" disabled={active || ui.autoCashOut === null}
-              onClick={() => setUI({ autoCashOut: Math.min(100, Number(((ui.autoCashOut ?? 2) + 0.1).toFixed(2))) })}>+</button>
-          </div>
-          <button
-            type="button"
-            className={'auto-cashout-button ' + (ui.autoCashOut !== null ? 'enabled' : '')}
-            disabled={active}
-            aria-pressed={ui.autoCashOut !== null}
-            onClick={() => setUI({ autoCashOut: ui.autoCashOut === null ? 2 : null })}
-          >
-            Auto Cashout {ui.autoCashOut !== null ? 'ON' : 'OFF'}
-          </button>
-        </div>
-      </div>
-
-      <div className="cockpit-action-row">
-        <label className={'auto-bet-control ' + (ui.autoBet ? 'enabled' : '')}>
-          <span className="auto-badge">A</span>
-          <span className="auto-copy"><strong>Auto</strong><small>{ui.autoBet ? 'ON · NEXT ROUND' : 'OFF'}</small></span>
-          <input type="checkbox" checked={ui.autoBet} disabled={active} onChange={(e) => setUI({ autoBet: e.target.checked })}/>
-          <span className="switch-track"><span /></span>
-        </label>
-        <span className="action-divider" aria-hidden="true" />
-        <button className="primary-bet-action cockpit-action" type="button" disabled={!canPlace && !canCash} onClick={canCash ? cash : place}>
-          <span className="action-plane" aria-hidden="true">✈</span><span>{action}</span>
-        </button>
-      </div>
-    </section>
-  );
+function stateLabel(state: string) {
+  if (state === 'CRASH') return 'FLEW AWAY';
+  if (state === 'RESULT') return 'ROUND ENDED';
+  if (state === 'BETTING_CLOSED') return 'PREPARING';
+  return state.replaceAll('_', ' ');
 }
 
-export function AviatorProductionApp({
-  provider,
-  environment = 'above-clouds',
-}: {
-  provider: IGameProvider;
-  environment?: EnvironmentId;
+function BetCard({ id, slot, ui, round, setUI, place, cash }: {
+  id: SlotId; slot: GameSnapshot['bets'][SlotId]; ui: BetUI; round: GameSnapshot['round'];
+  setUI: (patch: Partial<BetUI>) => void; place: () => void; cash: () => void;
 }) {
+  const live = slot.state === 'BET_PLACED' || slot.state === 'ACTIVE';
+  const locked = live || ['CASHED_OUT','CRASHED','SETTLED'].includes(slot.state);
+  const canPlace = round.state === 'BETTING_OPEN' && slot.state === 'IDLE';
+  const canCash = round.state === 'FLYING' && live;
+  const name = id === 'BET1' ? 'BET 1' : 'BET 2';
+  const adjustStake = (d: number) => setUI({ stake: Math.max(1, Math.min(5000, ui.stake + d)) });
+  const adjustCash = (d: number) => setUI({ autoCashOut: Math.max(1.05, Math.min(100, Number(((ui.autoCashOut ?? 2) + d).toFixed(2)))) });
+
+  return <section className={`cockpit-bet ${id === 'BET1' ? 'bet-one' : 'bet-two'} ${live ? 'is-live' : ''}`}>
+    <div className="bet-control-grid">
+      <div className="bet-field">
+        <label>STAKE</label>
+        <div className="stepper">
+          <button type="button" disabled={locked} onClick={() => adjustStake(-1)}>−</button>
+          <input aria-label={`${name} stake`} type="number" min="1" max="5000" value={ui.stake} disabled={locked}
+            onChange={e => setUI({ stake: Math.max(1, Math.min(5000, Number(e.target.value) || 1)) })}/>
+          <button type="button" disabled={locked} onClick={() => adjustStake(1)}>+</button>
+        </div>
+        <div className="presets">{[1,5,10,20,5000].map(v =>
+          <button key={v} type="button" disabled={locked} className={ui.stake === v ? 'selected' : ''} onClick={() => setUI({stake:v})}>{v === 5000 ? 'MAX' : v}</button>
+        )}</div>
+      </div>
+      <div className="bet-field">
+        <div className="field-topline"><label>AUTO C/O</label><button type="button" className={`mini-toggle ${ui.autoCashOut !== null ? 'on' : ''}`} disabled={live}
+          aria-pressed={ui.autoCashOut !== null} onClick={() => setUI({autoCashOut: ui.autoCashOut === null ? 2 : null})}>{ui.autoCashOut !== null ? 'ON' : 'OFF'}</button></div>
+        <div className="stepper">
+          <button type="button" disabled={live || ui.autoCashOut === null} onClick={() => adjustCash(-.1)}>−</button>
+          <input aria-label={`${name} auto cash out`} type="number" step=".1" min="1.05" max="100" value={ui.autoCashOut ?? ''} placeholder="2.00"
+            disabled={live || ui.autoCashOut === null} onChange={e => setUI({autoCashOut: Math.max(1.05, Math.min(100, Number(e.target.value) || 2))})}/>
+          <button type="button" disabled={live || ui.autoCashOut === null} onClick={() => adjustCash(.1)}>+</button>
+        </div>
+        <button type="button" className={`auto-cashout-button ${ui.autoCashOut !== null ? 'enabled' : ''}`} disabled={live}
+          onClick={() => setUI({autoCashOut: ui.autoCashOut === null ? 2 : null})}>Auto Cash Out {ui.autoCashOut !== null ? 'ON' : 'OFF'}</button>
+      </div>
+    </div>
+    <div className="bet-meta-row">
+      <label className={`auto-bet ${ui.autoBet ? 'on' : ''}`}>
+        <span className="auto-badge">A</span><span><strong>AUTO BET</strong><small>{ui.autoBet ? 'ON · NEXT ROUND' : 'OFF'}</small></span>
+        <input type="checkbox" checked={ui.autoBet} disabled={live} onChange={e => setUI({autoBet:e.target.checked})}/><span className="switch"><i/></span>
+      </label>
+      <button className="bet-action" type="button" disabled={!canPlace && !canCash} onClick={canCash ? cash : place}>
+        <span>{canCash ? 'CASH OUT' : canPlace ? name : ui.autoBet ? `${name} · NEXT ROUND` : name}</span><b>${ui.stake.toFixed(2)}</b>
+      </button>
+    </div>
+    <div className="bet-status"><span><i/> {live ? 'BET PLACED · ACTIVE' : slot.state === 'CASHED_OUT' ? 'CASHED OUT' : 'Ready to bet'}</span><strong>BALANCE ${DEMO_BALANCE.toFixed(2)}</strong></div>
+  </section>;
+}
+
+export function AviatorProductionApp({provider, environment = 'above-clouds'}: {provider: IGameProvider; environment?: EnvironmentId}) {
   const [snapshot, setSnapshot] = useState(provider.snapshot());
-  const [ui, setUI] = useState<Record<SlotId, UIState>>({
-    BET1: { stake: 10, autoBet: false, autoCashOut: 2, mode: 'BET' },
-    BET2: { stake: 25, autoBet: false, autoCashOut: 3, mode: 'BET' },
-  });
+  const [ui, setUI] = useState<Record<SlotId, BetUI>>({BET1:{stake:1,autoBet:false,autoCashOut:2},BET2:{stake:1,autoBet:false,autoCashOut:2}});
   const [history, setHistory] = useState<number[]>([]);
-
   useEffect(() => provider.subscribe(setSnapshot), [provider]);
-
   useEffect(() => {
     if (snapshot.round.state === 'RESULT' || snapshot.round.state === 'CRASH') {
-      const multiplier = snapshot.round.multiplier;
-      if (multiplier > 0) setHistory((current) => current[0] === multiplier ? current : [multiplier, ...current].slice(0, 12));
+      const value = snapshot.round.multiplier;
+      if (value > 0) setHistory(h => h[0] === value ? h : [value,...h].slice(0,20));
     }
   }, [snapshot.round.state, snapshot.round.multiplier]);
-
-  const patch = (id: SlotId, value: Partial<UIState>) =>
-    setUI((current) => ({ ...current, [id]: { ...current[id], ...value } }));
-
-  const place = (id: SlotId) =>
-    provider.placeBet({
-      slot: id,
-      stake: ui[id].stake,
-      autoBet: ui[id].autoBet,
-      autoCashOut: ui[id].autoCashOut,
-    });
-
-  const cash = (id: SlotId) => {
-    try {
-      provider.cashOut(id);
-    } catch {
-      // Provider controls the authoritative cash-out state.
-    }
-  };
-
+  const patch = (id: SlotId, value: Partial<BetUI>) => setUI(c => ({...c,[id]:{...c[id],...value}}));
+  const place = (id: SlotId) => provider.placeBet({slot:id,stake:ui[id].stake,autoBet:ui[id].autoBet,autoCashOut:ui[id].autoCashOut});
+  const cash = (id: SlotId) => { try { provider.cashOut(id); } catch {} };
   const progress = Math.min(1, Math.max(0, (snapshot.round.multiplier - 1) / 9));
-  const aircraftX = 10 + progress * 80;
-  const aircraftY = 82 - Math.pow(progress, 1.55) * 64;
-  const pathD = 'M 8 82 Q 24 80 38 68 T 60 46 T 76 28 T 90 14';
+  const aircraftX = 8 + progress * 78;
+  const aircraftY = 78 - Math.pow(progress,1.45) * 58;
+  const pathD = 'M 7 82 Q 24 80 39 68 T 61 46 T 77 28 T 92 12';
+  const compactHistory = useMemo(() => history.length ? history : [2.07,1.62,24.62,1.11,4.41,1.77,1.69], [history]);
 
-  return (
-    <div className="aviator-shell">
-      <header className="aviator-header">
-        <button className="menu-button header-menu" type="button" aria-label="Open menu">☰</button>
-        <div className="header-brand aviator-brand">
-          <span className="brand-lockup"><b className="brand-mark">✈</b><strong>AVIATOR</strong></span>
-          <small>FLY BEYOND LIMITS</small>
-        </div>
-        <div className="header-actions">
-          <button className="theme-button" type="button" aria-label="Toggle appearance">☼</button>
-          <div className="header-balance"><span>DEMO</span><strong>$1,000.00</strong></div>
-          <button className="deposit-button" type="button" aria-label="Open menu">☰</button>
-        </div>
-      </header>
+  return <div className="aviator-shell">
+    <header className="aviator-header">
+      <button className="icon-button menu" type="button" aria-label="Open menu">☰</button>
+      <div className="brand"><strong>AVIATOR</strong><span>FLY BEYOND LIMITS</span></div>
+      <div className="header-tools"><button className="icon-button" type="button">◐</button><button className="icon-button" type="button">◌</button><button className="icon-button" type="button">⚙</button><span className="demo-badge">DEMO</span></div>
+    </header>
 
-      <aside className="desktop-rail left-rail">
-        <div className="rail-title">● Live Round</div>
-        <div className="rail-subtitle">● Round #{snapshot.round.id}</div>
-        <div className="rail-status">{roundLabel(snapshot.round.state)}</div>
-        <div className="rail-history">
-          {history.length ? history.map((value, index) => (
-            <div key={index}><span className="history-pill">{value.toFixed(2)}x</span><small>recent</small></div>
-          )) : <div className="rail-empty">Completed provider rounds will appear here.</div>}
-        </div>
-        <button className="rail-link" type="button">Full History →</button>
-      </aside>
-
-      <section className="panel flight">
-        <div className="flight-status-row" aria-label="Live flight status">
-          <span className="flight-live"><i /> LIVE</span>
-          <span className="flight-round">Round #{snapshot.round.id}</span>
-          <span className="flight-players"><span aria-hidden="true">♟</span> {snapshot.round.playerCount.toLocaleString()}</span>
-          <span className="flight-quality"><span aria-hidden="true">▮▮▮</span> Good</span>
-        </div>
+    <main className="play-column">
+      <section className="live-flight" aria-label="Live flight">
+        <div className="flight-context"><span className="live-badge"><i/> LIVE</span><span>ROUND #{snapshot.round.id}</span><span className="context-spacer"/><span>{snapshot.round.playerCount.toLocaleString()} ONLINE</span></div>
         <div className="flight-scene">
-          <Atmosphere environment={environment} intensity={flightIntensityFromSnapshot(snapshot)} />
-          <div className="reference-stars" />
-          <div className="reference-mountains" />
-          <div className="reference-runway" />
-        </div>
-        <div className="flight-axis" aria-hidden="true">
-          <span>5.0x</span><span>4.0x</span><span>3.0x</span><span>2.0x</span><span>1.0x</span>
-        </div>
-        <svg className="flight-path" viewBox="0 0 100 100" preserveAspectRatio="none" aria-hidden="true">
-          <path className="flight-path-fill" d={pathD + ' L 90 100 L 8 100 Z'} />
-          <path className="flight-path-line" d={pathD} />
-        </svg>
-        <div className="aircraft" style={{ left: aircraftX + '%' , top: aircraftY + '%' }} aria-hidden="true">
-          <svg viewBox="0 0 96 48"><path d="M6 27 C18 26 31 24 43 20 L68 5 C72 3 76 4 73 9 L63 21 L87 24 C92 25 93 28 88 30 L61 32 L49 43 C46 46 42 45 44 40 L48 32 L25 34 L15 41 C12 43 9 41 11 37 L17 32 L7 31 C2 31 2 28 6 27Z" fill="currentColor" /></svg>
-        </div>
-        <div className="flight-copy">
-          <div className="multiplier" aria-live="polite">{snapshot.round.multiplier.toFixed(2)}x</div>
-          <div className="flight-message">{snapshot.round.state === 'FLYING' ? 'Keep it going...' : roundLabel(snapshot.round.state)}</div>
+          <Atmosphere environment={environment} intensity={flightIntensityFromSnapshot(snapshot)}/>
+          <div className="flight-horizon"/>
+          <svg className="trajectory" viewBox="0 0 100 100" preserveAspectRatio="none" aria-hidden="true"><path d={pathD} className="trajectory-glow"/><path d={pathD} className="trajectory-line"/></svg>
+          <div className="aircraft" style={{left:`${aircraftX}%`,top:`${aircraftY}%`}} aria-hidden="true"><svg viewBox="0 0 96 48"><path d="M6 27C18 26 31 24 43 20L68 5C72 3 76 4 73 9L63 21L87 24C92 25 93 28 88 30L61 32L49 43C46 46 42 45 44 40L48 32L25 34L15 41C12 43 9 41 11 37L17 32L7 31C2 31 2 28 6 27Z" fill="currentColor"/></svg></div>
+          <div className="flight-readout"><strong>{snapshot.round.multiplier.toFixed(2)}x</strong><span>{stateLabel(snapshot.round.state)}</span></div>
         </div>
       </section>
 
-      <aside className="desktop-rail right-rail">
-        <div className="rail-title">● Live Players <strong>{snapshot.round.playerCount.toLocaleString()}</strong></div>
-        <div className="player-list">
-          <div>Provider player feed <span>LIVE</span></div>
-          <div>Player identities <span>PRIVATE</span></div>
-          <div>Settlement feed <span>ACTIVE</span></div>
-        </div>
-        <div className="stats-box">
-          <div>♙ Players <strong>{snapshot.round.playerCount.toLocaleString()}</strong></div>
-          <div>♜ Total Bets <strong>Provider</strong></div>
-          <div>⌁ Highest <strong>Provider</strong></div>
-          <div>⌁ Lowest <strong>Provider</strong></div>
-        </div>
-      </aside>
+      <section className="recent-multipliers" aria-label="Recent multipliers"><div className="recent-heading"><strong>RECENT</strong><span>HISTORY</span></div><div className="recent-scroll">
+        {compactHistory.map((v,i)=><span key={i} className={v>=2?'high':'low'}>{v.toFixed(2)}x</span>)}
+      </div></section>
 
-      <section className="bet-workspace">
-        <div className="recent-multipliers mobile-first-recent">
-          <div className="section-heading"><strong>Recent Multipliers</strong><button type="button">All Rounds →</button></div>
-          <div className="recent-row">{history.slice(0, 8).map((value, index) => <span key={index} className={'recent-chip ' + (value >= 2 ? 'positive' : 'negative')}>{value.toFixed(2)}x</span>)}</div>
-        </div>
-
-        <div className="bet-grid">
-          <BetCard id="BET1" slot={snapshot.bets.BET1} ui={ui.BET1} round={snapshot.round} setUI={(value) => patch('BET1', value)} place={() => place('BET1')} cash={() => cash('BET1')} />
-          <BetCard id="BET2" slot={snapshot.bets.BET2} ui={ui.BET2} round={snapshot.round} setUI={(value) => patch('BET2', value)} place={() => place('BET2')} cash={() => cash('BET2')} />
-        </div>
-
-        <section className="flight-room">
-          <div className="flight-room-head">
-            <div><span className="room-live-dot" /> <strong>LIVE FLIGHT ROOM</strong> <small>SIMULATION</small></div>
-            <span className="room-online">♙ {snapshot.round.playerCount.toLocaleString()} online</span>
-          </div>
-          <div className="room-tabs"><button className="active" type="button">All Bets</button><button type="button">My Bets</button><button type="button">Top Wins</button></div>
-          <div className="room-table-head"><span>PILOT / USER</span><span>BET STAKE</span><span>CASH OUT</span></div>
-          <div className="room-row"><span>Provider feed</span><span>—</span><strong>LIVE</strong></div>
-          <div className="room-row"><span>Player identities</span><span>PRIVATE</span><strong>—</strong></div>
-          <div className="room-stats"><span>Today's Peak <b>Provider</b></span><span>Total Bets <b>Provider</b></span><span>Theoretical RTP <b>Provider</b></span></div>
-        </section>
-
-        <section className="round-ledger">
-          <div className="ledger-head"><strong>◷ ROUND LEDGER</strong><span>SIMULATION</span></div>
-          <div className="ledger-current"><span>CURRENT FLIGHT <b>#{snapshot.round.id}</b></span><span>STATUS <b>{roundLabel(snapshot.round.state)}</b></span></div>
-          <div className="ledger-row"><span>Round #{snapshot.round.id}</span><strong>{snapshot.round.multiplier.toFixed(2)}x</strong></div>
-          <button type="button" className="ledger-proof">♢ Full History &amp; Proofs</button>
-        </section>
-
-        <div className="daily-challenge">
-          <div className="challenge-icon">🏆</div>
-          <div className="challenge-main"><strong>DAILY FLIGHT CHALLENGE</strong><p>Climb the leaderboard. Win rewards.</p><span>Stratosphere Ace (3/5 Complete)</span><div className="challenge-progress"><i /></div></div>
-          <span className="challenge-time">◷ Resets in 06h 42m</span><span className="chevron">→</span>
-        </div>
-
-        <div className="utility-grid">
-          <button type="button"><span>?</span><b>How to Play</b><small>Flight mechanics...</small></button>
-          <button type="button"><span>▤</span><b>Game Rules</b><small>Multiplier logic &amp; ...</small></button>
-          <button type="button"><span>⚙</span><b>Game Limits</b><small>Min $1.00 · Max ...</small></button>
-          <button type="button"><span>♢</span><b>Probably Fair</b><small>Cryptographic verification</small></button>
-        </div>
-
-        <footer className="aviator-footer">
-          <strong>AVIATOR — ONE GAME. ONE FLIGHT. ONE PREMIUM EXPERIENCE.</strong>
-          <span>FLY BEYOND LIMITS • Standalone Simulation Interface &amp; Presentation Prototype</span>
-        </footer>
+      <section className="bet-grid" aria-label="Bet controls">
+        <BetCard id="BET1" slot={snapshot.bets.BET1} ui={ui.BET1} round={snapshot.round} setUI={v=>patch('BET1',v)} place={()=>place('BET1')} cash={()=>cash('BET1')}/>
+        <BetCard id="BET2" slot={snapshot.bets.BET2} ui={ui.BET2} round={snapshot.round} setUI={v=>patch('BET2',v)} place={()=>place('BET2')} cash={()=>cash('BET2')}/>
       </section>
 
-      <nav className="mobile-nav" aria-label="Primary navigation">
-        <button type="button" className="active">
-          <span className="nav-icon" aria-hidden="true">🎮</span><span>Play</span>
-        </button>
-        <button type="button">
-          <span className="nav-icon" aria-hidden="true">▥</span><span>Stats</span>
-        </button>
-        <button type="button">
-          <span className="nav-icon" aria-hidden="true">🎓</span><span>Learn</span>
-        </button>
-        <button type="button">
-          <span className="nav-icon" aria-hidden="true">♟♟</span><span>Community</span>
-        </button>
-        <button type="button">
-          <span className="nav-icon" aria-hidden="true">•••</span><span>More</span>
-        </button>
-      </nav>
+      <section className="secondary-grid">
+        <article className="secondary-card challenge"><span className="secondary-kicker">DAILY CHALLENGE</span><strong>STRATOSPHERE ACE</strong><small>3 / 5 complete · demo reward</small><div className="progress"><i/></div></article>
+        <article className="secondary-card"><span className="secondary-kicker">LIVE STATISTICS</span><div className="stat-grid"><b>{snapshot.round.playerCount.toLocaleString()}<small>Players Online</small></b><b>LIVE<small>Round</small></b><b>—<small>Highest</small></b><b>—<small>Average</small></b></div></article>
+        <article className="secondary-card"><span className="secondary-kicker">DYNAMIC THEMES</span><div className="theme-list">{['Sunrise','Daytime','Sunset','Night','Storm','Above Clouds','Runway'].map(t=><button key={t} type="button">{t}</button>)}</div></article>
+        <article className="secondary-card"><span className="secondary-kicker">SESSION HISTORY</span><div className="session-list">{compactHistory.slice(0,5).map((v,i)=><div key={i}><span>#{snapshot.round.sequenceIndex-i}</span><strong>{v.toFixed(2)}x</strong></div>)}</div></article>
+        <article className="secondary-card probably-fair"><span className="secondary-kicker">PROBABLY FAIR</span><strong>DEMO SIMULATION</strong><small>Verification presentation only. No real-money settlement is enabled in this UI.</small></article>
+        <article className="secondary-card"><span className="secondary-kicker">FLY BEYOND LIMITS</span><strong>ONE GAME. ONE FLIGHT.</strong><small>Explore challenges, social, history, wallet and settings.</small></article>
+      </section>
+    </main>
 
-      <footer className="trust-strip">
-        <span>⌾ Secure <small>Provider-controlled funds</small></span>
-        <span>♢ Fair <small>Auditable game state</small></span>
-        <span>◎ Global <small>Play anytime, anywhere</small></span>
-        <span>♡ Responsible <small>Play with control</small></span>
-      </footer>
-    </div>
-  );
+    <nav className="bottom-nav" aria-label="Primary navigation">{['PLAY','CHALLENGES','SOCIAL','HISTORY','WALLET'].map((item,i)=><button key={item} className={i===0?'active':''} type="button"><span>{['✈','◇','◉','◷','▣'][i]}</span>{item}</button>)}</nav>
+  </div>;
 }
