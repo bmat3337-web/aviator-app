@@ -65,7 +65,7 @@ function BetCard({ id, slot, ui, round, setUI, place, cash }: {
     <button className="bet-action" type="button" disabled={!canPlace && !canCash} onClick={canCash ? cash : place}>
       <span>▶ &nbsp;{canCash ? 'CASH OUT' : canPlace ? name : ui.autoBet ? `${name} · NEXT ROUND` : name}</span><b>$${ui.stake.toFixed(2)}</b>
     </button>
-    <div className="bet-status"><span><i/> {live ? 'BET PLACED · ACTIVE' : slot.state === 'CASHED_OUT' ? 'CASHED OUT' : 'Ready to bet'}</span><strong>BALANCE $${DEMO_BALANCE.toFixed(2)}</strong></div>
+    <div className="bet-status"><span><i/> {live ? 'BET PLACED · ACTIVE' : slot.state === 'CASHED_OUT' ? 'CASHED OUT' : 'Ready to bet'}</span><strong>DEMO BALANCE ${DEMO_BALANCE.toFixed(2)}</strong></div>
   </section>;
 }
 
@@ -131,7 +131,7 @@ export function AviatorProductionApp({provider, environment = 'above-clouds'}: {
 ] as Array<[string,EnvironmentId]>).map(([label,value]) =>
   <button key={value} type="button" className={theme === value ? 'selected' : ''} onClick={() => setTheme(value)}>{label}</button>
 )}</div></article>
-        <article className="secondary-card"><span className="secondary-kicker">SESSION HISTORY</span><div className="session-list">{compactHistory.slice(0,5).map((v,i)=><div key={i}><span>#{snapshot.round.sequenceIndex-i}</span><strong>{v.toFixed(2)}x</strong></div>)}</div></article>
+        <article className="secondary-card"><span className="secondary-kicker">SESSION HISTORY</span><div className="session-list">{compactHistory.slice(0,5).map((v,i)=><div key={i}><span>#{i}</span><strong>{v.toFixed(2)}x</strong></div>)}</div></article>
         <article className="secondary-card probably-fair"><span className="secondary-kicker">PROBABLY FAIR</span><strong>DEMO SIMULATION</strong><small>Verification presentation only. No real-money settlement is enabled in this UI.</small></article>
         <article className="secondary-card"><span className="secondary-kicker">FLY BEYOND LIMITS</span><strong>ONE GAME. ONE FLIGHT.</strong><small>Explore challenges, social, history, wallet and settings.</small></article>
       </section>
