@@ -148,7 +148,7 @@ function BetCard({ id, slot, ui, round, setUI, place, cash }: {
       </div>
 
       <button
-        className="bet-action"/>
+        className="bet-action"
         type="button"
         disabled={!canPlace && !canCash}
         onClick={canCash ? cash : place}
