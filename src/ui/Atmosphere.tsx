@@ -7,7 +7,8 @@ export type EnvironmentId =
   | 'night'
   | 'above-clouds'
   | 'storm'
-  | 'runway';
+  | 'runway'
+  | 'cycle';
 
 export type FlightIntensity =
   | 'calm'
@@ -30,6 +31,7 @@ const environmentLabel: Record<EnvironmentId, string> = {
   'above-clouds': 'ABOVE CLOUDS',
   storm: 'STORM',
   runway: 'RUNWAY',
+  cycle: 'CYCLE',
 };
 
 export function environmentAsset(environment: EnvironmentId) {
