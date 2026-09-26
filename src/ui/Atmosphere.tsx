@@ -62,6 +62,7 @@ export function Atmosphere({ environment = 'above-clouds', intensity }: Atmosphe
           <source src={assets.mp4} type="video/mp4" />
         </video>
       )}
+      <img className="atmosphere-reference" src="/flight-sunrise.svg" alt="" />
       <div className="atmosphere-fallback" />
       <div className="atmosphere-clouds" />
       <div className="atmosphere-mountains" />
