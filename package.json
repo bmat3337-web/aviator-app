@@ -37,7 +37,7 @@
     "verify:production-readiness": "tsx src/application/productionReadiness.test.ts",
     "verify:production-exit": "tsx src/application/productionReadinessExit.test.ts",
     "start": "next start",
-    "lint": "next lint"
+    "lint": "tsc --noEmit"
   },
   "dependencies": {
     "react": "^19.1.0",
