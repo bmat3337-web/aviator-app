@@ -85,52 +85,29 @@ function BetCard({ id, slot, ui, round, setUI, place, cash }: {
           <span className="switch"><i /></span>
         </label>
 
-        <div className="bet-field">
-          <div className="field-topline">
-            <label>AUTO C/O</label>
-            <button
-              type="button"
-              className={`mini-toggle ${ui.autoCashOut !== null ? 'on' : ''}`}
-              disabled={live}
-              aria-pressed={ui.autoCashOut !== null}
-              onClick={() =>
-                setUI({ autoCashOut: ui.autoCashOut === null ? 2 : null })
-              }
-            >
-              {ui.autoCashOut !== null ? 'ON' : 'OFF'}
-            </button>
+        {ui.autoBet && (
+          <div className="auto-config">
+            <div className="bet-field">
+              <div className="field-topline">
+                <label>AUTO C/O</label>
+                <button
+                  type="button"
+                  className={`mini-toggle ${ui.autoCashOut !== null ? 'on' : ''}`}
+                  disabled={live}
+                  aria-pressed={ui.autoCashOut !== null}
+                  onClick={() => setUI({ autoCashOut: ui.autoCashOut === null ? 2 : null })}
+                >
+                  {ui.autoCashOut !== null ? 'ON' : 'OFF'}
+                </button>
+              </div>
+              <div className="stepper compact-stepper">
+                <button type="button" disabled={live || ui.autoCashOut === null} onClick={() => adjustCash(-0.1)}>−</button>
+                <input aria-label={name + ' auto cash out'} type="number" step="0.1" min="1.05" max="100" value={ui.autoCashOut ?? ''} placeholder="2.00" disabled={live || ui.autoCashOut === null} onChange={(e) => setUI({ autoCashOut: Math.max(1.05, Math.min(100, Number(e.target.value) || 2)) })} />
+                <button type="button" disabled={live || ui.autoCashOut === null} onClick={() => adjustCash(0.1)}>+</button>
+              </div>
+            </div>
           </div>
-          <div className="stepper">
-            <button
-              type="button"
-              disabled={live || ui.autoCashOut === null}
-              onClick={() => adjustCash(-0.1)}
-            >−</button>
-            <input
-              aria-label={`${name} auto cash out`}
-              type="number"
-              step="0.1"
-              min="1.05"
-              max="100"
-              value={ui.autoCashOut ?? ''}
-              placeholder="2.00"
-              disabled={live || ui.autoCashOut === null}
-              onChange={(e) =>
-                setUI({
-                  autoCashOut: Math.max(
-                    1.05,
-                    Math.min(100, Number(e.target.value) || 2),
-                  ),
-                })
-              }
-            />
-            <button
-              type="button"
-              disabled={live || ui.autoCashOut === null}
-              onClick={() => adjustCash(0.1)}
-            >+</button>
-          </div>
-        </div>
+        )}/div>
       </div>
 
       <div className="presets">
@@ -216,8 +193,8 @@ export function AviatorProductionApp({
   };
 
   const progress = Math.min(1, Math.max(0, (snapshot.round.multiplier - 1) / 9));
-  const aircraftX = 9 + progress * 77;
-  const aircraftY = 78 - Math.pow(progress, 1.45) * 58;
+  const aircraftX = 76 + progress * 14;
+  const aircraftY = 20 - progress * 8;
 
   const compactHistory = useMemo(() => {
     const merged = [...history, ...HISTORY_SEED];
