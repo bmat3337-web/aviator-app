@@ -190,3 +190,24 @@ button:disabled,input:disabled{cursor:not-allowed;opacity:.5}
   .recent-scroll span{min-width:54px;padding:5px 6px;font-size:10px}
   .auto-config{grid-column:1/-1}
 }
+
+/* FINAL COHESIVE MOBILE UI */
+.aviator-header{margin:0 auto}
+.bet-status strong{display:none}
+@media(max-width:760px){
+ .aviator-header{height:58px;margin:0;padding:6px 8px}
+ .live-flight{height:205px;min-height:205px}
+ .flight-readout{top:34%}.flight-readout strong{font-size:48px}
+ .trajectory{inset:24% 4% 7%;height:69%}.aircraft{width:48px}
+ .cockpit-history{left:7px;right:7px;bottom:7px;padding:5px 6px}
+ .bet-grid{grid-template-columns:1fr;gap:7px}
+ .cockpit-bet{padding:9px 10px 8px;border-radius:14px}
+ .bet-topline{grid-template-columns:1fr 1fr;gap:7px}
+ .top-auto-bet{grid-column:auto;order:initial;height:40px}
+ .stepper{height:40px;grid-template-columns:32px minmax(0,1fr) 32px}
+ .auto-config{margin-top:6px}.compact-stepper{height:36px;grid-template-columns:30px minmax(0,1fr) 30px}
+ .presets{margin-top:5px;gap:4px}.presets button{height:28px;font-size:9px}
+ .bet-action{min-height:42px;margin-top:5px}.bet-status{margin-top:5px;font-size:7px}
+ .secondary-grid{grid-template-columns:1fr;gap:7px}
+ .bottom-nav{position:relative;left:auto;bottom:auto;transform:none;margin:2px auto 0;width:calc(100% - 8px)}
+}
