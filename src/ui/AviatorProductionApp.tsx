@@ -25,23 +25,9 @@ function stateLabel(state: string) {
 }
 
 
-type UIState = { stake: number; autoBet: boolean; autoCashOut: number | null };
-const DEMO_BALANCE = 1247.5;
-const HISTORY_SEED = [3.34, 12.48, 1.32, 3.21, 1.18, 2.64, 1.07, 5.42, 1.44, 7.16];
-
-function roundLabel(state: string) {
-  switch (state) {
-    case 'CRASH': return 'FLEW AWAY';
-    case 'FLYING': return 'FLYING';
-    case 'BETTING_OPEN': return 'BETTING OPEN';
-    case 'RESULT': return 'ROUND ENDED';
-    default: return state.replaceAll('_', ' ');
-  }
-}
-
 function BetCard({ id, slot, ui, round, setUI, place, cash }: {
-  id: SlotId; slot: GameSnapshot['bets'][SlotId]; ui: UIState; round: GameSnapshot['round'];
-  setUI: (patch: Partial<UIState>) => void; place: () => void; cash: () => void;
+  id: SlotId; slot: GameSnapshot['bets'][SlotId]; ui: BetUI; round: GameSnapshot['round'];
+  setUI: (patch: Partial<BetUI>) => void; place: () => void; cash: () => void;
 }) {
   const live = slot.state === 'BET_PLACED' || slot.state === 'ACTIVE';
   const terminal = ['CASHED_OUT', 'CRASHED', 'SETTLED'].includes(slot.state);
@@ -88,14 +74,14 @@ function BetCard({ id, slot, ui, round, setUI, place, cash }: {
       <button className="primary-bet-action cockpit-action" type="button" disabled={!canPlace && !canCash} onClick={canCash ? cash : place}>
         <span className="action-plane">▶</span><span>{canCash ? 'CASH OUT' : canPlace ? name : ui.autoBet ? name + ' · NEXT ROUND' : name} · {'$' + ui.stake.toFixed(2)}</span>
       </button>
-      <div className="bet-status"><span><i />{live ? 'BET PLACED · ACTIVE' : terminal ? roundLabel(slot.state) : 'READY TO BET'}</span></div>
+      <div className="bet-status"><span><i />{live ? 'BET PLACED · ACTIVE' : terminal ? stateLabel(slot.state) : 'READY TO BET'}</span></div>
     </section>
   );
 }
 
 export function AviatorProductionApp({ provider, environment = 'above-clouds' }: { provider: IGameProvider; environment?: EnvironmentId }) {
   const [snapshot, setSnapshot] = useState(provider.snapshot());
-  const [ui, setUI] = useState<Record<SlotId, UIState>>({ BET1: { stake: 1, autoBet: false, autoCashOut: null }, BET2: { stake: 1, autoBet: false, autoCashOut: null } });
+  const [ui, setUI] = useState<Record<SlotId, BetUI>>({ BET1: { stake: 1, autoBet: false, autoCashOut: null }, BET2: { stake: 1, autoBet: false, autoCashOut: null } });
   const [history, setHistory] = useState<number[]>([]);
   const [theme, setTheme] = useState<EnvironmentId>(environment);
   useEffect(() => provider.subscribe(setSnapshot), [provider]);
@@ -105,7 +91,7 @@ export function AviatorProductionApp({ provider, environment = 'above-clouds' }:
       if (value > 0) setHistory((current) => current[0] === value ? current : [value, ...current].slice(0, 20));
     }
   }, [snapshot.round.state, snapshot.round.multiplier]);
-  const patch = (id: SlotId, value: Partial<UIState>) => setUI((current) => ({ ...current, [id]: { ...current[id], ...value } }));
+  const patch = (id: SlotId, value: Partial<BetUI>) => setUI((current) => ({ ...current, [id]: { ...current[id], ...value } }));
   const place = (id: SlotId) => provider.placeBet({ slot: id, stake: ui[id].stake, autoBet: ui[id].autoBet, autoCashOut: ui[id].autoCashOut });
   const cash = (id: SlotId) => { try { provider.cashOut(id); } catch { /* provider owns authoritative state */ } };
   const progress = Math.min(1, Math.max(0, (snapshot.round.multiplier - 1) / 9));
@@ -121,7 +107,7 @@ export function AviatorProductionApp({ provider, environment = 'above-clouds' }:
       </header>
 
       <aside className="desktop-rail left-rail">
-        <div className="rail-title">LIVE ROUND</div><div className="rail-subtitle">Round #{snapshot.round.id}</div><div className="rail-status">{roundLabel(snapshot.round.state)}</div>
+        <div className="rail-title">LIVE ROUND</div><div className="rail-subtitle">Round #{snapshot.round.id}</div><div className="rail-status">{stateLabel(snapshot.round.state)}</div>
         <div className="rail-history">{mergedHistory.slice(0,8).map((value,index)=><div key={index}><span className="history-pill">{value.toFixed(2)}x</span><small>round</small></div>)}</div>
       </aside>
 
@@ -130,7 +116,7 @@ export function AviatorProductionApp({ provider, environment = 'above-clouds' }:
         <div className="flight-scene"><Atmosphere environment={theme} intensity={flightIntensityFromSnapshot(snapshot)} /></div>
         <svg className="flight-path" viewBox="0 0 100 100" preserveAspectRatio="none" aria-hidden="true"><path className="flight-path-line" d="M 5 88 Q 23 85 39 72 T 60 50 T 78 28 T 95 8" /></svg>
         <div className="aircraft" style={{ left: aircraftX + '%', top: aircraftY + '%' }} aria-hidden="true"><svg viewBox="0 0 96 48"><path d="M6 27C18 26 31 24 43 20L68 5C72 3 76 4 73 9L63 21L87 24C92 25 93 28 88 30L61 32L49 43C46 46 42 45 44 40L48 32L25 34L15 41C12 43 9 41 11 37L17 32L7 31C2 31 2 28 6 27Z" fill="currentColor" /></svg></div>
-        <div className="flight-copy"><div className="multiplier">{snapshot.round.multiplier.toFixed(2)}x</div><div className="flight-message">{roundLabel(snapshot.round.state)}</div></div>
+        <div className="flight-copy"><div className="multiplier">{snapshot.round.multiplier.toFixed(2)}x</div><div className="flight-message">{stateLabel(snapshot.round.state)}</div></div>
         <div className="cockpit-history" aria-label="Round History"><span className="history-label">ROUND HISTORY</span><div className="recent-row">{mergedHistory.map((value,index)=><span key={index} className={'recent-chip ' + (value >= 2 ? 'positive' : 'negative')}>{value.toFixed(2)}x</span>)}</div></div>
       </section>
 
