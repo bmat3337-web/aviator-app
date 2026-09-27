@@ -107,7 +107,7 @@ function BetCard({ id, slot, ui, round, setUI, place, cash }: {
               </div>
             </div>
           </div>
-        )}/div>
+        )}
       </div>
 
       <div className="presets">
