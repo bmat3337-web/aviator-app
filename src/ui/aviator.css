@@ -190,3 +190,10 @@ button:disabled,input:disabled{cursor:not-allowed;opacity:.5}
   .recent-scroll span{min-width:54px;padding:5px 6px;font-size:10px}
   .auto-config{grid-column:1/-1}
 }
+
+/* Locked dual-bet quick-control rail */
+.preset-groups{display:grid;grid-template-columns:minmax(0,1fr) 1px minmax(0,1fr);align-items:end;gap:8px;margin-top:7px}
+.preset-group>span{display:block;margin-bottom:4px;color:#8f9aa0;font:700 8px ui-monospace,monospace;letter-spacing:.12em}
+.preset-divider{width:1px;height:34px;background:var(--line);align-self:end}
+.preset-groups .presets{margin-top:0}
+@media(max-width:760px){.preset-groups{gap:6px}.preset-group>span{font-size:7px}.preset-divider{height:30px}.preset-groups .presets{gap:3px}.preset-groups .presets button{height:32px;font-size:9px}}
