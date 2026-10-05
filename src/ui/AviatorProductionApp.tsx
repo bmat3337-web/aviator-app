@@ -7,7 +7,6 @@ import { flightIntensityFromSnapshot } from './atmosphereController';
 import './aviator.css';
 
 type BetUI = { stake: number; autoBet: boolean; autoCashOut: number | null };
-const DEMO_BALANCE = 1247.5;
 const HISTORY_SEED = [12.48, 1.32, 3.21, 1.05, 8.14, 2.36, 1.18, 4.72, 1.0];
 
 function stateLabel(state: string) {
@@ -17,7 +16,7 @@ function stateLabel(state: string) {
     case 'BETTING_CLOSED': return 'PREPARING';
     case 'BETTING_OPEN': return 'BETTING OPEN';
     case 'FLYING': return 'FLYING';
-    case 'CRASH': return 'FLEW AWAY';
+    case 'CRASH': return 'FLIGHT ENDED';
     case 'RESULT': return 'ROUND ENDED';
     case 'NEXT_ROUND': return 'NEXT ROUND';
     default: return state.replaceAll('_', ' ');
@@ -39,6 +38,8 @@ function BetCard({ id, slot, ui, round, setUI, place, cash }: {
   const canPlace = round.state === 'BETTING_OPEN' && slot.state === 'IDLE';
   const canCash = round.state === 'FLYING' && live;
   const name = id === 'BET1' ? 'BET 1' : 'BET 2';
+  const resultMultiplier = slot.multiplier ?? (slot.state === 'CASHED_OUT' ? round.multiplier : null);
+  const actionLabel = canCash ? `${name} · CASH OUT` : canPlace ? `▶ ${name}` : live ? `✓ ${name} · PLACED` : slot.state === 'CASHED_OUT' ? `✓ ${name} · CASHED OUT · ${(resultMultiplier ?? 0).toFixed(2)}x` : slot.state === 'CRASHED' ? `${name} · LOST` : ui.autoBet ? `${name} · NEXT ROUND` : `▶ ${name}`;
   const accent = id === 'BET1' ? 'gold' : 'steel';
 
   const adjustStake = (delta: number) =>
@@ -133,37 +134,39 @@ function BetCard({ id, slot, ui, round, setUI, place, cash }: {
         </div>
       </div>
 
-      <div className="presets">
-        {[1, 5, 10, 20, 5000].map((value) => (
-          <button
-            key={value}
-            type="button"
-            disabled={locked}
-            className={ui.stake === value ? 'selected' : ''}
-            onClick={() => setUI({ stake: value })}
-          >
-            {value === 5000 ? 'MAX' : value}
-          </button>
-        ))}
+      <div className="preset-groups" aria-label={`${name} quick controls`}>
+        <div className="preset-group">
+          <span>STAKE</span>
+          <div className="presets">
+            {[1, 5, 10, 20, 5000].map((value) => (
+              <button key={value} type="button" disabled={locked} className={ui.stake === value ? 'selected' : ''} onClick={() => setUI({ stake: value })}>
+                {value === 5000 ? 'MAX' : value}
+              </button>
+            ))}
+          </div>
+        </div>
+        <div className="preset-divider" />
+        <div className="preset-group">
+          <span>AUTO C/O</span>
+          <div className="presets">
+            {[1.5, 2, 3, 5, 10].map((value) => (
+              <button key={value} type="button" disabled={locked} className={ui.autoCashOut === value ? 'selected' : ''} onClick={() => setUI({ autoCashOut: value })}>
+                {value}x
+              </button>
+            ))}
+          </div>
+        </div>
       </div>
 
-      <button
-        className="bet-action"
-        type="button"
-        disabled={!canPlace && !canCash}
-        onClick={canCash ? cash : place}
-      >
-        <span>▶ &nbsp;{canCash ? 'CASH OUT' : canPlace ? name : ui.autoBet ? `${name} · NEXT ROUND` : name}</span>
+      <button className="bet-action" type="button" disabled={!canPlace && !canCash} onClick={canCash ? cash : place}>
+        <span>{actionLabel}</span>
         <b>${ui.stake.toFixed(2)}</b>
       </button>
 
       <div className="bet-status">
-        <span>
-          <i />
-          {live ? 'BET PLACED · ACTIVE' : terminal ? stateLabel(slot.state) : 'Ready to bet'}
-        </span>
-        <strong>DEMO BALANCE ${DEMO_BALANCE.toFixed(2)}</strong>
+        <span><i />{live ? 'ACTIVE' : terminal ? stateLabel(slot.state) : 'READY'}</span>
       </div>
+
     </section>
   );
 }
@@ -234,7 +237,7 @@ export function AviatorProductionApp({
 
         <div className="demo-wallet" aria-label="Demo balance">
           <span>▣</span>
-          <strong>DEMO · ${DEMO_BALANCE.toFixed(2)}</strong>
+          <strong>FUN MODE</strong>
         </div>
 
         <div className="header-tools">
