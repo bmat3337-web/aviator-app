@@ -91,3 +91,45 @@ One authoritative live state drives multiplier, flight state, aircraft position,
 
 ## Acceptance
 The implementation must preserve the approved geometry, mobile hierarchy, flight dominance, compact multiplier pills, glass hierarchy, atmosphere, independent Bet 1/Bet 2 state, safe-area navigation and responsive behavior.
+
+
+## Atmosphere Engine v1.0 — Research Refinement
+
+The flight-screen reference study establishes four coordinated roles:
+
+1. Atmosphere — persistent spatial environment, depth and cloud movement.
+2. Graph — evolving flight trajectory.
+3. Aircraft — current position on the trajectory.
+4. Multiplier — dominant numerical readout embedded in the flight scene.
+
+The atmosphere engine must not own graph, aircraft, multiplier or betting state.
+
+### Implementation decision
+
+The previous atmosphere implementation depended primarily on looping video assets plus CSS fallback layers. v1.0 introduces a deterministic procedural cloud renderer using the browser Canvas 2D API.
+
+The renderer uses seeded multi-layer cloud fields, depth-dependent drift, blur, haze and bounded device-pixel ratio. It deliberately avoids true volumetric rendering at this stage because the product target includes mobile devices and the current objective is a controllable premium atmosphere rather than maximum physical simulation.
+
+### HAKKARESEARCH alignment
+
+The implementation is treated as an evidence-backed visual/engineering refinement: the atmosphere is a spatial composition, not a decorative backdrop, and cloud motion is separated from authoritative flight state.
+
+### HakkaLibrary alignment
+
+The renderer is a promotion candidate, not yet a library asset. HakkaLibrary promotion requires proven use, stable contract, domain-neutral behaviour, deterministic behaviour where applicable and tests. Aviator is currently the first consumer, so extraction into HakkaLibrary is deferred until the contract has evidence beyond this product.
+
+### PSA controls
+
+- deterministic seeded generation
+- explicit ownership boundary
+- lifecycle start/stop/resize
+- bounded frame delta
+- DPR cap
+- reduced-motion support
+- no product-domain state inside the renderer
+- testable deterministic seed behaviour
+- Git-first implementation traceability
+
+### Acceptance
+
+The atmosphere refinement is complete only when typecheck, flight-presentation verification and production build pass, followed by visual QA on target mobile hardware. The final visual check must confirm that cloud motion adds depth without competing with the aircraft, trajectory or multiplier.
