@@ -1,5 +1,9 @@
 import { useEffect, useRef } from 'react';
-import type { FlightIntensity, EnvironmentId } from './Atmosphere';
+export type EnvironmentId =
+  | 'sunrise' | 'day' | 'sunset' | 'night' | 'above-clouds' | 'storm' | 'runway' | 'cycle';
+
+export type FlightIntensity =
+  | 'calm' | 'rising' | 'fast' | 'intense' | 'pre-crash' | 'reset';
 
 type AtmosphereProps = {
   environment?: EnvironmentId;
