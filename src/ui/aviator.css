@@ -197,3 +197,13 @@ button:disabled,input:disabled{cursor:not-allowed;opacity:.5}
 .preset-divider{width:1px;height:34px;background:var(--line);align-self:end}
 .preset-groups .presets{margin-top:0}
 @media(max-width:760px){.preset-groups{gap:6px}.preset-group>span{font-size:7px}.preset-divider{height:30px}.preset-groups .presets{gap:3px}.preset-groups .presets button{height:32px;font-size:9px}}
+
+
+/* Atmosphere Engine v1.0
+   Procedural cloud canvas owns atmospheric motion.
+   Legacy media/reference layers are retained in source history only and are hidden at runtime.
+*/
+.atmosphere-canvas{position:absolute;inset:0;width:100%;height:100%;display:block}
+.atmosphere{z-index:0;overflow:hidden;background:#07101a}
+.atmosphere-vignette{position:absolute;inset:0;pointer-events:none;z-index:2;background:radial-gradient(circle,transparent 42%,rgba(0,0,0,.58) 100%)}
+.atmosphere-video,.atmosphere-fallback,.atmosphere-reference,.atmosphere-clouds,.atmosphere-mountains,.atmosphere-haze{display:none}
