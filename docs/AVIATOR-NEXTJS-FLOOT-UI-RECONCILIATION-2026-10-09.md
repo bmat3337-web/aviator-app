@@ -29,3 +29,20 @@ Update the existing Next.js application with the approved Floot cockpit presenta
 3. Browser-test responsive layout, flight progression, both independent bet cards, Auto Bet/Auto Cash Out state behavior, crash handling, and reduced-motion/accessibility behavior.
 4. Inspect the aircraft and atmosphere assets at mobile and desktop sizes.
 5. Keep `main` and production deployment unchanged until acceptance.
+
+## Reconciliation sprint 2 — visual tokens and mobile cockpit
+- Appended a clearly marked CSS reconciliation layer to move the cockpit toward the locked graphite / warm-gold / restrained-crimson palette.
+- Changed the flight-history strip to borderless, low-emphasis presentation with compact multiplier pills.
+- Reduced the final mobile flight-scene height from the overriding 500px rule to 380px to reduce vertical competition with the two bet cards; existing bet action target remains 52px in the final mobile override.
+- Preserved the existing reduced-motion rule and all earlier CSS so the change is a reversible override rather than a destructive rewrite.
+
+### Source verification for sprint 2
+- Re-fetched the CSS from the active branch after commit.
+- Source assertions passed for locked background/surface/gold/crimson tokens, borderless history, 380px mobile flight height, and the reduced-motion rule.
+- This is source-level verification only. Build, automated tests, rendered browser comparison, touch-device QA, and accessibility audit were not run.
+- Vercel remains paused per user instruction; no preview/deployment action was taken.
+
+### Remaining implementation risks
+- Aircraft is still an inline silhouette, not yet a verified repository-owned recognizable aircraft asset.
+- Header controls and bottom navigation include controls without completed destinations/actions.
+- Auto Bet semantics and displayed demo balance require a focused provider/UI behavior review before acceptance.
