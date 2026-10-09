@@ -217,9 +217,17 @@ export function AviatorProductionApp({
     }
   };
 
+  // One normalized progress value drives the aircraft and the visible trajectory.
+  // Clamp progress to keep the scene stable before launch and after the round ends.
   const progress = Math.min(1, Math.max(0, (snapshot.round.multiplier - 1) / 9));
-  const aircraftX = 9 + progress * 77;
-  const aircraftY = 78 - Math.pow(progress, 1.45) * 58;
+  const aircraftX = 7 + progress * 85;
+  const aircraftY = 82 - Math.pow(progress, 1.2) * 70;
+  const trajectoryControl1X = 7 + progress * 26;
+  const trajectoryControl1Y = 82 - progress * 2;
+  const trajectoryControl2X = 7 + progress * 62;
+  const trajectoryControl2Y = 82 - Math.pow(progress, 1.05) * 54;
+  const trajectoryPath = `M 7 82 C ${trajectoryControl1X} ${trajectoryControl1Y}, ${trajectoryControl2X} ${trajectoryControl2Y}, ${aircraftX} ${aircraftY}`;
+  const trajectoryArea = `${trajectoryPath} L ${aircraftX} 100 L 7 100 Z`;
 
   const compactHistory = useMemo(() => {
     const merged = [...history, ...HISTORY_SEED];
@@ -279,8 +287,15 @@ export function AviatorProductionApp({
             </div>
             <div className="flight-horizon" />
             <svg className="trajectory" viewBox="0 0 100 100" preserveAspectRatio="none" aria-hidden="true">
-              <path d="M7 82 Q24 80 39 68 T61 46 T77 28 T92 12" className="trajectory-glow" />
-              <path d="M7 82 Q24 80 39 68 T61 46 T77 28 T92 12" className="trajectory-line" />
+              <defs>
+                <linearGradient id="trajectory-fill" x1="0" y1="1" x2="1" y2="0">
+                  <stop offset="0%" stopColor="#8F1824" stopOpacity="0.01" />
+                  <stop offset="100%" stopColor="#C52B38" stopOpacity="0.14" />
+                </linearGradient>
+              </defs>
+              <path d={trajectoryArea} className="trajectory-area" fill="url(#trajectory-fill)" />
+              <path d={trajectoryPath} className="trajectory-glow" />
+              <path d={trajectoryPath} className="trajectory-line" />
             </svg>
             <div className="cockpit-history" aria-label="Round History">
               <span className="history-label">ROUND HISTORY</span>
