@@ -148,6 +148,21 @@ export class SimulatorProvider implements IGameProvider {
       );
       this.current.round.multiplier = nextMultiplier;
 
+      // Resolve the crash before auto cash-out: a target reached at the crash
+      // multiplier is not a successful cash-out in this deterministic demo.
+      if (nextMultiplier >= this.current.round.crashMultiplier) {
+        for (const slot of BET_SLOTS) {
+          const bet = this.current.bets[slot];
+          if (bet.state === "ACTIVE" || bet.state === "BET_PLACED") {
+            bet.state = "CRASHED";
+            bet.multiplier = null;
+            bet.payout = 0;
+          }
+        }
+        this.transition("CRASH");
+        return;
+      }
+
       for (const slot of BET_SLOTS) {
         const bet = this.current.bets[slot];
         if (
@@ -159,19 +174,15 @@ export class SimulatorProvider implements IGameProvider {
         }
       }
 
-      if (nextMultiplier >= this.current.round.crashMultiplier) {
-        for (const slot of BET_SLOTS) {
-          const bet = this.current.bets[slot];
-          if (bet.state === "ACTIVE") {
-            bet.state = "CRASHED";
-            bet.multiplier = null;
-            bet.payout = 0;
-          }
-        }
-        this.transition("CRASH");
-        return;
-      }
+      this.emit();
+      return;
+    }
 
+    // Keep the demo playable after a crash: terminal outcomes remain visible
+    // for one tick, then advance to a fresh deterministic round.
+    if (state === "CRASH" || state === "RESULT") {
+      this.sequenceIndex += 1;
+      this.current = this.createRound("WAITING");
       this.emit();
     }
   }
