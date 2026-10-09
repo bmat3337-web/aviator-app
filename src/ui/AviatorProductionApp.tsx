@@ -201,11 +201,28 @@ export function AviatorProductionApp({
   const patch = (id: SlotId, value: Partial<BetUI>) =>
     setUI((current) => ({ ...current, [id]: { ...current[id], ...value } }));
 
+  // In the demo provider, Auto Bet is a queued instruction, not an immediate wager.
+  // Arm it during the current flight/result and submit only once the next betting window opens.
+  useEffect(() => {
+    if (snapshot.round.state !== 'BETTING_OPEN') return;
+    (['BET1', 'BET2'] as SlotId[]).forEach((id) => {
+      const slot = snapshot.bets[id];
+      if (ui[id].autoBet && slot.state === 'IDLE' && !slot.autoBet) {
+        provider.placeBet({
+          slot: id,
+          stake: ui[id].stake,
+          autoBet: true,
+          autoCashOut: ui[id].autoCashOut,
+        });
+      }
+    });
+  }, [provider, snapshot.round.state, snapshot.round.id, snapshot.bets, ui]);
+
   const place = (id: SlotId) =>
     provider.placeBet({
       slot: id,
       stake: ui[id].stake,
-      autoBet: ui[id].autoBet,
+      autoBet: false,
       autoCashOut: ui[id].autoCashOut,
     });
 
