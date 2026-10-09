@@ -1,3 +1,5 @@
+'use client';
+
 import { useEffect, useMemo, useState } from 'react';
 import type { IGameProvider } from '../domain/IGameProvider';
 import type { GameSnapshot, SlotId } from '../domain/game';

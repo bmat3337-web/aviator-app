@@ -4,9 +4,8 @@
   "version": "0.2.0",
   "type": "module",
   "scripts": {
-    "dev": "vite",
-    "build": "tsc -b && vite build",
-    "preview": "vite preview",
+    "dev": "next dev",
+    "build": "tsc -b && next build",
     "verify": "npm run verify:domain && npm run verify:integration && npm run verify:provider && npm run verify:financial-controls && npm run verify:flight-presentation && npm run verify:realtime && npm run verify:realtime-projection && npm run verify:realtime-resync && npm run verify:provider-realtime && npm run verify:release && npm run verify:release-policy && npm run verify:evidence && npm run verify:evidence-policy && npm run verify:evidence-lifecycle && npm run verify:evidence-record && npm run verify:evidence-scope && npm run verify:evidence-provenance && npm run verify:evidence-audit && npm run verify:evidence-approval && npm run verify:release-report && npm run verify:release-schema && npm run verify:release-snapshot && npm run verify:release-commit && npm run verify:sprint && npm run verify:spribe-readiness && npm run verify:spribe-intake && npm run verify:regulatory-readiness && npm run verify:production-readiness && npm run verify:production-exit",
     "verify:domain": "tsx src/domain/simulator.test.ts",
     "verify:integration": "tsx src/application/integration.test.ts",
@@ -36,15 +35,16 @@
     "verify:spribe-intake": "tsx src/application/spribeIntakeMatrix.test.ts",
     "verify:regulatory-readiness": "tsx src/application/regulatoryReadiness.test.ts",
     "verify:production-readiness": "tsx src/application/productionReadiness.test.ts",
-    "verify:production-exit": "tsx src/application/productionReadinessExit.test.ts"
+    "verify:production-exit": "tsx src/application/productionReadinessExit.test.ts",
+    "start": "next start",
+    "lint": "tsc --noEmit"
   },
   "dependencies": {
-    "@vitejs/plugin-react": "^4.4.1",
     "react": "^19.1.0",
     "react-dom": "^19.1.0",
-    "vite": "^7.0.0",
     "typescript": "^5.4.0",
-    "tsx": "^4.19.0"
+    "tsx": "^4.19.0",
+    "next": "^15.5.25"
   },
   "devDependencies": {
     "@types/node": "^22.0.0",
