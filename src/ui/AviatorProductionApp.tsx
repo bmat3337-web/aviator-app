@@ -27,7 +27,7 @@ function stateLabel(state: string) {
   }
 }
 
-function BetCard({ id, slot, ui, round, setUI, place, cash }: {
+function BetCard({ id, slot, ui, round, setUI, toggleAutoBet, place, cash }: {
   id: SlotId;
   slot: GameSnapshot['bets'][SlotId];
   ui: BetUI;

@@ -79,4 +79,11 @@ if (!shouldPlaceAutoBet({ ...queueInput, roundId: "round-2", placedRoundId: "rou
 if (shouldPlaceAutoBet({ ...queueInput, slotState: "BET_PLACED" })) throw new Error("Non-idle slot accepted duplicate automatic placement");
 if (shouldPlaceAutoBet({ ...queueInput, roundState: "FLYING" })) throw new Error("Automatic placement allowed during flight");
 
+const independentQueue = {
+  bet1: { skipRoundId: "round-1", placedRoundId: null as string | null },
+  bet2: { skipRoundId: null as string | null, placedRoundId: null as string | null },
+};
+if (shouldPlaceAutoBet({ ...queueInput, skipRoundId: independentQueue.bet1.skipRoundId })) throw new Error("BET1 skip marker was not independent");
+if (!shouldPlaceAutoBet({ ...queueInput, skipRoundId: independentQueue.bet2.skipRoundId })) throw new Error("BET2 queue was incorrectly blocked by BET1 marker");
+
 console.log("AVIATOR FOUNDATION VERIFIED", a);

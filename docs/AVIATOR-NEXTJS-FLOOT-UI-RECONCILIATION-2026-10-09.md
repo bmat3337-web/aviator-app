@@ -76,6 +76,6 @@ Update the existing Next.js application with the approved Floot cockpit presenta
 - Added a pure eligibility guard for automatic placement: Auto Bet must remain enabled, the round must be BETTING_OPEN, the slot must be IDLE, the current round must not be explicitly skipped, and the slot must not already have placed in that round.
 - Added independent per-slot skip-round and placed-round markers in the UI. Enabling during BETTING_OPEN skips the current round; enabling during WAITING can place when that round opens; enabling during flight/terminal phases remains queued for a later round. Disabling the toggle prevents future automatic placements.
 - Kept manual placement explicitly `autoBet: false`; changed the action label from “NEXT ROUND” to “QUEUED” to avoid overstating exact placement timing.
-- Added targeted pure-function assertions for waiting/open-window behavior, disabled state, later-round persistence, slot eligibility, and duplicate prevention.
+- Added targeted pure-function assertions for waiting/open-window behavior, disabled state, later-round persistence, per-slot independence, slot eligibility, and duplicate prevention.
 - Source-only verification is not equivalent to running the tests. Test execution, typecheck, build, browser QA, and runtime simulation remain NOT RUN unless separately recorded below.
 - Vercel remains paused; production and `main` must remain unchanged.
