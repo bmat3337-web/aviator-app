@@ -1,12 +1,13 @@
 'use client';
 
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import type { IGameProvider } from '../domain/IGameProvider';
 import type { GameSnapshot, SlotId } from '../domain/game';
 import type { EnvironmentId } from './Atmosphere';
 import { Atmosphere } from './Atmosphere';
 import { flightIntensityFromSnapshot } from './atmosphereController';
 import './aviator.css';
+import { shouldPlaceAutoBet } from './autoBetQueue';
 
 type BetUI = { stake: number; autoBet: boolean; autoCashOut: number | null };
 const DEMO_BALANCE = 1247.5;
@@ -32,6 +33,7 @@ function BetCard({ id, slot, ui, round, setUI, place, cash }: {
   ui: BetUI;
   round: GameSnapshot['round'];
   setUI: (patch: Partial<BetUI>) => void;
+  toggleAutoBet: (enabled: boolean) => void;
   place: () => void;
   cash: () => void;
 }) {
@@ -82,7 +84,7 @@ function BetCard({ id, slot, ui, round, setUI, place, cash }: {
             type="checkbox"
             checked={ui.autoBet}
             disabled={live}
-            onChange={(e) => setUI({ autoBet: e.target.checked })}
+            onChange={(e) => toggleAutoBet(e.target.checked)}
           />
           <span className="switch"><i /></span>
         </label>
@@ -155,7 +157,7 @@ function BetCard({ id, slot, ui, round, setUI, place, cash }: {
         disabled={!canPlace && !canCash}
         onClick={canCash ? cash : place}
       >
-        <span>▶ &nbsp;{canCash ? 'CASH OUT' : canPlace ? name : ui.autoBet ? `${name} · NEXT ROUND` : name}</span>
+        <span>▶ &nbsp;{canCash ? 'CASH OUT' : canPlace ? name : ui.autoBet ? `${name} · QUEUED` : name}</span>
         <b>${ui.stake.toFixed(2)}</b>
       </button>
 
@@ -184,6 +186,8 @@ export function AviatorProductionApp({
   });
   const [history, setHistory] = useState<number[]>([]);
   const [theme, setTheme] = useState<EnvironmentId>(environment);
+  const skipAutoBetRound = useRef<Record<SlotId, string | null>>({ BET1: null, BET2: null });
+  const autoPlacedRound = useRef<Record<SlotId, string | null>>({ BET1: null, BET2: null });
 
   useEffect(() => provider.subscribe(setSnapshot), [provider]);
 
@@ -201,20 +205,35 @@ export function AviatorProductionApp({
   const patch = (id: SlotId, value: Partial<BetUI>) =>
     setUI((current) => ({ ...current, [id]: { ...current[id], ...value } }));
 
-  // In the demo provider, Auto Bet is a queued instruction, not an immediate wager.
-  // Arm it during the current flight/result and submit only once the next betting window opens.
+  const toggleAutoBet = (id: SlotId, enabled: boolean) => {
+    // Enabling after this round's window opened must skip that round.
+    skipAutoBetRound.current[id] =
+      enabled && snapshot.round.state === 'BETTING_OPEN' ? snapshot.round.id : null;
+    patch(id, { autoBet: enabled });
+  };
+
+  // Queue state is per slot and independent of the simulator's round-local bet outcome.
   useEffect(() => {
     if (snapshot.round.state !== 'BETTING_OPEN') return;
     (['BET1', 'BET2'] as SlotId[]).forEach((id) => {
       const slot = snapshot.bets[id];
-      if (ui[id].autoBet && slot.state === 'IDLE' && !slot.autoBet) {
-        provider.placeBet({
-          slot: id,
-          stake: ui[id].stake,
-          autoBet: true,
-          autoCashOut: ui[id].autoCashOut,
-        });
-      }
+      if (!shouldPlaceAutoBet({
+        enabled: ui[id].autoBet,
+        roundState: snapshot.round.state,
+        roundId: snapshot.round.id,
+        slotState: slot.state,
+        skipRoundId: skipAutoBetRound.current[id],
+        placedRoundId: autoPlacedRound.current[id],
+      })) return;
+
+      // Mark before calling the provider to guard against repeated effects / sync emissions.
+      autoPlacedRound.current[id] = snapshot.round.id;
+      provider.placeBet({
+        slot: id,
+        stake: ui[id].stake,
+        autoBet: true,
+        autoCashOut: ui[id].autoCashOut,
+      });
     });
   }, [provider, snapshot.round.state, snapshot.round.id, snapshot.bets, ui]);
 
@@ -334,6 +353,7 @@ export function AviatorProductionApp({
             ui={ui.BET1}
             round={snapshot.round}
             setUI={(value) => patch('BET1', value)}
+            toggleAutoBet={(enabled) => toggleAutoBet('BET1', enabled)}
             place={() => place('BET1')}
             cash={() => cash('BET1')}
           />
@@ -343,6 +363,7 @@ export function AviatorProductionApp({
             ui={ui.BET2}
             round={snapshot.round}
             setUI={(value) => patch('BET2', value)}
+            toggleAutoBet={(enabled) => toggleAutoBet('BET2', enabled)}
             place={() => place('BET2')}
             cash={() => cash('BET2')}
           />
