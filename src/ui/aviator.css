@@ -190,3 +190,44 @@ button:disabled,input:disabled{cursor:not-allowed;opacity:.5}
   .recent-scroll span{min-width:54px;padding:5px 6px;font-size:10px}
   .auto-config{grid-column:1/-1}
 }
+
+
+/* Next.js reconciliation sprint: locked Aviator palette and compact flight history */
+:root{
+  --bg:#0B0C0E;
+  --surface:#121417;
+  --surface-strong:#191D21;
+  --line:rgba(185,192,199,.14);
+  --text:#F5F2ED;
+  --muted:#899198;
+  --gold:#C9A86A;
+  --gold-soft:#E3C27A;
+  --steel:#B9C0C7;
+  --green:#38A66A;
+  --red:#C53A43;
+  --warning:#C9953C;
+}
+.aviator-shell{background:var(--bg)}
+.live-flight{background:#0B0C0E;box-shadow:0 18px 55px rgba(0,0,0,.36)}
+.demo-wallet{border-color:rgba(201,168,106,.34);background:rgba(18,20,23,.82);box-shadow:none}
+.brand strong,.demo-badge{color:var(--gold-soft)}
+.flight-horizon{background:linear-gradient(90deg,transparent,rgba(201,168,106,.34) 24%,rgba(227,194,122,.48) 50%,rgba(201,168,106,.28) 76%,transparent);box-shadow:0 0 18px rgba(201,168,106,.18)}
+.trajectory-line{stroke:rgba(197,43,56,.92);filter:drop-shadow(0 0 5px rgba(197,43,56,.34))}
+.trajectory-glow{stroke:rgba(197,43,56,.17);filter:blur(7px)}
+.aircraft{color:#F5F2ED;filter:drop-shadow(0 0 10px rgba(227,194,122,.3))}
+.flight-readout strong{color:#F5F2ED;text-shadow:0 8px 30px rgba(0,0,0,.78)}
+.cockpit-history{left:12px;right:12px;bottom:10px;gap:9px;padding:5px 0;border:0;border-radius:0;background:linear-gradient(90deg,rgba(11,12,14,.72),rgba(11,12,14,.28));backdrop-filter:blur(5px)}
+.history-label{color:#B9C0C7}
+.recent-scroll{gap:5px}
+.recent-scroll span{min-width:49px;padding:4px 5px;border:0;border-radius:5px;background:rgba(18,20,23,.7);font-size:10px}
+.recent-scroll .high{color:var(--gold-soft)}
+.recent-scroll .low{color:#C88C88}
+.bottom-nav{border-color:rgba(185,192,199,.12);background:rgba(18,20,23,.96);box-shadow:0 12px 36px rgba(0,0,0,.4)}
+.bottom-nav button.active{color:var(--gold-soft);background:rgba(201,168,106,.09);box-shadow:inset 0 1px 0 rgba(201,168,106,.22)}
+@media(max-width:760px){
+  .live-flight{height:380px;min-height:380px;border-radius:15px}
+  .flight-readout{top:35%}
+  .flight-readout strong{font-size:clamp(56px,15vw,70px)}
+  .cockpit-history{left:8px;right:8px;bottom:7px}
+  .recent-scroll span{min-width:44px;padding:4px 4px;font-size:9px}
+}
