@@ -58,3 +58,15 @@ Update the existing Next.js application with the approved Floot cockpit presenta
 - An attempted repository-owned aircraft SVG was not confirmed present in Git; no asset integration is claimed. The inline silhouette remains.
 - Header and bottom-navigation controls still require action/destination implementation or explicit disabled treatment.
 - No build, automated test, browser QA, Vercel preview, or deployment was run. Vercel remains paused and `main` remains untouched.
+
+## Reconciliation sprint 4 — deterministic simulator lifecycle
+- Changed the demo simulator to advance from `CRASH` to a fresh `WAITING` round on the next tick, incrementing the deterministic sequence index and resetting the bet slots.
+- Reordered flight resolution so crash takes precedence over auto cash-out at the exact crash multiplier; a target at the crash boundary cannot be recorded as a win.
+- Extended `src/domain/simulator.test.ts` with source assertions for next-round reset, sequence advancement, clean bet slots, and the crash-boundary rule.
+
+### Verification status
+- Re-fetched the simulator and test source after their commits; the expected transition and test assertions are present.
+- The tests were **not executed**. These are source checks only; no TypeScript build, test runtime, browser QA, or Vercel activity occurred.
+- Important remaining limitation: Auto Bet is not yet a complete repeat-round queue. The UI effect still needs explicit arming semantics so toggling it during an open betting window cannot unexpectedly place a bet in that same round, and queued preferences must persist across fresh rounds without carrying stale bet outcomes.
+- Aircraft asset integration remains unverified; the UI still uses its inline silhouette.
+- Vercel remains paused. No merge, deployment, or change to `main`.
