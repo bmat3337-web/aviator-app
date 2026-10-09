@@ -34,4 +34,28 @@ if (!["BET1", "BET2"].every((id) => id in s.bets)) {
 }
 if (s.round.state !== "CRASH") throw new Error("Crash transition not reached");
 
+const auto = new SimulatorProvider(seed, 0);
+auto.start();
+auto.advance(); // BETTING_OPEN
+auto.placeBet({ slot: "BET1", stake: 3, autoBet: true, autoCashOut: null });
+auto.advance(); // BETTING_CLOSED
+auto.advance(); // FLYING
+for (let i = 0; i < 40 && auto.snapshot().round.state !== "CRASH"; i += 1) auto.advance();
+if (auto.snapshot().round.state !== "CRASH") throw new Error("Auto-bet round did not crash");
+auto.advance(); // next deterministic round
+if (auto.snapshot().round.state !== "WAITING") throw new Error("Simulator did not reset to WAITING after crash");
+if (auto.snapshot().round.sequenceIndex !== 1) throw new Error("Round sequence index did not advance");
+if (auto.snapshot().bets.BET1.state !== "IDLE") throw new Error("New round retained a terminal bet state");
+
+const boundary = new SimulatorProvider(seed, 0);
+boundary.start();
+boundary.advance();
+boundary.placeBet({ slot: "BET1", stake: 2, autoCashOut: deterministicCrash(seed, 0) });
+boundary.advance();
+boundary.advance();
+for (let i = 0; i < 40 && boundary.snapshot().round.state !== "CRASH"; i += 1) boundary.advance();
+if (boundary.snapshot().bets.BET1.state !== "CRASHED") {
+  throw new Error("A cash-out target at the crash boundary must not win");
+}
+
 console.log("AVIATOR FOUNDATION VERIFIED", a);
