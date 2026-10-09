@@ -46,3 +46,15 @@ Update the existing Next.js application with the approved Floot cockpit presenta
 - Aircraft is still an inline silhouette, not yet a verified repository-owned recognizable aircraft asset.
 - Header controls and bottom navigation include controls without completed destinations/actions.
 - Auto Bet semantics and displayed demo balance require a focused provider/UI behavior review before acceptance.
+
+## Reconciliation sprint 3 — Auto Bet UI/provider boundary review
+- Added a UI effect that only attempts an Auto Bet placement when the provider reports `BETTING_OPEN`, and only for an idle slot that has not already been marked for Auto Bet.
+- Changed the explicit manual placement handler to send `autoBet: false`, preventing a manual click from silently turning the provider slot into an Auto Bet instruction.
+- Source assertions passed for the eligible-state guard, idle-slot guard, manual-placement flag, and provider call presence.
+
+### Sprint 3 limitations / follow-up
+- This change is not yet verified against a running simulator. The provider currently owns round progression and the UI cannot guarantee that Auto Bet armed during an open betting window waits for the *next* round; that edge case needs a dedicated queue model and tests.
+- The demo simulator's crash/result/next-round lifecycle also needs end-to-end inspection before claiming repeat Auto Bet works across rounds.
+- An attempted repository-owned aircraft SVG was not confirmed present in Git; no asset integration is claimed. The inline silhouette remains.
+- Header and bottom-navigation controls still require action/destination implementation or explicit disabled treatment.
+- No build, automated test, browser QA, Vercel preview, or deployment was run. Vercel remains paused and `main` remains untouched.
