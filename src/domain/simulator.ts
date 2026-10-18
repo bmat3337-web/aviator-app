@@ -142,6 +142,32 @@ export class SimulatorProvider implements IGameProvider {
       return;
     }
 
+    if (state === "CRASH") {
+      this.transition("RESULT");
+      return;
+    }
+
+    if (state === "RESULT") {
+      this.transition("NEXT_ROUND");
+      return;
+    }
+
+    if (state === "NEXT_ROUND") {
+      const previousBets = this.current.bets;
+      this.sequenceIndex += 1;
+      this.current = this.createRound("WAITING");
+
+      // Preserve each slot's configured stake and automatic-betting preferences
+      // across rounds while resetting all round-specific outcomes.
+      for (const slot of BET_SLOTS) {
+        this.current.bets[slot].stake = previousBets[slot].stake;
+        this.current.bets[slot].autoBet = previousBets[slot].autoBet;
+        this.current.bets[slot].autoCashOut = previousBets[slot].autoCashOut;
+      }
+      this.emit();
+      return;
+    }
+
     if (state === "FLYING") {
       const nextMultiplier = Number(
         Math.min(this.current.round.crashMultiplier, this.current.round.multiplier + 0.25).toFixed(2),
