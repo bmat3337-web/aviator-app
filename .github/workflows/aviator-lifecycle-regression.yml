@@ -1,0 +1,31 @@
+name: Aviator Lifecycle Regression
+
+on:
+  pull_request:
+    branches: [main]
+  push:
+    branches:
+      - fix/aviator-round-lifecycle-regression
+
+permissions:
+  contents: read
+
+jobs:
+  lifecycle-regression:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - name: Install dependencies
+        run: npm install --ignore-scripts --no-audit --no-fund
+      - name: Run simulator lifecycle regression
+        run: npm run verify:domain
+      - name: Run application integration tests
+        run: npm run verify:integration
+      - name: Build production bundle
+        run: npm run build
