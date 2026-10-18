@@ -22,9 +22,7 @@ jobs:
           node-version: 22
       - name: Install dependencies
         run: npm install --ignore-scripts --no-audit --no-fund
-      - name: Run simulator lifecycle regression
-        run: npm run verify:domain
-      - name: Run application integration tests
-        run: npm run verify:integration
+      - name: Run complete repository verification suite
+        run: npm run verify
       - name: Build production bundle
         run: npm run build
